@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Wrapper para disparar la Alerta Sísmica desde la consola Linux / Terminal Bash
+# Uso:
+#   ./alertaSismica SIMULACRO MODERADA
+#   ./alertaSismica 45 SIMULACRO MODERADA
+#   ./alertaSismica 30 "ALERTA SISMICA" SEVERA
+#   ./alertaSismica stop
+
+node alert.js "$@"

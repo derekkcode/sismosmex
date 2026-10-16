@@ -1,0 +1,2498 @@
+/* ==========================================================================
+   SISTEMA DE DISEÑO SÍSMICO - RÉPLICA EXACTA JMA / KYOSHIN EEW
+   Paleta de colores, tipografía, mapa cartográfico y paneles de telemetría
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #0d131d;
+  color: #f1f5f9;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  user-select: none;
+}
+
+.monitor-app-layout {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  background-color: #0d131d;
+}
+
+/* ==========================================================================
+   1. BARRA LATERAL IZQUIERDA (PANEL DE SISMOS E INTENSIDADES)
+   ========================================================================== */
+.monitor-sidebar {
+  width: 280px;
+  flex: 0 0 280px;
+  height: 100vh;
+  background-color: #121b27;
+  border-right: 1px solid #1e2c3e;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+}
+
+/* Encabezado Superior de Sección */
+.sidebar-section-header {
+  background: #25374b;
+  color: #ffffff;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid #1a2838;
+}
+
+.sidebar-live-section {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   TARJETA PRINCIPAL DE ÚLTIMO SISMO REGISTRADO (RÉPLICA EXACTA JQUAKE / KYOSHIN)
+   ========================================================================== */
+.event-hero-card {
+  background: #182230;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55);
+}
+
+/* Header superior de la tarjeta (ⓘ 各地の震度情報) */
+.jma-card-top-header {
+  background: #253346;
+  color: #ffffff;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+
+.jma-card-top-header .jma-top-header-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Cuerpo de la Tarjeta */
+.jma-card-body {
+  padding: 12px 14px 14px 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Banner de Máxima Intensidad (Cápsula redondeada interior) */
+.jma-intensity-banner {
+  background: #1f759c; /* Color por intensidad (Int 1: #1f759c como en la imagen) */
+  color: #ffffff;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+.jma-intensity-label {
+  font-size: 19px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.jma-intensity-num {
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Fecha y hora */
+.jma-time-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e2e8f0;
+  letter-spacing: 0.1px;
+}
+
+/* Epicentro */
+.jma-location-text {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.25;
+  margin-top: 3px;
+  letter-spacing: -0.3px;
+}
+
+/* Subtítulo "Ocurrió un sismo" (で地震がありました) */
+.jma-event-subtitle {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: #cbd5e1;
+  margin-top: 2px;
+  margin-bottom: 14px;
+}
+
+/* Filas de Métricas (Magnitud y Profundidad con barras indicadoras) */
+.jma-metrics-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.jma-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 36px;
+}
+
+.jma-metric-label {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.jma-metric-val-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.jma-metric-number {
+  font-size: 32px;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.jma-metric-depth {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+  line-height: 1;
+}
+
+.jma-accent-bar {
+  width: 8px;
+  height: 28px;
+  border-radius: 2px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.jma-accent-bar.bar-cyan {
+  background: #2dd4bf;
+  box-shadow: 0 0 8px rgba(45, 212, 191, 0.4);
+}
+
+.jma-accent-bar.bar-amber {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
+}
+
+/* ==========================================================================
+   2. HISTORIAL DE SISMOS (PARTE INFERIOR DE SIDEBAR)
+   ========================================================================== */
+.sidebar-history-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.history-scroll-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.history-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 16px;
+  color: #64748b;
+  font-size: 12px;
+  text-align: center;
+  gap: 8px;
+  background: rgba(18, 27, 39, 0.4);
+  border: 1px dashed #1e2d40;
+  border-radius: 6px;
+  margin: 4px;
+}
+
+.history-card-item {
+  background: #162230;
+  border: 1px solid #233448;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.history-card-item:hover {
+  background: #1c2b3d;
+  border-color: #38bdf8;
+}
+
+.history-int-badge {
+  width: 44px;
+  height: 48px;
+  background: #1b7a9e;
+  color: #ffffff;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.history-int-badge.int-yellow {
+  background: #eab308;
+  color: #0f172a;
+}
+
+.history-int-badge.int-orange {
+  background: #f97316;
+  color: #ffffff;
+}
+
+.history-int-badge.int-red {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.history-int-label {
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.history-int-number {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.history-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.history-loc-text {
+  font-size: 13px;
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.history-time-text {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.history-metrics-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+  font-size: 11px;
+}
+
+.history-metric-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #cbd5e1;
+  font-weight: 600;
+}
+
+.chip-bar-yellow {
+  width: 5px;
+  height: 12px;
+  background: #eab308;
+  border-radius: 1px;
+}
+
+.chip-bar-cyan {
+  width: 5px;
+  height: 12px;
+  background: #38bdf8;
+  border-radius: 1px;
+}
+
+/* ==========================================================================
+   3. BARRA DE HERRAMIENTAS VERTICAL (JUNTO AL SIDEBAR)
+   ========================================================================== */
+.vertical-icon-toolbar {
+  position: absolute;
+  top: 10px;
+  left: 290px;
+  background: rgba(18, 27, 39, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid #233448;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  padding: 4px;
+  gap: 4px;
+  z-index: 110;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.vert-icon-btn {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: #cbd5e1;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.vert-icon-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  color: #ffffff;
+}
+
+.vert-icon-btn.active {
+  background: #233448;
+  color: #38bdf8;
+}
+
+.activity-badge-dot {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ef4444;
+  box-shadow: 0 0 6px #ef4444, 0 0 10px rgba(239, 68, 68, 0.6);
+  pointer-events: none;
+  animation: pulse-activity-badge 1.2s infinite ease-in-out;
+}
+
+@keyframes pulse-activity-badge {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+    box-shadow: 0 0 8px #ef4444, 0 0 12px rgba(239, 68, 68, 0.9);
+  }
+  100% {
+    transform: scale(0.85);
+    opacity: 0.8;
+  }
+}
+
+/* ==========================================================================
+   4. RELOJ FLOTANTE SUPERIOR & BANNER DE ALERTA SÍSMICA
+   ========================================================================== */
+.top-floating-header {
+  position: absolute;
+  top: 12px;
+  left: 345px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 120;
+  pointer-events: auto;
+}
+
+.top-timestamp-pill {
+  position: relative;
+  top: auto;
+  left: auto;
+  background: rgba(14, 23, 34, 0.88);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.top-timestamp-pill.conn-lost #clockText {
+  color: #ef4444 !important;
+}
+
+/* Banner de Alerta Sísmica con fondo rojo parpadeando al lado del reloj */
+.alerta-sismica-top-banner {
+  display: none !important;
+  background: #dc2626;
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.85), 0 4px 14px rgba(0, 0, 0, 0.6);
+  border: 2px solid #ffffff;
+  animation: alerta-roja-parpadeo 0.65s cubic-bezier(0.4, 0, 0.6, 1) infinite alternate;
+  user-select: none;
+  white-space: nowrap;
+}
+
+@keyframes alerta-roja-parpadeo {
+  0% {
+    background-color: #dc2626;
+    border-color: #ffffff;
+    box-shadow: 0 0 26px rgba(239, 68, 68, 0.95), 0 4px 16px rgba(0, 0, 0, 0.6);
+    transform: scale(1);
+  }
+  50% {
+    background-color: #b91c1c;
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+  100% {
+    background-color: #7f1d1d;
+    border-color: #ef4444;
+    box-shadow: 0 0 8px rgba(185, 28, 28, 0.4), 0 2px 8px rgba(0, 0, 0, 0.4);
+    transform: scale(0.985);
+  }
+}
+
+.alerta-icon-blink {
+  font-size: 16px;
+  line-height: 1;
+  animation: alerta-icon-wiggle 1s ease-in-out infinite;
+}
+
+@keyframes alerta-icon-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-10deg) scale(1.1); }
+  75% { transform: rotate(10deg) scale(1.1); }
+}
+
+.alerta-title-text {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 1.1px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+.alerta-level-pill {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #fef08a;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.alerta-timer-pill {
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.alerta-close-btn {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 2px;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.alerta-close-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: #ffffff;
+  transform: scale(1.1);
+}
+
+/* Banner Superior de Alerta Oficial de Tsunami (CAT / SEMAR / NOAA) */
+.tsunami-top-banner {
+  background: linear-gradient(135deg, #b91c1c, #7f1d1d);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 0 28px rgba(239, 68, 68, 0.9), 0 4px 16px rgba(0, 0, 0, 0.7);
+  border: 2px solid #ef4444;
+  animation: tsunami-banner-pulse 1.4s ease-in-out infinite alternate;
+  user-select: none;
+  z-index: 1000;
+  max-width: 90vw;
+}
+
+@keyframes tsunami-banner-pulse {
+  0% {
+    box-shadow: 0 0 16px rgba(239, 68, 68, 0.7), 0 4px 12px rgba(0, 0, 0, 0.6);
+    border-color: #ef4444;
+  }
+  100% {
+    box-shadow: 0 0 32px rgba(239, 68, 68, 1), 0 6px 20px rgba(0, 0, 0, 0.8);
+    border-color: #ffffff;
+  }
+}
+
+.tsunami-banner-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.tsunami-icon-blink {
+  font-size: 24px;
+  animation: tsunami-wave-bounce 1s infinite alternate ease-in-out;
+}
+
+@keyframes tsunami-wave-bounce {
+  0% { transform: scale(1) translateY(0); }
+  100% { transform: scale(1.18) translateY(-2px); }
+}
+
+.tsunami-banner-texts {
+  display: flex;
+  flex-direction: column;
+}
+
+.tsunami-banner-title {
+  font-size: 13px;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.tsunami-banner-sub {
+  font-size: 11px;
+  font-weight: 700;
+  color: #fecaca;
+}
+
+.tsunami-banner-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.tsunami-banner-mute-btn {
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tsunami-banner-mute-btn:hover {
+  background: #000000;
+  border-color: #ffffff;
+}
+
+.tsunami-banner-close-btn {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #ffffff;
+  border-radius: 4px;
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.tsunami-banner-close-btn:hover {
+  background: #000000;
+}
+
+/* Enlace a Panel de Administración en la cabecera */
+.admin-panel-link-btn {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #94a3b8;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+}
+
+.admin-panel-link-btn:hover {
+  background: rgba(56, 189, 248, 0.15);
+  border-color: #38bdf8;
+  color: #38bdf8;
+}
+
+.top-right-telemetry {
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-family: ui-monospace, monospace;
+  font-size: 12px;
+  color: rgba(148, 163, 184, 0.7);
+  z-index: 110;
+}
+
+/* ==========================================================================
+   5. CONTROLES DEL MAPA (ZOOM Y RECENTER)
+   ========================================================================== */
+.map-control-buttons {
+  position: absolute;
+  bottom: 20px;
+  left: 295px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 110;
+}
+
+.map-control-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(18, 27, 39, 0.92);
+  backdrop-filter: blur(8px);
+  border: 1px solid #233448;
+  border-radius: 6px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: all 0.15s ease;
+}
+
+.map-control-btn:hover {
+  background: #233448;
+  color: #38bdf8;
+}
+
+/* ==========================================================================
+   6. ÁREA DE MAPA CANVAS
+   ========================================================================== */
+.monitor-map-stage {
+  flex: 1;
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #0d131d;
+}
+
+.map-canvas-container {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+canvas#mapCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ==========================================================================
+   7. BOTÓN SEEDLINK EN EL MENÚ Y TOOLBAR
+   ========================================================================== */
+.seedlink-menu-trigger-btn {
+  background: #142334;
+  border: 1px solid #233b54;
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 4px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.seedlink-menu-trigger-btn:hover {
+  background: #1e354f;
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.pulse-green-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  display: inline-block;
+  animation: pulse-dot 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.8; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px #10b981; }
+  100% { transform: scale(0.9); opacity: 0.8; }
+}
+
+.menu-seedlink-icon-btn {
+  color: #38bdf8 !important;
+}
+
+.menu-seedlink-icon-btn:hover {
+  background: #1e293b !important;
+  border-color: #38bdf8 !important;
+}
+
+/* ==========================================================================
+   8. PANEL Y MODAL SEEDLINK DE ESTACIONES Y SERVIDORES (TIMEOUT 20S)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 10, 16, 0.82);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-overlay.open {
+  display: flex;
+}
+
+.seedlink-dialog-large {
+  width: 1040px;
+  max-width: 95vw;
+  height: 85vh;
+  max-height: 85vh;
+  background: #0d1520;
+  border: 1px solid #233448;
+  border-radius: 10px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.85);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.dialog-header {
+  flex-shrink: 0;
+  background: #141f2d;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #1f2f42;
+}
+
+.dialog-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dialog-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: #f1f5f9;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dialog-title-icon {
+  font-size: 17px;
+}
+
+.dialog-subtitle {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.dialog-close-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  line-height: 1;
+  transition: all 0.15s ease;
+}
+
+.dialog-close-btn:hover {
+  background: #1e2b3c;
+  color: #ffffff;
+}
+
+/* Cinta de Métricas Rápidas */
+.seedlink-stats-ribbon {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 10px 20px;
+  background: #090e15;
+  border-bottom: 1px solid #1a2636;
+}
+
+.ribbon-card {
+  background: #121c28;
+  border: 1px solid #1b2a3c;
+  border-radius: 6px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ribbon-lbl {
+  font-size: 10px;
+  color: #64748b;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.ribbon-val {
+  font-size: 15px;
+  font-family: monospace;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.stat-val-cyan { color: #38bdf8; }
+.stat-val-emerald { color: #10b981; }
+.stat-val-amber { color: #f59e0b; }
+
+/* Navegación por pestañas */
+.seedlink-tabs-nav {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  background: #101a26;
+  border-bottom: 1px solid #1c2b3d;
+}
+
+.seedlink-tab-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #94a3b8;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.seedlink-tab-btn:hover {
+  background: #162434;
+  color: #e2e8f0;
+}
+
+.seedlink-tab-btn.active {
+  background: #1a293b;
+  color: #38bdf8;
+  border-color: #27405e;
+}
+
+.tab-spacer {
+  flex: 1;
+}
+
+.btn-reconnect-all {
+  background: #142232;
+  border: 1px solid #23374f;
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-reconnect-all:hover {
+  background: #1b2f45;
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+/* Barra de Búsqueda y Filtros de Estaciones */
+.seedlink-tab-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-height: 0;
+  height: 100%;
+}
+
+.stations-toolbar {
+  flex-shrink: 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 20px;
+  background: #0c141e;
+  border-bottom: 1px solid #1a2636;
+}
+
+.station-search-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: #070c12;
+  border: 1px solid #1e2c3e;
+  border-radius: 6px;
+  padding: 6px 12px;
+  gap: 8px;
+}
+
+.station-search-input {
+  background: transparent;
+  border: none;
+  color: #f8fafc;
+  font-size: 12px;
+  width: 100%;
+  outline: none;
+}
+
+.filter-chips-row {
+  display: flex;
+  gap: 6px;
+}
+
+.station-filter-chip {
+  background: #121c28;
+  border: 1px solid #1e2c3e;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.station-filter-chip:hover {
+  background: #182536;
+  color: #e2e8f0;
+}
+
+.station-filter-chip.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+/* Contenedor scrolleable de Tablas */
+.table-scroll-container {
+  flex: 1 1 0;
+  min-height: 0;
+  height: 0;
+  overflow-y: auto !important;
+  overflow-x: auto;
+  background: #090e16;
+  -webkit-overflow-scrolling: touch;
+}
+
+.table-scroll-container::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+  background: #0b131c;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+  background: #23374e;
+  border-radius: 5px;
+  border: 2px solid #0b131c;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
+
+.seedlink-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.seedlink-data-table thead th {
+  position: sticky;
+  top: 0;
+  background: #111a26;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 9px 14px;
+  border-bottom: 1px solid #1e2d3e;
+  z-index: 10;
+  text-align: left;
+}
+
+.seedlink-data-table tbody tr {
+  border-bottom: 1px solid #111b27;
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.seedlink-data-table tbody tr:hover {
+  background: #121e2c;
+}
+
+.seedlink-data-table tbody td {
+  padding: 8px 14px;
+  vertical-align: middle;
+}
+
+.table-empty-row {
+  text-align: center;
+  padding: 40px !important;
+  color: #64748b;
+  font-size: 13px;
+}
+
+/* Celdas de Estaciones */
+.station-identity-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.station-network-tag {
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 9px;
+  font-weight: 800;
+  font-family: monospace;
+}
+
+.tag-ig {
+  background: #172a40;
+  color: #38bdf8;
+  border: 1px solid #2563eb;
+}
+
+.tag-am {
+  background: #3b2014;
+  color: #fb923c;
+  border: 1px solid #c2410c;
+}
+
+.tag-gi {
+  background: #064e3b;
+  color: #34d399;
+  border: 1px solid #059669;
+}
+
+.tag-hn {
+  background: #2e1065;
+  color: #c084fc;
+  border: 1px solid #7c3aed;
+}
+
+/* Insignias de Canal Sísmico Activo */
+.chan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+}
+
+.chan-badge-bb {
+  background: rgba(14, 165, 233, 0.15);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.chan-badge-sp {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.chan-badge-accel {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.chan-dot-z {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 6px #38bdf8;
+}
+
+.swarm-channel-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #bae6fd;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.station-names {
+  display: flex;
+  flex-direction: column;
+}
+
+.station-code-txt {
+  font-weight: 800;
+  color: #ffffff;
+  font-size: 13px;
+  font-family: monospace;
+}
+
+.station-site-txt {
+  color: #94a3b8;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.metric-cell-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.metric-value-num {
+  font-family: monospace;
+  font-weight: 700;
+  color: #f1f5f9;
+  font-size: 12px;
+}
+
+.mini-bar-track {
+  width: 100%;
+  max-width: 90px;
+  height: 4px;
+  background: #15202d;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mini-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.2s ease;
+}
+
+.amp-value-txt {
+  font-family: monospace;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.status-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.status-badge-online {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge-trigger {
+  background: rgba(239, 68, 68, 0.25);
+  color: #f87171;
+  border: 1px solid #ef4444;
+  animation: pulse-dot 1s infinite alternate;
+}
+
+.status-badge-idle {
+  background: rgba(100, 116, 139, 0.15);
+  color: #94a3b8;
+  border: 1px solid rgba(100, 116, 139, 0.25);
+}
+
+.status-badge-nodata {
+  background: rgba(51, 65, 85, 0.2);
+  color: #64748b;
+  border: 1px solid rgba(51, 65, 85, 0.35);
+}
+
+.delay-pill-txt {
+  font-family: monospace;
+  font-weight: 700;
+  color: #38bdf8;
+  background: #0f1925;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid #1c2b3d;
+  font-size: 11px;
+}
+
+.pga-cell-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pga-num-txt {
+  font-family: monospace;
+  font-weight: 700;
+  color: #ffffff;
+  font-size: 12px;
+}
+
+.mmi-tag {
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: #0284c7;
+  color: #ffffff;
+}
+
+.btn-action-swarm {
+  background: #142334;
+  border: 1px solid #233b54;
+  color: #38bdf8;
+  padding: 4px 9px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-action-swarm:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #38bdf8;
+}
+
+/* Tabla de Servidores (Timeout 20s) */
+.servers-info-banner {
+  flex-shrink: 0;
+  padding: 8px 20px;
+  background: #0f1c2b;
+  border-bottom: 1px solid #1d2e42;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.server-table-row {
+  cursor: default !important;
+}
+
+.server-row-primary {
+  background: rgba(14, 165, 233, 0.08) !important;
+  border-left: 3px solid #38bdf8 !important;
+}
+
+.server-row-primary:hover {
+  background: rgba(14, 165, 233, 0.14) !important;
+}
+
+.primary-server-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  letter-spacing: 0.4px;
+  box-shadow: 0 1px 4px rgba(2, 132, 199, 0.4);
+}
+
+.tag-am {
+  background: #1e3a8a !important;
+  color: #93c5fd !important;
+  border: 1px solid #3b82f6 !important;
+}
+
+.server-status-pill {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.server-status-done {
+  background: #20354b;
+  color: #bae6fd;
+  border: 1px solid #38bdf8;
+}
+
+.server-status-timeout {
+  background: transparent;
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.server-status-error {
+  background: transparent;
+  color: #f87171;
+}
+
+.dialog-footer {
+  flex-shrink: 0;
+  padding: 10px 20px;
+  background: #111a26;
+  border-top: 1px solid #1c2b3d;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.seedlink-live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 6px #10b981;
+  display: inline-block;
+}
+
+.btn-secondary {
+  background: #1a2636;
+  border: 1px solid #283a4e;
+  color: #e2e8f0;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+  background: #22344a;
+  border-color: #38bdf8;
+}
+
+/* ==========================================================================
+   9. VISOR DE ONDAS SÍSMICAS ESTILO USGS SWARM (OSCILOGRAMA & STA/LTA)
+   ========================================================================== */
+.swarm-panel {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  width: 580px;
+  max-width: calc(100vw - 320px);
+  background: rgba(13, 20, 30, 0.96);
+  backdrop-filter: blur(12px);
+  border: 1px solid #223246;
+  border-radius: 8px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
+  display: none;
+  flex-direction: column;
+  z-index: 150;
+  overflow: hidden;
+}
+
+.swarm-panel.open {
+  display: flex;
+}
+
+.swarm-header {
+  background: #172435;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #203144;
+}
+
+.swarm-station-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.swarm-station-code {
+  font-size: 14px;
+  font-weight: 800;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.swarm-station-sub {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.swarm-metrics-ribbon {
+  display: flex;
+  background: #0b111a;
+  border-bottom: 1px solid #1a2736;
+  padding: 6px 14px;
+  gap: 16px;
+  font-size: 11px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.swarm-metric {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.swarm-metric-lbl {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.swarm-metric-val {
+  color: #e2e8f0;
+  font-weight: 700;
+  font-family: monospace;
+}
+
+.swarm-delay-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: monospace;
+  background: #1e293b;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.2s ease;
+}
+
+.swarm-delay-badge.delay-good {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.35);
+}
+
+.swarm-delay-badge.delay-warn {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.35);
+}
+
+.swarm-delay-badge.delay-bad {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.swarm-wave-container {
+  height: 140px;
+  width: 100%;
+  position: relative;
+  background: #080d14;
+  border-bottom: 1px solid #1a2736;
+}
+
+canvas#waveformCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.swarm-stalta-container {
+  height: 70px;
+  width: 100%;
+  position: relative;
+  background: #060a0f;
+  border-bottom: 1px solid #1a2736;
+}
+
+canvas#staltaCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.swarm-controls-bar {
+  padding: 8px 14px;
+  background: #111a26;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.swarm-filter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #4ade80;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: 0.2px;
+}
+
+.swarm-filter-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #22c55e;
+  box-shadow: 0 0 8px #22c55e;
+  animation: pulse-dot 1.8s infinite;
+}
+
+.swarm-bottom-delay-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+}
+
+.swarm-bottom-delay-lbl {
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   LEYENDA FLOTANTE INFERIOR DERECHA (ESCALA MERCALLI ESTILO JQUAKE)
+   ========================================================================== */
+.mercalli-legend-card {
+  position: absolute;
+  bottom: 18px;
+  right: 18px;
+  background: rgba(14, 20, 30, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid #233448;
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55);
+  z-index: 105;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 145px;
+  pointer-events: auto;
+  user-select: none;
+}
+
+.mercalli-legend-title {
+  font-size: 11px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 3px;
+  border-bottom: 1px solid #1e2d40;
+  padding-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.legend-scale-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #e2e8f0;
+}
+
+.legend-color-chip {
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   ESTILOS AVANZADOS DEL PANEL DE ALERTA SÍSMICA JQUAKE (SIDEBAR IZQUIERDO)
+   ========================================================================== */
+.jquake-alert-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jquake-alert-header {
+  background: linear-gradient(90deg, #dc2626 0%, #b91c1c 100%);
+  padding: 8px 12px;
+  border-radius: 6px 6px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.35);
+}
+
+.jquake-alert-header.mode-evaluation {
+  background: linear-gradient(90deg, #ea580c 0%, #c2410c 100%);
+}
+
+.jquake-alert-header.mode-idle {
+  background: #1e293b;
+}
+
+.jquake-alert-tag {
+  font-size: 12px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.jquake-report-badge {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #fef08a;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+
+.jquake-core-grid {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.jquake-big-intensity-box {
+  width: 76px;
+  height: 76px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.2s ease;
+}
+
+.jquake-intensity-lbl {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.jquake-intensity-num {
+  font-size: 38px;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 2px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.jquake-metrics-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jquake-metric-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+}
+
+.jquake-metric-item .name {
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.jquake-metric-item .val {
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 16px;
+  font-family: ui-monospace, monospace;
+}
+
+.jquake-advisory-box {
+  background: rgba(220, 38, 38, 0.12);
+  border: 1px solid rgba(220, 38, 38, 0.5);
+  border-radius: 6px;
+  padding: 7px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fca5a5;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.jquake-realtime-panel {
+  background: #111a26;
+  border: 1px solid #1e2c3e;
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.jquake-realtime-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.jquake-realtime-grid {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.jquake-realtime-int-badge {
+  width: 44px;
+  height: 46px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.jquake-realtime-regions-list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.jquake-region-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+.jquake-region-int-tag {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #ffffff;
+}
+
+.jquake-audio-active {
+  color: #38bdf8 !important;
+}
+
+/* ==========================================================================
+   SECCIÓN DE ACTIVIDAD SÍSMICA Y TARJETAS EN VIVO (IMÁGENES 1, 2 Y 3)
+   ========================================================================== */
+
+.monitor-sidebar-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Estado Vacío cuando no hay actividad sísmica (Imagen 1) */
+.activity-empty-screen {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: calc(100vh - 60px);
+  padding: 24px 16px;
+  background-color: #121b27;
+  text-align: center;
+}
+
+.activity-empty-text {
+  font-size: 16px;
+  font-weight: 500;
+  color: #94a3b8;
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+  user-select: none;
+}
+
+.activity-active-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 1. Tarjeta de Sismo en Progreso (Imagen 3) */
+.jquake-eew-card {
+  background: #141c28;
+  border: 1px solid #1e2c3e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.jquake-eew-header {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+  height: 28px;
+}
+
+.jquake-eew-pill-sismo {
+  background: #3f4714;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  flex: 1;
+  letter-spacing: 0.5px;
+}
+
+.jquake-eew-pill-report {
+  background: #e2e600;
+  color: #000000;
+  font-size: 13px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+}
+
+.jquake-eew-body {
+  padding: 12px 14px;
+  background: #162235;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.jquake-eew-location-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.jquake-eew-loc-name {
+  font-size: 20px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -0.2px;
+}
+
+.jquake-eew-loc-suffix {
+  font-size: 14px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.jquake-eew-datetime {
+  font-size: 12px;
+  color: #94a3b8;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  margin-top: 2px;
+  margin-bottom: 8px;
+}
+
+.jquake-eew-est-box {
+  background: #e62020;
+  border-radius: 10px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.jquake-eew-est-label {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #ffffff;
+}
+
+.jquake-eew-est-num {
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1;
+  color: #ffffff;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.jquake-eew-metric-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 32px;
+}
+
+.jquake-eew-metric-lbl {
+  font-size: 14px;
+  font-weight: 600;
+  color: #cbd5e1;
+}
+
+.jquake-eew-metric-val-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jquake-eew-metric-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: #ffffff;
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  line-height: 1;
+}
+
+.jquake-eew-bar {
+  width: 12px;
+  height: 24px;
+  border-radius: 2px;
+}
+
+.jquake-eew-bar.bar-purple {
+  background: #4c1d72;
+}
+
+.jquake-eew-bar.bar-red {
+  background: #b82e2e;
+}
+
+.jquake-eew-disclaimer {
+  font-size: 10.5px;
+  color: #cbd5e1;
+  line-height: 1.35;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 2. Tarjeta de Sacudida Detectada (Imagen 2 / Imagen 3 inferior) */
+.jquake-shaking-card {
+  background: #141c28;
+  border: 1px solid #1e2c3e;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+}
+
+.jquake-shaking-header {
+  background: #25374b;
+  color: #ffffff;
+  padding: 7px 12px;
+  font-size: 14px;
+  font-weight: 800;
+  text-align: center;
+  border-bottom: 1px solid #1a2838;
+  letter-spacing: 0.3px;
+}
+
+.jquake-shaking-body {
+  padding: 12px 14px;
+  background: #162235;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jquake-shaking-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.jquake-shaking-label-stack {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #ffffff;
+}
+
+.jquake-shaking-int-square {
+  width: 64px;
+  height: 64px;
+  border-radius: 10px;
+  background: #2f95ba;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1;
+  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.jquake-shaking-stations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.jquake-shaking-station-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jquake-shaking-station-chip {
+  min-width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  padding: 0 5px;
+  background: #2f95ba;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.jquake-shaking-station-name {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+}
+
+.jquake-shaking-station-sub {
+  font-size: 10.5px;
+  color: #94a3b8;
+  font-family: ui-monospace, monospace;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   INTERFAZ DE ACTUALIZACIONES (ESTILO SIMPLE JQUAKE / KYOSHIN)
+   ========================================================================== */
+
+/* Modal Overlay */
+.updates-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 7, 13, 0.72);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  z-index: 2500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.updates-modal-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Modal Dialog */
+.updates-dialog {
+  background: #131722;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 1px rgba(255, 255, 255, 0.2);
+  border-radius: 14px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  padding: 24px 28px 20px 28px;
+  animation: modal-fade-zoom 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-fade-zoom {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Botón de cierre superior derecho */
+.updates-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease;
+}
+
+.updates-close-btn:hover {
+  color: #ffffff;
+}
+
+/* Header con título centrado */
+.updates-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 22px;
+  position: relative;
+}
+
+.updates-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+  text-align: center;
+}
+
+/* Controles de página opcionales */
+.updates-page-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.updates-page-nav-arrow {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #94a3b8;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 14px;
+  cursor: pointer;
+  line-height: 1.2;
+}
+
+.updates-page-nav-arrow:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+
+.updates-page-nav-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.updates-page-num {
+  font-size: 12px;
+  color: #94a3b8;
+  font-family: ui-monospace, monospace;
+}
+
+/* Cuerpo de versiones */
+.updates-body {
+  overflow-y: auto;
+  padding-right: 6px;
+  max-height: 52vh;
+  margin-bottom: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.updates-body::-webkit-scrollbar {
+  width: 5px;
+}
+
+.updates-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+/* Fila de versión */
+.update-version-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+
+.update-version-row:last-child {
+  margin-bottom: 4px;
+}
+
+.update-version-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #ffffff;
+  min-width: 65px;
+  padding-top: 1px;
+  flex-shrink: 0;
+  letter-spacing: -0.2px;
+}
+
+.update-version-bullets {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.update-bullet-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+
+.update-bullet-dot {
+  color: #cbd5e1;
+  font-size: 13px;
+  line-height: 1.5;
+  user-select: none;
+  flex-shrink: 0;
+}
+
+.update-bullet-text {
+  color: #e2e8f0;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+/* Footer con botón centrado OK y casilla No volver a mostrar */
+.updates-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.updates-ok-btn {
+  background: #2b507d;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 7px 42px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  user-select: none;
+}
+
+.updates-ok-btn:hover {
+  background: #376399;
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.updates-ok-btn:active {
+  transform: translateY(0);
+}
+
+.updates-pref-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: #94a3b8;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.updates-pref-label:hover {
+  color: #cbd5e1;
+}
+
+.updates-pref-label input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  cursor: pointer;
+  accent-color: #38bdf8;
+  margin: 0;
+}

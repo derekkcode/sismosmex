@@ -1,0 +1,152 @@
+/* ==========================================================================
+   ANIMACIONES DEL MONITOR SÍSMICO (SISMOMEX / GLOBALQUAKE)
+   Todas las animaciones visuales, ondas, pings de radar y alertas
+   ========================================================================== */
+
+/* 1. Pulso de Radar en Epicentro (Ondas concéntricas de origen) */
+@keyframes radar-ping {
+  0% {
+    transform: translate(-50%, -50%) scale(0.2);
+    opacity: 0.95;
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.9);
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.8);
+    opacity: 0;
+    box-shadow: 0 0 35px rgba(239, 68, 68, 0);
+  }
+}
+
+/* 2. Pulso de Botón de Alerta / Sismo Activo */
+@keyframes alertBtnPulse {
+  0% {
+    background-color: rgba(220, 38, 38, 0.15);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+  }
+  50% {
+    background-color: rgba(220, 38, 38, 0.35);
+    box-shadow: 0 0 12px 2px rgba(220, 38, 38, 0.6);
+  }
+  100% {
+    background-color: rgba(220, 38, 38, 0.15);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+  }
+}
+
+/* 3. Pulso de Badge de Notificaciones Críticas */
+@keyframes pulseBadge {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.7);
+  }
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 6px rgba(220, 38, 38, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+  }
+}
+
+/* 4. Respiración de Estaciones Sísmicas en Reposo */
+@keyframes station-breathe {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 1;
+    filter: drop-shadow(0 0 4px #38bdf8);
+  }
+}
+
+/* 5. Alerta Sísmica Severa en Estación (Movimiento Fuerte / Alerta Activa) */
+@keyframes station-alert-flash {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.8));
+  }
+  50% {
+    transform: scale(1.4);
+    filter: drop-shadow(0 0 16px rgba(239, 68, 68, 1));
+  }
+}
+
+/* 6. Banner "Sismo en progreso" - Parpadeo de Emergencia */
+@keyframes banner-emergency {
+  0%, 100% {
+    background-color: #dc2626;
+  }
+  50% {
+    background-color: #991b1b;
+  }
+}
+
+/* 7. Barrido Continuo de Osciloscopio (Waveform Sweep) */
+@keyframes waveform-sweep-line {
+  0% {
+    left: 0%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+/* 8. Brillo Sutil de Cápsulas de Intensidad Mercalli */
+@keyframes mercalli-shimmer {
+  0% {
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+  }
+  100% {
+    box-shadow: 0 0 4px rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* 9. Deslizamiento de Hoja Móvil (Bottom Sheet) */
+@keyframes sheet-slide-up {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Clases utilitarias de animación */
+.anim-radar-ping {
+  animation: radar-ping 1.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+
+.anim-alert-pulse {
+  animation: alertBtnPulse 1.4s ease-in-out infinite;
+}
+
+.anim-badge-pulse {
+  animation: pulseBadge 1.2s infinite;
+}
+
+.anim-station-breathe {
+  animation: station-breathe 2.5s ease-in-out infinite;
+}
+
+.anim-station-alert {
+  animation: station-alert-flash 0.9s ease-in-out infinite;
+}
+
+.anim-banner-emergency {
+  animation: banner-emergency 1.5s ease-in-out infinite;
+}
+
+.anim-mercalli-shimmer {
+  animation: mercalli-shimmer 2s infinite ease-in-out;
+}

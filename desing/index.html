@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monitor de Intensidad Sísmica en Tiempo Real</title>
+  <meta name="description" content="Sistema de monitoreo e intensidad sísmica SismosMex">
+  <meta property="og:title" content="Monitor de Intensidad Sísmica en Tiempo Real">
+  <meta property="og:description" content="Sistema de monitoreo e intensidad sísmica SismosMex">
+
+  <!-- Estilos del Sistema de Diseño -->
+  <link rel="stylesheet" href="/desing/styles/animations.css">
+  <link rel="stylesheet" href="/desing/styles/intensity.css">
+  <link rel="stylesheet" href="/desing/styles/monitor.css">
+</head>
+<body>
+  <div class="monitor-app-layout" id="appRoot">
+
+    <!-- ====================================================================
+         1. BARRA LATERAL IZQUIERDA (PANELES CONMUTABLES: INTENSIDADES Y ACTIVIDAD)
+         ==================================================================== -->
+    <aside class="monitor-sidebar" id="sidebarEl">
+      
+      <!-- ------------------------------------------------------------------
+           PANEL 1: VISTA DE INTENSIDADES (HISTORIAL Y ESTADO DE RED)
+           (Eventos en progreso movidos a la sección Actividad)
+           ------------------------------------------------------------------ -->
+      <div class="monitor-sidebar-panel" id="panelIntensities" style="display: flex;">
+        <!-- Encabezado Superior -->
+        <div class="sidebar-section-header" style="display: flex; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 15px;">ⓘ</span>
+            <span>Vista de Intensidades</span>
+          </div>
+        </div>
+
+        <!-- Tarjeta del Último Sismo Registrado en Vista de Intensidades (Diseño Réplica JQuake / Kyoshin) -->
+        <div class="sidebar-live-section">
+          <div class="event-hero-card" id="eventHeroCard">
+            <!-- Header superior de la tarjeta -->
+            <div class="jma-card-top-header">
+              <span class="jma-top-header-icon">ⓘ</span>
+              <span class="jma-top-header-title">Información de Intensidades</span>
+            </div>
+
+            <div class="jma-card-body">
+              <!-- Banner redondeado interior con Intensidad Máxima y Número -->
+              <div class="jma-intensity-banner" id="jquakeBigIntBox">
+                <span class="jma-intensity-label" id="jquakeIntensityLabel">Intensidad Máxima</span>
+                <span class="jma-intensity-num" id="jquakeIntensityNum">4</span>
+              </div>
+
+              <!-- Fecha y hora: 9月27日 17:37ごろ -> 26 de Sep 01:22 hrs -->
+              <div class="jma-time-text" id="jquakeTimeInfo">26 de Sep 01:22 hrs</div>
+
+              <!-- Epicentro en letras grandes: 沖縄本島近海 -->
+              <div class="jma-location-text" id="jquakeLocationTitle">86 km al Suroeste de Mapastepec, Chis</div>
+
+              <!-- Subtítulo: で地震がありました -> Ocurrió un sismo -->
+              <div class="jma-event-subtitle" id="jquakeEventSubtitle">Ocurrió un sismo</div>
+
+              <!-- Métricas en orden exacto: 1. Magnitud con barra cian, 2. Profundidad con barra ámbar -->
+              <div class="jma-metrics-stack">
+                <div class="jma-metric-row">
+                  <span class="jma-metric-label">Magnitud</span>
+                  <div class="jma-metric-val-group">
+                    <span class="jma-metric-number" id="jquakeMagVal">4.0</span>
+                    <span class="jma-accent-bar bar-cyan" id="jquakeMagBar"></span>
+                  </div>
+                </div>
+
+                <div class="jma-metric-row">
+                  <span class="jma-metric-label">Profundidad</span>
+                  <div class="jma-metric-val-group">
+                    <span class="jma-metric-number jma-metric-depth" id="jquakeDepthVal">106km</span>
+                    <span class="jma-accent-bar bar-amber" id="jquakeDepthBar"></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Historial de Sismos Registrados -->
+        <div class="sidebar-history-section">
+          <div class="sidebar-section-header" style="border-top: 1px solid #1a2838; font-size: 12px; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center;">
+            <span>Historial de Sismos</span>
+            <span style="font-size: 10px; color: #64748b;">(Solo reportes del monitor)</span>
+          </div>
+
+          <div class="history-scroll-list" id="historyList">
+            <div class="history-empty-state" id="historyEmpty">
+              <span style="font-size: 20px; opacity: 0.6;">📡</span>
+              <span>Sin eventos sísmicos registrados</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ------------------------------------------------------------------
+           PANEL 2: ACTIVIDAD (EVENTOS SÍSMICOS EN VIVO Y SACUDIDA EN TIEMPO REAL)
+           ------------------------------------------------------------------ -->
+      <div class="monitor-sidebar-panel" id="panelActivity" style="display: none;">
+        <!-- Encabezado Superior -->
+        <div class="sidebar-section-header" style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8;">
+              <path d="M2 12h4l2-6 4 13 3-9 2 4 1-2h4" />
+            </svg>
+            <span>Actividad</span>
+          </div>
+          <span id="activityLiveIndicator" style="font-size: 10px; font-weight: 800; color: #38bdf8; background: rgba(56,189,248,0.15); padding: 1px 6px; border-radius: 4px;">EN VIVO</span>
+        </div>
+
+        <!-- Estado Vacío cuando no hay actividad sísmica (En Español) -->
+        <div class="activity-empty-screen" id="activityEmptyScreen">
+          <div class="activity-empty-text">Sin actividad sísmica para mostrar</div>
+        </div>
+
+        <!-- Contenedor con actividad sísmica activa -->
+        <div class="activity-active-scroll" id="activityActiveScroll" style="display: none;">
+          
+          <!-- 1. Tarjeta de Sismo en Progreso -->
+          <div class="jquake-eew-card" id="activityEqCard" style="display: none;">
+            <!-- Header con dos bloques: "Sismo" y "En Progreso" + Reporte # en lugar de ID -->
+            <div class="jquake-eew-header">
+              <div class="jquake-eew-pill-sismo">Sismo</div>
+              <div class="jquake-eew-pill-report" id="activityEqReportPill" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b;">En Progreso</div>
+              <span id="activityEqReportNumber" style="font-size: 11px; color: #38bdf8; font-family: monospace; font-weight: 700; margin-left: auto; letter-spacing: 0.5px; text-transform: uppercase;">Reporte #01</span>
+            </div>
+            
+            <div class="jquake-eew-body">
+              <!-- Epicentro / Ubicación del sismo -->
+              <div class="jquake-eew-location-row">
+                <span class="jquake-eew-loc-name" id="activityEqLocation">Costa de Guerrero</span>
+              </div>
+              
+              <!-- Fecha y hora de ocurrencia -->
+              <div class="jquake-eew-datetime" id="activityEqTime">2026/09/18 23:30:37 (Hora local)</div>
+              
+              <!-- Recuadro de Intensidad Máxima Estimada -->
+              <div class="jquake-eew-est-box" id="activityEqEstBox">
+                <div class="jquake-eew-est-label">
+                  <span>Intensidad</span>
+                  <span>Máx. Estimada</span>
+                </div>
+                <div class="jquake-eew-est-num" id="activityEqEstNum">V</div>
+              </div>
+
+              <!-- Magnitud con barra morada -->
+              <div class="jquake-eew-metric-row">
+                <span class="jquake-eew-metric-lbl">Magnitud</span>
+                <div class="jquake-eew-metric-val-wrap">
+                  <span class="jquake-eew-metric-val" id="activityEqMag">7.9</span>
+                  <span class="jquake-eew-bar bar-purple"></span>
+                </div>
+              </div>
+
+              <!-- Profundidad con barra roja -->
+              <div class="jquake-eew-metric-row">
+                <span class="jquake-eew-metric-lbl">Profundidad</span>
+                <div class="jquake-eew-metric-val-wrap">
+                  <span class="jquake-eew-metric-val" id="activityEqDepth">10 km</span>
+                  <span class="jquake-eew-bar bar-red"></span>
+                </div>
+              </div>
+
+              <!-- Aviso legal / aclaración al pie de la tarjeta -->
+              <div class="jquake-eew-disclaimer">
+                Estimación preliminar automatizada. La precisión del epicentro depende del número de estaciones disponibles.
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Tarjeta de Sacudida Detectada -->
+          <div class="jquake-shaking-card" id="activityShakingCard" style="display: none;">
+            <div class="jquake-shaking-header">
+              <span>Sacudida Detectada</span>
+            </div>
+            <div class="jquake-shaking-body">
+              <div class="jquake-shaking-top-row">
+                <div class="jquake-shaking-label-stack">
+                  <span>Tiempo Real</span>
+                  <span>Intensidad Máxima</span>
+                </div>
+                <div class="jquake-shaking-int-square" id="activityShakingIntSquare">
+                  <span id="activityShakingIntNum">I</span>
+                </div>
+              </div>
+
+              <!-- Lista de estaciones/regiones que detectan sacudida -->
+              <div class="jquake-shaking-stations-list" id="activityShakingList">
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </aside>
+
+    <!-- ====================================================================
+         2. BARRA DE HERRAMIENTAS VERTICAL FLOTANTE
+         ==================================================================== -->
+    <div class="vertical-icon-toolbar">
+      <button class="vert-icon-btn active" id="btnLive" title="Vista de Intensidades">ⓘ</button>
+      <button class="vert-icon-btn" id="btnActivity" title="Actividad">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 12h4l2-6 4 13 3-9 2 4 1-2h4" />
+        </svg>
+        <span class="activity-badge-dot" id="activityBadgeDot" style="display: none;"></span>
+      </button>
+      <button class="vert-icon-btn" id="btnToggleNarrator" title="Narrador Activo" style="display: none; color: #38bdf8;">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        </svg>
+      </button>
+      <button class="vert-icon-btn menu-seedlink-icon-btn" id="btnToolbarSeedlink" title="Monitor de Red de Estaciones" style="display: none !important;">📡</button>
+    </div>
+
+    <!-- ====================================================================
+         3. RELOJ SUPERIOR FLOTANTE & TELEMETRÍA
+         ==================================================================== -->
+    <div class="top-floating-header" id="topFloatingHeader">
+      <div class="top-timestamp-pill" id="liveClockPill">
+        <span id="clockText">2026/09/17 17:04:22</span>
+      </div>
+    </div>
+
+    <div class="top-right-telemetry" title="Estaciones activas en red">
+      <span id="telemetryStationCount">...</span>
+    </div>
+
+    <!-- ====================================================================
+         4. CONTROLES DE ZOOM Y MAPA
+         ==================================================================== -->
+    <div class="map-control-buttons">
+      <button class="map-control-btn" id="btnZoomIn" title="Acercar (Zoom In)">+</button>
+      <button class="map-control-btn" id="btnZoomOut" title="Alejar (Zoom Out)">−</button>
+      <button class="map-control-btn" id="btnRecenter" title="Centrar en México">⛶</button>
+    </div>
+
+    <!-- ====================================================================
+         5. ÁREA DEL MAPA CANVAS (MÉXICO) CON LEYENDA JQUAKE (SOLO EN DETECCIÓN)
+         ==================================================================== -->
+    <main class="monitor-map-stage">
+      <div class="map-canvas-container">
+        <canvas id="mapCanvas"></canvas>
+      </div>
+
+      <!-- Leyenda Flotante en la Esquina Inferior Derecha (Solo visible en detección sísmica) -->
+      <div class="mercalli-legend-card" id="mercalliLegend" style="display: none;">
+        <div class="mercalli-legend-title">
+          <span>Escala Mercalli</span>
+          <span style="font-size: 9px; color: #64748b;">MMI</span>
+        </div>
+        <div class="legend-scale-row"><span>Intensidad IX+</span><span class="legend-color-chip" style="background: #a855f7;"></span></div>
+        <div class="legend-scale-row"><span>Intensidad VIII</span><span class="legend-color-chip" style="background: #be0f0f;"></span></div>
+        <div class="legend-scale-row"><span>Intensidad VII</span><span class="legend-color-chip" style="background: #ff2626;"></span></div>
+        <div class="legend-scale-row"><span>Intensidad VI</span><span class="legend-color-chip" style="background: #ea580c;"></span></div>
+        <div class="legend-scale-row"><span>Intensidad V</span><span class="legend-color-chip" style="background: #ffd200;"></span></div>
+        <div class="legend-scale-row"><span>Intensidad IV</span><span class="legend-color-chip" style="background: #f97316;"></span></div>
+        <div class="legend-scale-row"><span>Intensidad III</span><span class="legend-color-chip" style="background: #059669;"></span></div>
+        <div class="legend-scale-row"><span>Intensidad II</span><span class="legend-color-chip" style="background: #00d4ba;"></span></div>
+        <div class="legend-scale-row"><span>Intensidad I</span><span class="legend-color-chip" style="background: #007aff;"></span></div>
+        <div class="legend-scale-row"><span>Reposo</span><span class="legend-color-chip" style="background: #001ee0;"></span></div>
+      </div>
+    </main>
+
+    <!-- ====================================================================
+         6. MODAL Y MONITOR DE RED DE ESTACIONES (25 SERVIDORES)
+         ==================================================================== -->
+    <div class="modal-overlay" id="seedlinkModal">
+      <div class="seedlink-dialog-large">
+        <!-- Header -->
+        <div class="dialog-header">
+          <div class="dialog-title-group">
+            <div class="dialog-title">
+              <span class="dialog-title-icon">📡</span>
+              <span>Monitor de Red Sísmica (En Vivo)</span>
+            </div>
+            <div class="dialog-subtitle">
+              Adquisición TCP continua • Timeout estricto de 20s • Formato MiniSEED • Detección STA/LTA
+            </div>
+          </div>
+          <button class="dialog-close-btn" id="btnSeedlinkModalClose" title="Cerrar ventana">✕</button>
+        </div>
+
+        <!-- Metric Ribbon -->
+        <div class="seedlink-stats-ribbon">
+          <div class="ribbon-card">
+            <span class="ribbon-lbl">Estaciones Totales</span>
+            <span class="ribbon-val" id="statTotalStations">...</span>
+          </div>
+          <div class="ribbon-card">
+            <span class="ribbon-lbl">Estaciones en Línea</span>
+            <span class="ribbon-val stat-val-cyan" id="statOnlineStations">...</span>
+          </div>
+          <div class="ribbon-card">
+            <span class="ribbon-lbl">Servidores (Timeout 20s)</span>
+            <span class="ribbon-val stat-val-emerald" id="statConnectedServers">...</span>
+          </div>
+          <div class="ribbon-card">
+            <span class="ribbon-lbl">PGA Máx Registrado</span>
+            <span class="ribbon-val stat-val-amber" id="statMaxPga">0.000 gal</span>
+          </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="seedlink-tabs-nav">
+          <button class="seedlink-tab-btn active" id="tabBtnStations">
+            <span>📊 Estaciones Sísmicas</span>
+          </button>
+          <button class="seedlink-tab-btn" id="tabBtnServers">
+            <span>🖥️ Servidores de Adquisición (20s)</span>
+          </button>
+          <div class="tab-spacer"></div>
+          <button class="btn-reconnect-all" id="btnSeedlinkReconnectAll" title="Forzar reconexión de servidores">
+            <span>🔄 Reconectar Servidores</span>
+          </button>
+        </div>
+
+        <!-- Tab 1: Estaciones Sísmicas -->
+        <div class="seedlink-tab-content" id="viewTabStations">
+          <div class="stations-toolbar">
+            <div class="station-search-box">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="stationSearchInput" class="station-search-input" placeholder="Buscar por código, red o municipio (ej. RAA84, CJIG, Chamela)...">
+            </div>
+            <div class="filter-chips-row">
+              <button class="station-filter-chip active" data-filter="all">Todas</button>
+              <button class="station-filter-chip" data-filter="online">En línea</button>
+              <button class="station-filter-chip" data-filter="trigger">Disparo STA/LTA</button>
+              <button class="station-filter-chip" data-filter="ig">Red IG (SSN)</button>
+              <button class="station-filter-chip" data-filter="am">Red AM (Raspberry Shake)</button>
+            </div>
+          </div>
+
+          <div class="table-scroll-container">
+            <table class="seedlink-data-table">
+              <thead>
+                <tr>
+                  <th style="width: 20%;">Estación</th>
+                  <th style="width: 10%;">Canal</th>
+                  <th style="width: 15%;">Aceleración</th>
+                  <th style="width: 13%;">Amplitud</th>
+                  <th style="width: 15%;">Estado</th>
+                  <th style="width: 9%;">Delay</th>
+                  <th style="width: 10%;">PGA</th>
+                  <th style="width: 8%; text-align: right;">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="seedlinkStationsTableBody">
+                <!-- Se puebla dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Tab 2: Servidores de Adquisición (Timeout 20s) -->
+        <div class="seedlink-tab-content" id="viewTabServers" style="display: none;">
+          <div class="servers-info-banner">
+            <span>⚡ Servidores TCP configurados con <strong>Timeout de 20s</strong>. Conexión continua persistente.</span>
+          </div>
+          <div class="table-scroll-container">
+            <table class="seedlink-data-table servers-table">
+              <thead>
+                <tr>
+                  <th>Servidor / Nodo</th>
+                  <th>Enlace</th>
+                  <th>Puerto</th>
+                  <th>Timeout (s)</th>
+                  <th>Estado</th>
+                  <th>Telemetría</th>
+                </tr>
+              </thead>
+              <tbody id="seedlinkServersTableBody">
+                <!-- Se puebla dinámicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="dialog-footer">
+          <div style="font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 6px;">
+            <span class="seedlink-live-dot"></span>
+            <span>Flujo MiniSEED continuo en tiempo real (TCP Port 18000)</span>
+          </div>
+          <button class="btn-secondary" id="btnSeedlinkModalCancel">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         7. MODAL DE ACTUALIZACIONES (ESTILO SIMPLE JQUAKE / KYOSHIN)
+         ==================================================================== -->
+    <div class="updates-modal-overlay" id="updatesModal" style="display: none;">
+      <div class="updates-dialog" role="dialog" aria-modal="true" aria-labelledby="updatesModalTitle">
+        <!-- Botón de cierre superior derecho ✕ -->
+        <button class="updates-close-btn" id="btnUpdatesClose" title="Cerrar">✕</button>
+
+        <!-- Encabezado centrado -->
+        <div class="updates-header">
+          <div class="updates-title" id="updatesModalTitle">Actualizaciones</div>
+          <div class="updates-page-controls" id="updatesPageControls" style="display: none;"></div>
+        </div>
+
+        <!-- Cuerpo de versiones y cambios en dos columnas -->
+        <div class="updates-body" id="updatesModalBody">
+        </div>
+
+        <!-- Botón centrado OK y opción No volver a mostrar -->
+        <div class="updates-footer">
+          <button class="updates-ok-btn" id="btnUpdatesOk">OK</button>
+          <label class="updates-pref-label">
+            <input type="checkbox" id="updatesDontShowAgain">
+            <span>No volver a mostrar</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- ====================================================================
+         7. VISOR DE OSCILOGRAMA SÍSMICO Y STA/LTA (ESTILO USGS SWARM)
+         ==================================================================== -->
+    <div class="swarm-panel" id="swarmPanel">
+      <div class="swarm-header">
+        <div class="swarm-station-info">
+          <div class="swarm-station-code" id="swarmStationCode">IG.CJIG — Chamela, Jalisco</div>
+          <div class="swarm-station-sub" id="swarmStationSub">Canal: BHN • 20 sps • Lat: 19.53° • Lon: -105.08°</div>
+        </div>
+        <button class="dialog-close-btn" id="btnSwarmClose" title="Cerrar oscilograma">✕</button>
+      </div>
+
+      <div class="swarm-metrics-ribbon">
+        <div class="swarm-metric">
+          <span class="swarm-metric-lbl">Delay / Latencia:</span>
+          <span class="swarm-metric-val swarm-delay-badge" id="swarmMetricDelay">—</span>
+        </div>
+        <div class="swarm-metric">
+          <span class="swarm-metric-lbl">PGA:</span>
+          <span class="swarm-metric-val" id="swarmMetricPga">0.000 gal</span>
+        </div>
+        <div class="swarm-metric">
+          <span class="swarm-metric-lbl">Intensidad Mercalli:</span>
+          <span class="swarm-metric-val" id="swarmMetricInt">0</span>
+        </div>
+        <div class="swarm-metric">
+          <span class="swarm-metric-lbl">STA/LTA Ratio:</span>
+          <span class="swarm-metric-val" id="swarmMetricRatio">1.00</span>
+        </div>
+        <div class="swarm-metric swarm-source-metric">
+          <span class="swarm-metric-lbl">Red:</span>
+          <span class="swarm-metric-val" id="swarmMetricNet" style="color: #38bdf8;">—</span>
+        </div>
+      </div>
+
+      <div class="swarm-wave-container">
+        <canvas id="waveformCanvas"></canvas>
+      </div>
+
+      <div class="swarm-stalta-container">
+        <canvas id="staltaCanvas"></canvas>
+      </div>
+
+      <div class="swarm-controls-bar">
+        <div class="swarm-filter-badge" id="swarmActiveFilterBadge" title="Filtro pasa-banda sismológico 1 - 10 Hz para detección de eventos locales y ondas P/S">
+          <span class="swarm-filter-dot"></span>
+          <span class="swarm-filter-txt">Filtro Local: 1 - 10 Hz</span>
+        </div>
+        <div class="swarm-bottom-delay-wrap">
+          <span class="swarm-bottom-delay-lbl">Delay:</span>
+          <span class="swarm-delay-badge" id="swarmBottomDelay">—</span>
+        </div>
+        <span style="font-size: 10px; color: #64748b; font-weight: 600;">USGS Swarm Real-time Protocol</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Script del Motor Gráfico y Control de Datos -->
+  <script type="module">
+    import { SeismicMonitorEngine, MERCALLI_ROMAN } from '/desing/scripts/monitor-engine.js';
+    import { SeedLinkUIManager } from '/desing/scripts/seedlink-ui.js';
+    import { UpdatesUIManager } from '/desing/scripts/updates-ui.js';
+
+    // 1. Inicializar Motor de Mapa
+    const mapCanvas = document.getElementById('mapCanvas');
+    const engine = new SeismicMonitorEngine(mapCanvas, {
+      onStateChange: handleEngineStateChange
+    });
+
+    // 2. Inicializar Gestor de Adquisición y Visor Swarm
+    const seedlinkUI = new SeedLinkUIManager(engine);
+
+    // 3. Inicializar Gestor de Actualizaciones (UI al inicio del monitor con paginación)
+    const updatesUI = new UpdatesUIManager();
+
+    // =========================================================================
+    // CONTROL DE PESTAÑAS (VISTA DE INTENSIDADES VS ACTIVIDAD)
+    // =========================================================================
+    let currentSidebarTab = 'intensities';
+    let hadActivityBefore = false;
+    const narratedHighPgaStations = new Map(); // stCode -> timestamp de última locución por >= 3 gal
+
+    function switchSidebarTab(tab) {
+      currentSidebarTab = tab;
+      const panelIntensities = document.getElementById('panelIntensities');
+      const panelActivity = document.getElementById('panelActivity');
+      const btnLive = document.getElementById('btnLive');
+      const btnActivity = document.getElementById('btnActivity');
+
+      if (tab === 'activity') {
+        if (panelIntensities) panelIntensities.style.display = 'none';
+        if (panelActivity) panelActivity.style.display = 'flex';
+        if (btnLive) btnLive.classList.remove('active');
+        if (btnActivity) btnActivity.classList.add('active');
+      } else {
+        if (panelIntensities) panelIntensities.style.display = 'flex';
+        if (panelActivity) panelActivity.style.display = 'none';
+        if (btnLive) btnLive.classList.add('active');
+        if (btnActivity) btnActivity.classList.remove('active');
+      }
+    }
+    window.switchSidebarTab = switchSidebarTab;
+
+    document.getElementById('btnLive')?.addEventListener('click', () => switchSidebarTab('intensities'));
+    document.getElementById('btnActivity')?.addEventListener('click', () => switchSidebarTab('activity'));
+
+    function getIntensityTheme(intVal) {
+      if (intVal >= 10) return { bg: '#a855f7', text: '#ffffff' }; // X+: Púrpura
+      if (intVal >= 9) return { bg: '#880e4f', text: '#ffffff' };  // IX: Carmesí violento
+      if (intVal >= 8) return { bg: '#be0f0f', text: '#ffffff' };  // VIII: Rojo oscuro
+      if (intVal >= 7) return { bg: '#ff2626', text: '#ffffff' };  // VII: Rojo brillante
+      if (intVal >= 6) return { bg: '#ea580c', text: '#ffffff' };  // VI: Naranja rojizo fuerte
+      if (intVal >= 5) return { bg: '#ffd200', text: '#0f172a' };  // V: Amarillo cálido
+      if (intVal >= 4) return { bg: '#f97316', text: '#ffffff' };  // IV: Naranja brillante
+      if (intVal >= 3) return { bg: '#059669', text: '#ffffff' };  // III: Verde esmeralda equilibrado
+      if (intVal >= 2) return { bg: '#00d4ba', text: '#0f172a' };  // II: Cian / Turquesa
+      if (intVal >= 1) return { bg: '#1f759c', text: '#ffffff' };  // I: Azul / Cian característico JQuake (como la imagen)
+      return { bg: '#001ee0', text: '#ffffff' };
+    }
+
+    function isAmStation(st) {
+      if (!st) return false;
+      const net = (st.network || '').trim().toUpperCase();
+      const code = (st.code || '').trim().toUpperCase();
+      const fullCode = (st.fullCode || '').trim().toUpperCase();
+      const netName = (st.networkName || '').toLowerCase();
+      const server = (st.serverSource || '').toLowerCase();
+      return net === 'AM' || code.startsWith('AM.') || fullCode.startsWith('AM.') || code.startsWith('R') || netName.includes('raspberry shake') || netName.includes('shake') || server.includes('am');
+    }
+
+    // Identificar si una estación pertenece a la red de Guatemala (INSIVUMEH o territorio guatemalteco)
+    function isGuatemalaStation(st) {
+      if (!st) return false;
+      const net = (st.network || '').trim().toUpperCase();
+      const fullCode = (st.fullCode || '').trim().toUpperCase();
+      const state = (st.state || '').toLowerCase();
+      const site = (st.site || '').toLowerCase();
+      const netName = (st.networkName || '').toLowerCase();
+      const source = (st.source || '').toLowerCase();
+
+      return net === 'GI' ||
+             fullCode.startsWith('GI.') ||
+             state.includes('guatemala') ||
+             site.includes('guatemala') ||
+             netName.includes('guatemala') ||
+             netName.includes('insivumeh') ||
+             source.includes('insivumeh');
+    }
+
+    // Identificar si una estación pertenece a la red de El Salvador (MARN / SNET o territorio salvadoreño)
+    function isElSalvadorStation(st) {
+      if (!st) return false;
+      const net = (st.network || '').trim().toUpperCase();
+      const fullCode = (st.fullCode || '').trim().toUpperCase();
+      const state = (st.state || '').toLowerCase();
+      const site = (st.site || '').toLowerCase();
+      const netName = (st.networkName || '').toLowerCase();
+      const source = (st.source || '').toLowerCase();
+
+      return net === 'SV' ||
+             fullCode.startsWith('SV.') ||
+             state.includes('salvador') ||
+             site.includes('salvador') ||
+             netName.includes('salvador') ||
+             netName.includes('marn') ||
+             source.includes('salvador') ||
+             source.includes('marn');
+    }
+
+    function handleEngineStateChange(snapshot) {
+      const telCount = document.getElementById('telemetryStationCount');
+      if (telCount && snapshot.stations) {
+        telCount.innerText = String(snapshot.stations.length);
+      }
+
+      // =======================================================================
+      // EVALUAR ESTACIONES EN ACTIVIDAD (>= 0.7 gal, EXCLUYENDO RED AM)
+      // Usar snapshot.abnormalStations que ya incorpora calificación de 3s y cooldown anti-parpadeo
+      // =======================================================================
+      const activeNonAmStations = (Array.isArray(snapshot.abnormalStations)
+        ? snapshot.abnormalStations
+        : (snapshot.stations || engine.stations || [])).filter(st => {
+            if (isAmStation(st)) return false;
+            // Si proviene de snapshot.abnormalStations, el motor ya gestionó el criterio de 0.7 gal y cooldown
+            if (Array.isArray(snapshot.abnormalStations)) {
+              if (snapshot.activeEvent) {
+                const ev = snapshot.activeEvent;
+                const dLat = (st.lat - ev.lat) * 111.0;
+                const dLon = (st.lon - ev.lon) * 111.0 * Math.cos((ev.lat * Math.PI) / 180);
+                const distKm = Math.hypot(dLat, dLon);
+                const maxPerceptibleRadiusKm = Math.min(500, Math.max(30, 25 * Math.pow(1.85, (ev.mag || 3.8) - 2.5)));
+                if (distKm > maxPerceptibleRadiusKm) return false;
+              }
+              return true;
+            }
+            const pga = Number(st.pga || 0);
+            if (pga < 0.70) return false;
+            if (snapshot.activeEvent) {
+              const ev = snapshot.activeEvent;
+              const dLat = (st.lat - ev.lat) * 111.0;
+              const dLon = (st.lon - ev.lon) * 111.0 * Math.cos((ev.lat * Math.PI) / 180);
+              const distKm = Math.hypot(dLat, dLon);
+              const maxPerceptibleRadiusKm = Math.min(500, Math.max(30, 25 * Math.pow(1.85, (ev.mag || 3.8) - 2.5)));
+              if (distKm > maxPerceptibleRadiusKm) return false;
+            }
+            return true;
+          });
+
+      const hasAbnormal = activeNonAmStations.length > 0;
+      const hasActiveEvent = Boolean(snapshot.activeEvent);
+      const isCurrentlyActive = hasAbnormal || hasActiveEvent;
+
+      // REGLA SOLICITADA POR EL USUARIO:
+      // "activa el narrador cuando una estacion detecte 3gal o superior en actividad (estacion independiente)"
+      // "haz que el narrador ignore todas las aceleraciones de guatemala y el salvador para que no aviente de que 'alerta del sistema'"
+      if (activeNonAmStations.length > 0 && engine.audioManager) {
+        const nowMs = Date.now();
+        for (const st of activeNonAmStations) {
+          // Ignorar siempre todas las aceleraciones de estaciones de Guatemala y El Salvador en el narrador
+          if (isGuatemalaStation(st) || isElSalvadorStation(st)) {
+            continue;
+          }
+
+          const stPga = Number(st.pga || 0);
+          if (stPga >= 3.0) {
+            const stKey = (st.code || st.id || '').toUpperCase();
+            const lastSpoken = narratedHighPgaStations.get(stKey) || 0;
+            // Cooldown de 30 segundos por estación para no repetir continuamente
+            if (nowMs - lastSpoken > 30000) {
+              narratedHighPgaStations.set(stKey, nowMs);
+              engine.audioManager.narrateTrigger(st);
+              break; // Dar prioridad y secuencialidad a una estación a la vez
+            }
+          }
+        }
+      }
+
+      // ACTUALIZAR PUNTITO ROJO (BADGE DOT) EN EL ICONO DE ACTIVIDAD
+      const badgeDot = document.getElementById('activityBadgeDot');
+      if (badgeDot) {
+        badgeDot.style.display = isCurrentlyActive ? 'block' : 'none';
+      }
+
+      // LEYENDA FLOTANTE DE INTENSIDADES (Visible ÚNICAMENTE durante un sismo activo)
+      const mercalliLegend = document.getElementById('mercalliLegend');
+      if (mercalliLegend) {
+        mercalliLegend.style.display = hasActiveEvent ? 'block' : 'none';
+      }
+
+      // CONMUTACIÓN AUTOMÁTICA INTELIGENTE:
+      // 1. Cuando INICIA una actividad nueva (transición de inactivo a activo), abre la sección de Actividad
+      if (isCurrentlyActive && !hadActivityBefore) {
+        switchSidebarTab('activity');
+      }
+      // 2. Cuando FINALIZA toda la actividad (transición de activo a inactivo), si estaba en Actividad, regresa a Vista de Intensidades
+      else if (!isCurrentlyActive && hadActivityBefore) {
+        if (currentSidebarTab === 'activity') {
+          switchSidebarTab('intensities');
+        }
+      }
+
+      hadActivityBefore = isCurrentlyActive;
+
+      // =======================================================================
+      // GESTIÓN DEL PANEL DE ACTIVIDAD (100% EN ESPAÑOL)
+      // =======================================================================
+      const activityEmpty = document.getElementById('activityEmptyScreen');
+      const activityScroll = document.getElementById('activityActiveScroll');
+      const activityEqCard = document.getElementById('activityEqCard');
+      const activityShakingCard = document.getElementById('activityShakingCard');
+
+      if (!hasAbnormal && !hasActiveEvent) {
+        // Estado Vacío (Sin actividad sísmica para mostrar)
+        if (activityEmpty) activityEmpty.style.display = 'flex';
+        if (activityScroll) activityScroll.style.display = 'none';
+        if (activityEqCard) activityEqCard.style.display = 'none';
+        if (activityShakingCard) activityShakingCard.style.display = 'none';
+      } else {
+        // Hay actividad en curso
+        if (activityEmpty) activityEmpty.style.display = 'none';
+        if (activityScroll) activityScroll.style.display = 'flex';
+
+        // 1. Tarjeta de Sismo en Progreso
+        if (hasActiveEvent) {
+          const ev = snapshot.activeEvent;
+          if (activityEqCard) {
+            activityEqCard.style.display = 'flex';
+
+            // Reporte en lugar de ID y estado En Progreso
+            const reportNumEl = document.getElementById('activityEqReportNumber');
+            if (reportNumEl) {
+              reportNumEl.innerText = `Reporte #${ev.reportNumber || 1}`;
+            }
+            const reportPill = document.getElementById('activityEqReportPill');
+            if (reportPill) {
+              reportPill.innerText = 'En Progreso';
+              reportPill.style.background = 'rgba(245, 158, 11, 0.2)';
+              reportPill.style.color = '#fbbf24';
+              reportPill.style.border = '1px solid #f59e0b';
+            }
+
+            // Ubicación del epicentro
+            const locName = document.getElementById('activityEqLocation');
+            if (locName) locName.innerText = ev.location || 'México';
+
+            // Fecha y hora
+            const timeEl = document.getElementById('activityEqTime');
+            if (timeEl) {
+              const d = ev.startTimeEpoch ? new Date(ev.startTimeEpoch) : (ev.timeEpoch ? new Date(ev.timeEpoch) : new Date());
+              const pad = (n) => String(n).padStart(2, '0');
+              timeEl.innerText = `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())} (Hora local)`;
+            }
+
+            // Estimación de Intensidad Máxima Mercalli oficial unificada
+            const maxTheor = (ev.mag >= 7.8 ? 9
+              : ev.mag >= 7.2 ? 8
+              : ev.mag >= 6.5 ? 7
+              : ev.mag >= 5.8 ? 6
+              : ev.mag >= 5.0 ? 5
+              : ev.mag >= 4.2 ? 4
+              : ev.mag >= 3.4 ? 3
+              : ev.mag >= 2.6 ? 2 : 1);
+            const estInt = Math.min(maxTheor, Math.max(1, Math.round(Number(ev.maxIntensity || maxTheor))));
+            const theme = getIntensityTheme(estInt);
+            const estStr = MERCALLI_ROMAN[estInt] || String(estInt);
+            const estBg = theme.bg;
+            const estColor = theme.text;
+
+            const estBox = document.getElementById('activityEqEstBox');
+            const estNum = document.getElementById('activityEqEstNum');
+            if (estBox) {
+              estBox.style.background = estBg;
+              estBox.style.color = estColor;
+            }
+            if (estNum) {
+              estNum.innerText = estStr;
+              estNum.style.color = estColor;
+            }
+
+            const barEl = activityEqCard.querySelector('.jquake-eew-bar');
+            if (barEl) {
+              barEl.style.background = estBg;
+            }
+
+            // Magnitud
+            const magEl = document.getElementById('activityEqMag');
+            if (magEl) magEl.innerText = Number(ev.mag || 0).toFixed(1);
+
+            // Profundidad
+            const depthEl = document.getElementById('activityEqDepth');
+            if (depthEl) {
+              const d = ev.depth !== undefined && ev.depth !== null ? ev.depth : 10;
+              depthEl.innerText = `${Math.round(d)} km`;
+            }
+
+            // Disclaimer / Aviso
+            const disclaimerEl = activityEqCard.querySelector('.jquake-eew-disclaimer');
+            if (disclaimerEl) {
+              disclaimerEl.innerText = isConfirmed
+                ? 'Sismo confirmado por red multiestación en tiempo real.'
+                : 'Estimación preliminar automatizada. La precisión del epicentro depende del número de estaciones disponibles.';
+            }
+          }
+        } else {
+          if (activityEqCard) activityEqCard.style.display = 'none';
+        }
+
+        // 2. Tarjeta de Sacudida Detectada
+        if (activityShakingCard) {
+          const hasShakingData = activeNonAmStations.length > 0 || (snapshot.activeEvent && snapshot.topRegions && snapshot.topRegions.length > 0);
+
+          if (hasShakingData) {
+            activityShakingCard.style.display = 'flex';
+
+            // Calcular máxima intensidad registrada en tiempo real por estaciones no-AM
+            let maxInt = 1;
+            activeNonAmStations.forEach(s => {
+              const val = Number(s.int || 1);
+              if (val > maxInt) maxInt = val;
+            });
+            if (snapshot.realtimeMaxInt && snapshot.realtimeMaxInt > maxInt && snapshot.activeEvent) {
+              maxInt = snapshot.realtimeMaxInt;
+            }
+
+            const intSquare = document.getElementById('activityShakingIntSquare');
+            const intNum = document.getElementById('activityShakingIntNum');
+            const theme = getIntensityTheme(maxInt);
+
+            if (intSquare) {
+              intSquare.style.background = theme.bg;
+              intSquare.style.color = theme.text;
+            }
+            if (intNum) {
+              intNum.innerText = MERCALLI_ROMAN[maxInt] || maxInt;
+            }
+
+            // Lista de estaciones/regiones con sacudida real (filtradas)
+            const shakingList = document.getElementById('activityShakingList');
+            if (shakingList) {
+              const sorted = [...activeNonAmStations].sort((a, b) => (b.int || 0) - (a.int || 0) || (b.pga || 0) - (a.pga || 0));
+
+              if (sorted.length > 0) {
+                shakingList.innerHTML = sorted.slice(0, 8).map(st => {
+                  const sInt = st.int || 1;
+                  const sTheme = getIntensityTheme(sInt);
+                  const sRoman = MERCALLI_ROMAN[sInt] || sInt;
+                  const name = st.state ? `${st.state} — ${st.site || st.code}` : (st.site || st.name || st.code);
+                  const pgaVal = `${Math.max(0.1, Number(st.pga || 0.1)).toFixed(1)} gal`;
+                  return `
+                    <div class="jquake-shaking-station-row">
+                      <div class="jquake-shaking-station-chip" style="background: ${sTheme.bg}; color: ${sTheme.text};">
+                        ${sRoman}
+                      </div>
+                      <span class="jquake-shaking-station-name" title="${name} (${st.code})">${name}</span>
+                      <span class="jquake-shaking-station-sub">${pgaVal}</span>
+                    </div>
+                  `;
+                }).join('');
+              } else if (snapshot.topRegions && snapshot.topRegions.length > 0) {
+                shakingList.innerHTML = snapshot.topRegions.map(reg => {
+                  const rTheme = getIntensityTheme(reg.int);
+                  const rRoman = MERCALLI_ROMAN[reg.int] || reg.int;
+                  return `
+                    <div class="jquake-shaking-station-row">
+                      <div class="jquake-shaking-station-chip" style="background: ${rTheme.bg}; color: ${rTheme.text};">
+                        ${rRoman}
+                      </div>
+                      <span class="jquake-shaking-station-name">${reg.name}</span>
+                      <span class="jquake-shaking-station-sub">${reg.pga.toFixed(1)} gal</span>
+                    </div>
+                  `;
+                }).join('');
+              } else {
+                shakingList.innerHTML = '<div style="font-size: 11px; color: #94a3b8; font-style: italic;">Monitoreando frentes de onda...</div>';
+              }
+            }
+          } else {
+            activityShakingCard.style.display = 'none';
+          }
+        }
+      }
+
+      // =======================================================================
+      // PANEL 1: VISTA DE INTENSIDADES (ÚLTIMO REGISTRO SÍSMICO GUARDADO)
+      // Muestra el epicentro, magnitud, profundidad e intensidad del último sismo concluido
+      // =======================================================================
+      const jTimeInfo = document.getElementById('jquakeTimeInfo');
+      const jLocationTitle = document.getElementById('jquakeLocationTitle');
+      const jBigIntBox = document.getElementById('jquakeBigIntBox');
+      const jIntensityNum = document.getElementById('jquakeIntensityNum');
+      const jDepthVal = document.getElementById('jquakeDepthVal') || document.getElementById('jquakeLastReportTime');
+      const jMagVal = document.getElementById('jquakeMagVal');
+      const jEventSubtitle = document.getElementById('jquakeEventSubtitle');
+
+      const savedEv = snapshot.lastSavedEvent || {
+        location: '86 km al Suroeste de Mapastepec, Chis',
+        lat: 14.81,
+        lon: -93.39,
+        depth: 106,
+        time: '2026-09-26T01:22:00-06:00',
+        mag: 4.0,
+        maxIntensity: 4,
+      };
+
+      if (jLocationTitle) jLocationTitle.innerText = savedEv.location || '86 km al Suroeste de Mapastepec, Chis';
+      
+      let dateStr = '26 de Sep 01:22 hrs';
+      if (savedEv.time) {
+        try {
+          const d = new Date(savedEv.time);
+          if (!isNaN(d.getTime())) {
+            const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const pad = (n) => String(n).padStart(2, '0');
+            dateStr = `${d.getDate()} de ${months[d.getMonth()]} ${pad(d.getHours())}:${pad(d.getMinutes())} hrs`;
+          }
+        } catch (_) {}
+      }
+      if (jTimeInfo) jTimeInfo.innerText = dateStr;
+
+      const depthKm = Math.round(Number(savedEv.depth !== undefined ? savedEv.depth : 106));
+      if (jDepthVal) jDepthVal.innerText = `${depthKm}km`;
+      if (jMagVal) jMagVal.innerText = `${Number(savedEv.mag || savedEv.magnitude || 4.0).toFixed(1)}`;
+      
+      if (jEventSubtitle) {
+        jEventSubtitle.innerText = 'Ocurrió un sismo';
+      }
+
+      if (jBigIntBox && jIntensityNum) {
+        const intVal = Math.max(1, Math.min(10, Math.round(Number(savedEv.maxIntensity || 4))));
+        const theme = getIntensityTheme(intVal);
+        jBigIntBox.style.background = theme.bg;
+        jBigIntBox.style.color = theme.text;
+        jIntensityNum.innerText = String(intVal);
+      }
+    }
+
+    // Reloj en tiempo real dinámico y color de texto según estado de conexión
+    const liveClockPill = document.getElementById('liveClockPill');
+    function updateClockConnectionState(status) {
+      if (!liveClockPill) return;
+      liveClockPill.classList.remove('conn-lost');
+      if (status === 'disconnected') {
+        liveClockPill.classList.add('conn-lost');
+        liveClockPill.title = 'Conexión perdida con la red sísmica';
+      } else {
+        liveClockPill.title = 'Conexión en tiempo real activa';
+      }
+    }
+
+    if (seedlinkUI) {
+      seedlinkUI.onConnectionStatusChange = updateClockConnectionState;
+      updateClockConnectionState(seedlinkUI.connectionState);
+    }
+
+    function updateLiveClock() {
+      const now = new Date();
+      const pad = (n) => String(n).padStart(2, '0');
+      const dateStr = `${now.getFullYear()}/${pad(now.getMonth() + 1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+      const clockEl = document.getElementById('clockText');
+      if (clockEl) clockEl.innerText = dateStr;
+    }
+    updateLiveClock();
+    setInterval(updateLiveClock, 1000);
+
+    // Controles de Zoom del Mapa
+    document.getElementById('btnZoomIn')?.addEventListener('click', () => engine.zoomIn());
+    document.getElementById('btnZoomOut')?.addEventListener('click', () => engine.zoomOut());
+    document.getElementById('btnRecenter')?.addEventListener('click', () => engine.recenter());
+
+    // Botón de Narrador de Voz:
+    // Solo visible cuando una narración esté activamente reproduciéndose
+    const btnToggleNarrator = document.getElementById('btnToggleNarrator');
+    if (btnToggleNarrator && engine.audioManager?.narrator) {
+      const updateNarratorSpeakingUi = (isSpeaking) => {
+        if (isSpeaking) {
+          btnToggleNarrator.style.display = 'flex';
+          btnToggleNarrator.classList.add('active');
+          btnToggleNarrator.style.color = '#38bdf8';
+          btnToggleNarrator.title = 'Locución Sísmica en Curso (Haz clic para silenciar)';
+          btnToggleNarrator.innerHTML = `
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+            </svg>
+          `;
+        } else {
+          btnToggleNarrator.style.display = 'none';
+        }
+      };
+
+      engine.audioManager.narrator.onSpeakingChange = updateNarratorSpeakingUi;
+      btnToggleNarrator.style.display = 'none';
+
+      btnToggleNarrator.addEventListener('click', () => {
+        engine.audioManager.narrator.stop();
+        updateNarratorSpeakingUi(false);
+      });
+    }
+
+    window.SeismicEngineInstance = engine;
+    window.SeedLinkUIInstance = seedlinkUI;
+    window.UpdatesUIInstance = updatesUI;
+    window.abrirActualizaciones = (pageIndex) => updatesUI.open(pageIndex);
+    window.switchSidebarTab = switchSidebarTab;
+
+    window.simularSismo = (lat = 16.85, lon = -99.90, mag = 6.8, depth = 15, location = 'Costa de Guerrero') => {
+      let payload = { lat, lon, mag, depth, location, time: new Date().toISOString(), status: 'PRELIMINARY', isSimulation: true };
+      if (typeof lat === 'object' && lat !== null) {
+        payload = { ...payload, ...lat };
+      }
+      engine.triggerEvent(payload);
+      if (typeof window.switchSidebarTab === 'function') {
+        window.switchSidebarTab('activity');
+      }
+      return payload;
+    };
+    window.guardarRegistroSismico = (evento) => {
+      if (engine) {
+        engine.setLastSavedEvent(evento);
+        if (typeof window.switchSidebarTab === 'function') {
+          window.switchSidebarTab('intensities');
+        }
+      }
+    };
+  </script>
+</body>
+</html>

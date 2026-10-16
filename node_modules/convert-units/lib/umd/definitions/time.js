@@ -1,0 +1,102 @@
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports"], factory);
+    }
+})(function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const SI = {
+        ns: {
+            name: {
+                singular: 'Nanosecond',
+                plural: 'Nanoseconds',
+            },
+            to_anchor: {
+                numerator: 1,
+                denominator: 1e9,
+            },
+        },
+        mu: {
+            name: {
+                singular: 'Microsecond',
+                plural: 'Microseconds',
+            },
+            to_anchor: {
+                numerator: 1,
+                denominator: 1e6,
+            },
+        },
+        ms: {
+            name: {
+                singular: 'Millisecond',
+                plural: 'Milliseconds',
+            },
+            to_anchor: {
+                numerator: 1,
+                denominator: 1e3,
+            },
+        },
+        s: {
+            name: {
+                singular: 'Second',
+                plural: 'Seconds',
+            },
+            to_anchor: 1,
+        },
+        min: {
+            name: {
+                singular: 'Minute',
+                plural: 'Minutes',
+            },
+            to_anchor: 60,
+        },
+        h: {
+            name: {
+                singular: 'Hour',
+                plural: 'Hours',
+            },
+            to_anchor: 3.6e3, // 60 * 60
+        },
+        d: {
+            name: {
+                singular: 'Day',
+                plural: 'Days',
+            },
+            to_anchor: 8.64e4, // 60 * 60 * 24
+        },
+        week: {
+            name: {
+                singular: 'Week',
+                plural: 'Weeks',
+            },
+            to_anchor: 6.048e5, // 60 * 60 * 24 * 7
+        },
+        month: {
+            name: {
+                singular: 'Month',
+                plural: 'Months',
+            },
+            to_anchor: {
+                numerator: 3.15576e7, // 60 * 60 * 24 * 365.25
+                denominator: 12,
+            },
+        },
+        year: {
+            name: {
+                singular: 'Year',
+                plural: 'Years',
+            },
+            to_anchor: 3.15576e7, // 60 * 60 * 24 * 365.25,
+        },
+    };
+    const measure = {
+        systems: {
+            SI,
+        },
+    };
+    exports.default = measure;
+});

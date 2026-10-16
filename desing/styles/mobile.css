@@ -1,0 +1,562 @@
+/* ==========================================================================
+   DISEÑO MÓVIL DEL MONITOR SÍSMICO (ESTILO KYOSHIN / JQUAKE MÓVIL)
+   Réplica exacta de las capturas con dock inferior de 4 pestañas:
+   1. Información (Doble tarjeta: Información de Intensidad + Historial Sísmico)
+   2. Tiempo Real (Actividad y frentes de onda en vivo)
+   3. Tsunami (Boletín oficial de tsunami para costas)
+   4. Ajustes (SeedLink 25 servidores, Narrador, Audio, Actualizaciones)
+
+   NOTA CRÍTICA:
+   Este archivo está 100% aislado dentro de @media (max-width: 768px).
+   En pantallas de escritorio (> 768px) no altera en lo absoluto la UI de PC.
+   ========================================================================== */
+
+/* En escritorio (> 768px), ocultar por completo el contenedor móvil */
+@media (min-width: 769px) {
+  .mobile-bottom-container,
+  .mobile-clock-tag,
+  .mobile-only {
+    display: none !important;
+  }
+}
+
+/* ==========================================================================
+   ESTILOS PARA PANTALLAS MÓVILES (TELÉFONOS Y TABLETS PEQUEÑAS <= 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  /* 1. Ocultar paneles laterales y barras verticales de PC */
+  .monitor-sidebar {
+    display: none !important;
+  }
+  .vertical-icon-toolbar {
+    display: none !important;
+  }
+  .top-right-telemetry {
+    display: none !important;
+  }
+  .mercalli-legend-card {
+    display: none !important;
+  }
+
+  /* 2. Disposición vertical de la aplicación para teléfonos */
+  .monitor-app-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    position: relative !important;
+    background-color: #0c131d !important;
+  }
+
+  /* 3. Escenario del mapa en la mitad superior */
+  .monitor-map-stage {
+    flex: 0 0 44dvh !important;
+    height: 44dvh !important;
+    max-height: 44dvh !important;
+    width: 100vw !important;
+    position: relative !important;
+    overflow: hidden !important;
+    background: #090e17 !important;
+  }
+
+  .map-canvas-container {
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  /* 4. Reloj flotante superior (estilo cápsula oscura con etiqueta de actualización) */
+  .top-floating-header {
+    position: absolute !important;
+    top: 8px !important;
+    left: 8px !important;
+    right: auto !important;
+    z-index: 50 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .top-timestamp-pill {
+    background: rgba(10, 16, 26, 0.90) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 6px !important;
+    padding: 3px 8px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  #clockText {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", monospace !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #ffffff !important;
+    letter-spacing: 0.3px !important;
+  }
+
+  .mobile-clock-tag {
+    display: inline-block !important;
+    font-size: 10.5px !important;
+    color: #94a3b8 !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.2px !important;
+  }
+
+  /* 5. Controles de Zoom en la esquina inferior izquierda del mapa (como en captura 2 y 3) */
+  .map-control-buttons {
+    position: absolute !important;
+    top: auto !important;
+    bottom: 10px !important;
+    left: 10px !important;
+    right: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    z-index: 50 !important;
+  }
+
+  .map-control-btn {
+    width: 34px !important;
+    height: 34px !important;
+    background: rgba(14, 22, 33, 0.92) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    border-radius: 6px !important;
+    color: #f8fafc !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
+    cursor: pointer !important;
+  }
+
+  .map-control-btn:active {
+    background: rgba(30, 48, 72, 0.95) !important;
+  }
+
+  /* 6. Contenedor inferior general para teléfonos */
+  .mobile-bottom-container {
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 56dvh !important;
+    height: 56dvh !important;
+    max-height: 56dvh !important;
+    width: 100vw !important;
+    background: #0d141f !important;
+    border-top: 1px solid #1c2738 !important;
+    position: relative !important;
+    z-index: 60 !important;
+    overflow: hidden !important;
+  }
+
+  /* Viewport de las tarjetas */
+  .mobile-cards-viewport {
+    flex: 1 1 auto !important;
+    height: calc(100% - 56px) !important;
+    max-height: calc(100% - 56px) !important;
+    padding: 6px 7px 4px 7px !important;
+    overflow: hidden !important;
+    position: relative !important;
+    background: #0b111a !important;
+  }
+
+  /* Vistas conmutables */
+  .mobile-tab-view {
+    height: 100% !important;
+    width: 100% !important;
+    display: none;
+    flex-direction: column !important;
+    overflow: hidden !important;
+  }
+
+  .mobile-tab-view.active {
+    display: flex !important;
+  }
+
+  /* Pestaña 1: Grilla de Dos Tarjetas Paralelas (Información de Intensidad + Historial Sísmico) */
+  .mobile-dual-cards-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1.05fr !important;
+    gap: 6px !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
+
+  .mobile-card-col {
+    background: #141f2d !important;
+    border: 1px solid rgba(255, 255, 255, 0.09) !important;
+    border-radius: 8px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  .mobile-card-header {
+    background: #253346 !important;
+    color: #ffffff !important;
+    padding: 5px 4px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    text-align: center !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+    user-select: none !important;
+    flex-shrink: 0 !important;
+    letter-spacing: -0.2px !important;
+  }
+
+  .mobile-card-body {
+    padding: 6px 7px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    gap: 4px !important;
+  }
+
+  /* Banner de Intensidad Máxima */
+  .mobile-big-int-box {
+    background: #1e7d9b;
+    border-radius: 7px;
+    padding: 6px 9px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #ffffff;
+    min-height: 46px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+
+  .mobile-big-int-label {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: -0.2px;
+    line-height: 1.15;
+  }
+
+  .mobile-big-int-num {
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  .mobile-time-text {
+    font-size: 10px;
+    color: #cbd5e1;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .mobile-location-title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    min-height: 28px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .mobile-event-subtitle {
+    font-size: 9.5px;
+    color: #94a3b8;
+    font-weight: 600;
+  }
+
+  .mobile-metric-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1px;
+  }
+
+  .mobile-metric-lbl {
+    font-size: 10px;
+    color: #cbd5e1;
+    font-weight: 600;
+  }
+
+  .mobile-metric-val-wrap {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mobile-metric-val {
+    font-size: 17px;
+    font-weight: 900;
+    color: #ffffff;
+    font-family: monospace;
+    line-height: 1;
+  }
+
+  .mobile-metric-bar {
+    width: 4px;
+    height: 14px;
+    border-radius: 2px;
+  }
+
+  .mobile-metric-bar.bar-green { background: #22c55e; }
+  .mobile-metric-bar.bar-cyan { background: #38bdf8; }
+  .mobile-metric-bar.bar-amber { background: #f59e0b; }
+
+  /* Lista de Historial Sísmico en Móvil */
+  .mobile-history-scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .mob-history-card {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 6px;
+    background: #182332;
+    border: 1px solid #202d3e;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+  }
+
+  .mob-history-card:active {
+    background: #1c2c3e;
+  }
+
+  .mob-history-card.selected {
+    border-color: #38bdf8 !important;
+    background: #1b2d42 !important;
+  }
+
+  .mob-hist-int-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .mob-hist-int-lbl {
+    font-size: 6.5px;
+    font-weight: 800;
+    opacity: 0.85;
+    line-height: 1;
+  }
+
+  .mob-hist-int-num {
+    font-size: 15px;
+    font-weight: 900;
+    line-height: 1;
+  }
+
+  .mob-hist-info {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mob-hist-top-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+  }
+
+  .mob-hist-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mob-btn-map-active {
+    background: #1e3a5f;
+    color: #7dd3fc;
+    border: 1px solid #38bdf8;
+    border-radius: 3px;
+    padding: 0 4px;
+    font-size: 7.5px;
+    font-weight: 800;
+    flex-shrink: 0;
+    letter-spacing: -0.2px;
+  }
+
+  .mob-hist-time {
+    font-size: 8.5px;
+    color: #94a3b8;
+  }
+
+  .mob-hist-metrics {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    font-family: monospace;
+  }
+
+  .mob-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: #cbd5e1;
+  }
+
+  .mob-bar-yellow { width: 3px; height: 9px; background: #eab308; border-radius: 1px; }
+  .mob-bar-cyan { width: 3px; height: 9px; background: #38bdf8; border-radius: 1px; }
+  .mob-bar-red { width: 3px; height: 9px; background: #ef4444; border-radius: 1px; }
+
+  /* 7. Barra de Navegación Inferior Móvil (Dock) */
+  .mobile-bottom-nav {
+    height: 56px !important;
+    background: #080f18 !important;
+    border-top: 1px solid #182334 !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    align-items: center !important;
+    z-index: 100 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .mobile-nav-btn {
+    all: unset;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 100%;
+    cursor: pointer;
+    color: #64748b;
+    transition: color 0.15s;
+    text-align: center;
+    user-select: none;
+  }
+
+  .mobile-nav-btn.active {
+    color: #38bdf8 !important;
+  }
+
+  .mobile-nav-icon {
+    font-size: 19px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobile-nav-label {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: -0.1px;
+  }
+
+  /* Paneles de Actividad en Móvil */
+  .mobile-single-card {
+    background: #141f2d;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 8px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  }
+
+  .mobile-card-scroll-body {
+    padding: 10px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  /* 8. Modales en pantalla móvil */
+  .modal-overlay {
+    padding: 6px !important;
+  }
+  .seedlink-dialog-large {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 94dvh !important;
+    max-height: 94dvh !important;
+    border-radius: 8px !important;
+  }
+  .dialog-header {
+    padding: 8px 12px !important;
+  }
+  .dialog-title {
+    font-size: 13px !important;
+  }
+  .dialog-subtitle {
+    font-size: 9.5px !important;
+  }
+  .seedlink-stats-ribbon {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 4px !important;
+    padding: 6px 8px !important;
+  }
+  .ribbon-card {
+    padding: 4px 6px !important;
+  }
+  .ribbon-lbl {
+    font-size: 9px !important;
+  }
+  .ribbon-val {
+    font-size: 13px !important;
+  }
+  .seedlink-filter-bar {
+    padding: 6px 8px !important;
+    gap: 6px !important;
+  }
+  .seedlink-search-input {
+    font-size: 11px !important;
+    padding: 5px 8px !important;
+  }
+  .seedlink-station-grid {
+    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)) !important;
+    gap: 4px !important;
+    padding: 6px !important;
+  }
+
+  .updates-modal-overlay {
+    padding: 8px !important;
+  }
+  .updates-dialog {
+    width: 96vw !important;
+    max-width: 96vw !important;
+    max-height: 92dvh !important;
+    padding: 12px 10px !important;
+    border-radius: 8px !important;
+  }
+  .updates-body {
+    max-height: 68dvh !important;
+    padding-right: 4px !important;
+  }
+  .updates-columns {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}

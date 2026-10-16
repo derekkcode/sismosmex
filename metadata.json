@@ -1,0 +1,6 @@
+{
+  "name": "Monitor de Intensidad Sísmica en Tiempo Real",
+  "description": "Sistema de monitoreo e intensidad sísmica profesional con adquisición de estaciones en tiempo real, cálculo de PGA e Intensidad Mercalli Modificada (MMI), algoritmo STA/LTA y visualizador de oscilogramas estilo USGS Swarm",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

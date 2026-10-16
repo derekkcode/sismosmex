@@ -1,0 +1,125 @@
+/* ==========================================================================
+   ESCALA DE INTENSIDAD MERCALLI MODIFICADA (MMI) - DISEÑO DEL MONITOR
+   Paleta oficial de colores, contrastes y cápsulas de intensidad
+   ========================================================================== */
+
+:root {
+  --intensity-0: #001ee0;
+  --intensity-1: #007aff;
+  --intensity-2: #00d4ba;
+  --intensity-3: #059669;
+  --intensity-4: #f97316;
+  --intensity-5: #ffd200;
+  --intensity-6: #ea580c;
+  --intensity-7: #ff2626;
+  --intensity-8: #be0f0f;
+  --intensity-9: #880e4f;
+  --intensity-10: #a855f7;
+}
+
+/* Cápsula de intensidad para barras e indicadores */
+.intensity-capsule {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 800;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.intensity-capsule.int-0 {
+  background-color: var(--intensity-0);
+  color: #94a3b8;
+  border: 1px solid #273a56;
+}
+
+.intensity-capsule.int-1 {
+  background-color: var(--intensity-1);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(47, 149, 186, 0.4);
+}
+
+.intensity-capsule.int-2 {
+  background-color: var(--intensity-2);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(36, 157, 140, 0.4);
+}
+
+.intensity-capsule.int-3 {
+  background-color: var(--intensity-3);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(5, 150, 105, 0.4);
+}
+
+.intensity-capsule.int-4 {
+  background-color: var(--intensity-4);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(230, 126, 34, 0.5);
+}
+
+.intensity-capsule.int-5 {
+  background-color: var(--intensity-5);
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(211, 84, 0, 0.6);
+}
+
+.intensity-capsule.int-6 {
+  background-color: var(--intensity-6);
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(211, 47, 47, 0.7);
+}
+
+.intensity-capsule.int-7 {
+  background-color: var(--intensity-7);
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(183, 28, 28, 0.8);
+}
+
+.intensity-capsule.int-8 {
+  background-color: var(--intensity-8);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(136, 14, 79, 0.9);
+}
+
+.intensity-capsule.int-9 {
+  background-color: var(--intensity-9);
+  color: #ffffff;
+  box-shadow: 0 0 18px rgba(74, 20, 140, 0.9);
+}
+
+/* Barra horizontal completa de la escala Mercalli */
+.mercalli-scale-bar {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding: 6px;
+  background-color: #0b1523;
+  border: 1px solid #162438;
+  border-radius: 6px;
+}
+
+.mercalli-step {
+  flex: 1;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0.45;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.mercalli-step:hover,
+.mercalli-step.active {
+  opacity: 1;
+  transform: scaleY(1.15);
+}

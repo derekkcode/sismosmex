@@ -1,0 +1,129 @@
+(function (factory) {
+    if (typeof module === "object" && typeof module.exports === "object") {
+        var v = factory(require, exports);
+        if (v !== undefined) module.exports = v;
+    }
+    else if (typeof define === "function" && define.amd) {
+        define(["require", "exports"], factory);
+    }
+})(function (require, exports) {
+    "use strict";
+    Object.defineProperty(exports, "__esModule", { value: true });
+    const SI = {
+        Ws: {
+            name: {
+                singular: 'Watt-second',
+                plural: 'Watt-seconds',
+            },
+            to_anchor: 1,
+        },
+        Wm: {
+            name: {
+                singular: 'Watt-minute',
+                plural: 'Watt-minutes',
+            },
+            to_anchor: 60,
+        },
+        Wh: {
+            name: {
+                singular: 'Watt-hour',
+                plural: 'Watt-hours',
+            },
+            to_anchor: 3600,
+        },
+        mWh: {
+            name: {
+                singular: 'Milliwatt-hour',
+                plural: 'Milliwatt-hours',
+            },
+            to_anchor: 3.6,
+        },
+        kWh: {
+            name: {
+                singular: 'Kilowatt-hour',
+                plural: 'Kilowatt-hours',
+            },
+            to_anchor: 3.6e6,
+        },
+        MWh: {
+            name: {
+                singular: 'Megawatt-hour',
+                plural: 'Megawatt-hours',
+            },
+            to_anchor: 3.6e9,
+        },
+        GWh: {
+            name: {
+                singular: 'Gigawatt-hour',
+                plural: 'Gigawatt-hours',
+            },
+            to_anchor: 3.6e12,
+        },
+        J: {
+            name: {
+                singular: 'Joule',
+                plural: 'Joules',
+            },
+            to_anchor: 1,
+        },
+        kJ: {
+            name: {
+                singular: 'Kilojoule',
+                plural: 'Kilojoules',
+            },
+            to_anchor: 1000,
+        },
+        MJ: {
+            name: {
+                singular: 'Megajoule',
+                plural: 'Megajoules',
+            },
+            to_anchor: 1e6,
+        },
+        GJ: {
+            name: {
+                singular: 'Gigajoule',
+                plural: 'Gigajoules',
+            },
+            to_anchor: 1e9,
+        },
+    };
+    const nutrition = {
+        cal: {
+            name: {
+                singular: 'calorie',
+                plural: 'calories',
+            },
+            to_anchor: 1,
+        },
+        kcal: {
+            name: {
+                singular: 'Kilocalorie',
+                plural: 'Kilocalories',
+            },
+            to_anchor: 1000,
+        },
+    };
+    const measure = {
+        systems: {
+            SI,
+            nutrition,
+        },
+        anchors: {
+            SI: {
+                nutrition: {
+                    ratio: {
+                        numerator: 1,
+                        denominator: 4.184,
+                    },
+                },
+            },
+            nutrition: {
+                SI: {
+                    ratio: 4.184,
+                },
+            },
+        },
+    };
+    exports.default = measure;
+});

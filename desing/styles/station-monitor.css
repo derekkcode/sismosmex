@@ -1,0 +1,201 @@
+/* ==========================================================================
+   DISEÑO DEL MONITOR DE ESTACIÓN (GLOBALQUAKE OSCILLOSCOPE)
+   Ventana flotante, oscilograma 3 canales (Z, N, E), STA/LTA y telemetría
+   ========================================================================== */
+
+.station-monitor-modal {
+  position: absolute;
+  top: 60px;
+  left: 360px;
+  width: 780px;
+  height: 580px;
+  background: #0d1724;
+  border: 1px solid #1e3555;
+  border-radius: 10px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1500;
+  user-select: none;
+}
+
+/* Barra de Título */
+.gq-window-titlebar {
+  height: 38px;
+  background: #111d2e;
+  border-bottom: 1px solid #1c2e46;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  cursor: grab;
+}
+
+.gq-titlebar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.gq-status-pill {
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+.gq-status-pill.triggered {
+  background: rgba(220, 38, 38, 0.2);
+  color: #ef4444;
+  border-color: rgba(220, 38, 38, 0.5);
+  animation: pulseBadge 1.2s infinite;
+}
+
+.gq-window-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gq-win-btn {
+  all: unset;
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #94a3b8;
+  font-size: 14px;
+}
+
+.gq-win-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+
+.gq-win-btn.close-btn:hover {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+/* Barra de Telemetría Superior */
+.gq-telemetry-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  padding: 10px 14px;
+  background: #09101a;
+  border-bottom: 1px solid #142236;
+}
+
+.gq-telemetry-card {
+  background: #101c2c;
+  border: 1px solid #1c2e46;
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.gq-telemetry-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.gq-telemetry-val {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 18px;
+  font-weight: 800;
+  color: #38bdf8;
+  margin-top: 2px;
+}
+
+.gq-telemetry-val.pga-val {
+  color: #f59e0b;
+}
+
+/* Área de Canvas Osciloscopio */
+.gq-graphs-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 14px;
+  background: #060b13;
+  min-height: 0;
+}
+
+.gq-channel-block {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #09121d;
+  border: 1px solid #142236;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.gq-channel-header {
+  height: 22px;
+  background: rgba(18, 30, 47, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  border-bottom: 1px solid #142236;
+}
+
+.gq-channel-header .chan-tag {
+  color: #38bdf8;
+  font-family: ui-monospace, monospace;
+}
+
+.gq-canvas-stage {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.gq-canvas-stage canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Barra Inferior de Control */
+.gq-bottom-controls {
+  height: 42px;
+  padding: 0 14px;
+  background: #0c1522;
+  border-top: 1px solid #142236;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.gq-ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
