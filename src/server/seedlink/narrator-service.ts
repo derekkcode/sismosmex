@@ -18,15 +18,22 @@ export interface TTSRequestOptions {
   format?: 'mp3' | 'wav';
 }
 
+/** Idiomas que usan Fish Audio. Cualquier otro idioma usa la voz del navegador en el cliente. */
+export type NarratorLanguage = 'es' | 'en' | 'ja';
+
 export class SeismicNarratorService {
   private static instance: SeismicNarratorService;
   private apiKey: string;
-  private referenceId: string;
+  private referenceIds: Record<NarratorLanguage, string>;
   private cacheDir: string;
 
   private constructor() {
     this.apiKey = process.env.FISH_AUDIO_API_KEY || 'sk-fish-Oj1lgqus9mBORHbp4J-6fNsF_gbzhV3FVAbSWNylvtM';
-    this.referenceId = process.env.FISH_AUDIO_REFERENCE_ID || '02061e28525144daa9171e7536475bad';
+    this.referenceIds = {
+      es: process.env.FISH_AUDIO_REFERENCE_ID || '02061e28525144daa9171e7536475bad',
+      en: process.env.FISH_AUDIO_REFERENCE_ID_EN || '906b8b47c30d4ba2a7f1287773e8a3ed',
+      ja: process.env.FISH_AUDIO_REFERENCE_ID_JA || 'cf3ff5142d35408bb66a9965b3d7d04e',
+    };
     this.cacheDir = path.join(process.cwd(), 'data', 'narrator_cache');
 
     try {
@@ -43,18 +50,27 @@ export class SeismicNarratorService {
     return SeismicNarratorService.instance;
   }
 
+  public getReferenceIds(): Record<NarratorLanguage, string> {
+    return { ...this.referenceIds };
+  }
+
   /**
    * Genera el audio TTS con Fish Audio API o devuelve buffer cacheado.
    * Si la API falla (ej. error 402 créditos agotados o timeout), retorna null
-   * para que el frontend use síntesis de voz Web Speech API con voz española neutra.
+   * para que el frontend use síntesis de voz Web Speech API.
    */
-  public async synthesizeSpeech(text: string): Promise<{ audioBuffer: Buffer | null; mimeType: string; cached: boolean }> {
+  public async synthesizeSpeech(text: string, language: string = 'es'): Promise<{ audioBuffer: Buffer | null; mimeType: string; cached: boolean }> {
     const cleanText = text.trim();
     if (!cleanText) {
       return { audioBuffer: null, mimeType: 'audio/mpeg', cached: false };
     }
 
-    const hash = crypto.createHash('md5').update(`${cleanText}_${this.referenceId}`).digest('hex');
+    const referenceId = this.referenceIds[language as NarratorLanguage];
+    if (!referenceId) {
+      return { audioBuffer: null, mimeType: 'audio/mpeg', cached: false };
+    }
+
+    const hash = crypto.createHash('md5').update(`${cleanText}_${referenceId}`).digest('hex');
     const cachedFilePath = path.join(this.cacheDir, `${hash}.mp3`);
 
     // 1. Revisar caché local en disco
@@ -84,7 +100,7 @@ export class SeismicNarratorService {
         },
         body: JSON.stringify({
           text: cleanText,
-          reference_id: this.referenceId,
+          reference_id: referenceId,
           format: 'mp3',
         }),
         signal: controller.signal,

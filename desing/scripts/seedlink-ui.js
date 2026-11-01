@@ -6,30 +6,56 @@
  */
 
 import { getIntensityTheme } from './monitor-engine.js';
+import { t, getLocale, formatEventDate } from './i18n.js';
+import { formatIntensity, getIntensityScale } from './display-settings.js';
+
+const SWARM_MOBILE_QUERY = window.matchMedia('(max-width: 768px)');
+
+const STATION_STATUS_KEYS = {
+  'Recibiendo': 'seedlink.statusReceiving',
+  'En línea': 'seedlink.statusOnline',
+  'Disparo STA/LTA': 'seedlink.statusTrigger',
+  'Sin datos': 'seedlink.statusNoData',
+  'Reposo': 'seedlink.statusIdle'
+};
+
+// Los valores de estado se comparan en español; la etiqueta solo se traduce al mostrarla.
+function stationStatusLabel(status) {
+  const key = STATION_STATUS_KEYS[status];
+  return key ? t(key) : status;
+}
+
+// Estados de conexión del pool: 'Done', 'Connecting', 'timed out' o texto del servidor.
+function serverStatusLabel(status) {
+  if (status === 'Done') return t('seedlink.statusConnected');
+  if (status && status.includes('timed out')) return t('seedlink.statusTimeout');
+  if (status === 'Connecting') return t('seedlink.statusConnecting');
+  return status || t('seedlink.statusWaiting');
+}
 
 export const DEFAULT_GUANACASTE_INTER_EVENT = {
-  id: 'eq-20260930155526-guanacaste-cr-inter',
-  displayId: 'IN01',
-  time: '2026-09-30T15:55:26.000Z',
-  timeEpoch: 1790783726000,
-  detectedAt: '2026-09-30T15:55:36.000Z',
-  latitude: 9.7343,
-  longitude: -86.5593,
-  lat: 9.7343,
-  lon: -86.5593,
-  depth: 11,
-  magnitude: 6.1,
-  mag: 6.1,
-  magnitudeType: 'Mw',
-  location: '93.9 km al Suroeste de Cuajiniquil de Guanacaste',
-  maxPga: 14.8,
-  maxIntensity: 6,
+  id: 'eq-usgs-us6000tymj',
+  displayId: 'TYMJ',
+  time: '2026-09-30T21:55:26.169Z',
+  timeEpoch: 1790805326169,
+  detectedAt: '2026-09-30T21:55:36.169Z',
+  latitude: 9.7526,
+  longitude: -86.5063,
+  lat: 9.7526,
+  lon: -86.5063,
+  depth: 8,
+  magnitude: 5.6,
+  mag: 5.6,
+  magnitudeType: 'MWW',
+  location: '94 km SW de Tamarindo, Costa Rica',
+  maxPga: 6.5,
+  maxIntensity: 5,
   stationCount: 0,
   stations: [],
   isInter: true,
   category: 'inter',
   status: 'CONFIRMED',
-  source: 'Sismo Internacional (USGS)',
+  source: 'USGS (Sismo Internacional)',
   saved: true,
   isLocked: true,
 };
@@ -189,6 +215,9 @@ export class SeedLinkUIManager {
     this.engine.onStationSelect = (station) => {
       this.openSwarmViewer(station);
     };
+    SWARM_MOBILE_QUERY.addEventListener('change', (e) => {
+      if (e.matches && this.activeStation) this.closeSwarmViewer();
+    });
   }
 
   initDomEvents() {
@@ -540,7 +569,7 @@ export class SeedLinkUIManager {
           ? 'status-badge-idle'
           : 'status-badge-nodata';
         elStatus.className = `status-pill-badge ${statusClass}`;
-        elStatus.innerHTML = `<span class="status-dot"></span> ${st.status}`;
+        elStatus.innerHTML = `<span class="status-dot"></span> ${stationStatusLabel(st.status)}`;
       }
       if (elDelay) elDelay.innerText = delayStr;
       if (elPga) elPga.innerText = pgaStr;
@@ -568,7 +597,7 @@ export class SeedLinkUIManager {
           ? 'server-status-timeout'
           : 'server-status-error';
         elStatus.className = `server-status-pill ${statusClass}`;
-        elStatus.innerText = s.status;
+        elStatus.innerText = serverStatusLabel(s.status);
       }
       if (elTelem) {
         elTelem.innerText = `${(s.packetsReceived || 0).toLocaleString()} pkts • ${s.bitrateKbps || 0} kbps`;
@@ -791,20 +820,21 @@ export class SeedLinkUIManager {
     const last = raw.slice(-1);
     
     let typeClass = 'chan-badge-bb';
-    let typeTitle = 'Sismómetro de Banda Ancha';
+    let typeTitle = t('seedlink.typeBroadband');
     let label = raw;
 
     if (prefix === 'HN' || prefix === 'EN' || prefix === 'BN' || raw.includes('ACC')) {
       typeClass = 'chan-badge-accel';
-      typeTitle = 'Acelerómetro de Movimiento Fuerte (m/s²)';
+      typeTitle = t('seedlink.typeStrong');
     } else if (prefix === 'EH' || prefix === 'SH') {
       typeClass = 'chan-badge-sp';
-      typeTitle = 'Geófono / Sensor de Periodo Corto (m/s)';
+      typeTitle = t('seedlink.typeShort');
     }
 
     const isZ = last === 'Z';
+    const orientText = isZ ? t('seedlink.orientVertical') : last;
     return `
-      <span class="chan-badge ${typeClass}" title="${label} — ${typeTitle} [Orientación ${isZ ? 'Vertical Z (Detección Onda P)' : last}]">
+      <span class="chan-badge ${typeClass}" title="${t('seedlink.chanTitle', { label, type: typeTitle, orient: orientText })}">
         ${isZ ? '<span class="chan-dot-z"></span>' : ''}
         ${label}
       </span>
@@ -923,7 +953,7 @@ export class SeedLinkUIManager {
           <td>
             <span class="status-pill-badge ${statusClass}" id="row-status-${st.code}">
               <span class="status-dot"></span>
-              ${st.status}
+              ${stationStatusLabel(st.status)}
             </span>
           </td>
           <td>
@@ -932,11 +962,11 @@ export class SeedLinkUIManager {
           <td>
             <div class="pga-cell-group">
               <span class="pga-num-txt" id="row-pga-${st.code}">${pgaStr}</span>
-              ${hasData && st.intensity > 0 ? `<span class="mmi-tag">MMI ${st.intensity}</span>` : ''}
+              ${hasData && st.intensity > 0 ? `<span class="mmi-tag">${getIntensityScale() === 'shindo' ? 'Shindo' : 'MMI'} ${formatIntensity(st.intensity)}</span>` : ''}
             </div>
           </td>
           <td style="text-align: right;">
-            <button class="btn-action-swarm" data-station="${st.code}" title="Ver oscilograma sísmico">
+            <button class="btn-action-swarm" data-station="${st.code}" title="${t('seedlink.viewSwarm')}">
               <span>〰️ Swarm</span>
             </button>
           </td>
@@ -1004,7 +1034,7 @@ export class SeedLinkUIManager {
         ? 'status-badge-idle'
         : 'status-badge-nodata';
       elStatus.className = `status-pill-badge ${statusClass}`;
-      elStatus.innerHTML = `<span class="status-dot"></span> ${st.status}`;
+      elStatus.innerHTML = `<span class="status-dot"></span> ${stationStatusLabel(st.status)}`;
     }
     if (elDelay) elDelay.innerText = delayStr;
     if (elPga) elPga.innerText = pgaStr;
@@ -1029,7 +1059,7 @@ export class SeedLinkUIManager {
       tbody.innerHTML = `
         <tr>
           <td colspan="6" class="table-empty-row">
-            Conectando al pool de 25 servidores de adquisición sísmica (Timeout 20s)...
+            ${t('seedlink.poolConnecting')}
           </td>
         </tr>`;
       return;
@@ -1054,23 +1084,19 @@ export class SeedLinkUIManager {
         ? 'server-status-timeout'
         : 'server-status-error';
 
-      const statusText = isDone
-        ? 'Conectado'
-        : isTimeout
-        ? 'Tiempo agotado'
-        : (s.status === 'Connecting' ? 'Conectando...' : (s.status || 'En espera'));
+      const statusText = serverStatusLabel(s.status);
 
       html += `
         <tr class="server-table-row ${isPrimary ? 'server-row-primary' : ''}">
           <td style="font-weight: 700; color: #ffffff;">
             <div style="display: flex; align-items: center; gap: 8px;">
-              ${isPrimary ? `<span class="primary-server-badge" title="Servidor Troncal Prioritario (SSN UNAM)">★ TRONCAL SSN</span>` : ''}
+              ${isPrimary ? `<span class="primary-server-badge" title="${t('seedlink.primaryServer')}">${t('seedlink.trunkBadge')}</span>` : ''}
               <span>${s.name}</span>
             </div>
           </td>
           <td style="font-family: monospace; color: #38bdf8; font-weight: 600; font-size: 11px;">
             <span style="display: inline-flex; align-items: center; gap: 4px; background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.25); border-radius: 4px; padding: 2px 6px;">
-              🔒 Enlace Privado
+              ${t('seedlink.privateLink')}
             </span>
           </td>
           <td style="font-family: monospace; color: #cbd5e1;">${s.port || 18000}</td>
@@ -1188,6 +1214,8 @@ export class SeedLinkUIManager {
   }
 
   openSwarmViewer(station) {
+    // El oscilograma (swarm) está desactivado en la vista móvil
+    if (SWARM_MOBILE_QUERY.matches) return;
     const isSameStation = this.activeStation && (this.activeStation.code === station.code);
     this.activeStation = station;
     if (!isSameStation) {
@@ -1205,10 +1233,10 @@ export class SeedLinkUIManager {
     const netPrefix = station.network || (isAm ? 'AM' : 'IG');
     const chan = (station.primaryChannel || (isAm ? 'EHZ' : 'BHZ')).toUpperCase();
     const chanType = (chan.startsWith('HN') || chan.startsWith('EN'))
-      ? 'Acelerómetro (m/s²)'
+      ? t('seedlink.chanAccel')
       : (chan.startsWith('EH') || chan.startsWith('SH') || isAm)
-      ? 'Geófono / Periodo Corto'
-      : 'Banda Ancha (m/s)';
+      ? t('seedlink.chanShort')
+      : t('seedlink.chanBroadband');
     const isZ = chan.endsWith('Z');
 
     const codeEl = document.getElementById('swarmStationCode');
@@ -1218,14 +1246,14 @@ export class SeedLinkUIManager {
     }
     if (subEl) {
       const serverTxt = station.serverSource && station.serverSource !== '—'
-        ? ` • Servidor: ${station.serverSource}`
-        : (isAm ? ' • Servidor: Nodo Dedicado AM' : '');
+        ? `${t('seedlink.serverPrefix')}${station.serverSource}`
+        : (isAm ? `${t('seedlink.serverPrefix')}${t('seedlink.amNode')}` : '');
       const stateTxt = station.state ? ` (${station.state})` : '';
       const sampleRate = station.sampleRate || (isAm ? 100 : 20);
       subEl.innerHTML = `
-        <span class="swarm-channel-pill"><span class="chan-dot-z"></span> Canal Activo: ${chan} (${chanType} - ${isZ ? 'Vertical Z' : 'Horizontal'})</span>
+        <span class="swarm-channel-pill"><span class="chan-dot-z"></span> ${t('seedlink.activeChannel', { chan, type: chanType, dir: isZ ? t('seedlink.vertical') : t('seedlink.horizontal') })}</span>
         <span>• ${sampleRate} sps • Lat: ${Number(station.lat).toFixed(3)}° • Lon: ${Number(station.lon).toFixed(3)}°${stateTxt}${serverTxt}</span>
-        <span style="display:inline-flex; align-items:center; gap:4px; margin-left:4px;">• Latencia: <span class="swarm-delay-badge" id="swarmSubDelay">—</span></span>
+        <span style="display:inline-flex; align-items:center; gap:4px; margin-left:4px;">• ${t('seedlink.latency')} <span class="swarm-delay-badge" id="swarmSubDelay">—</span></span>
       `;
     }
 
@@ -1243,7 +1271,7 @@ export class SeedLinkUIManager {
     const intEl = document.getElementById('swarmMetricInt');
     const ratioEl = document.getElementById('swarmMetricRatio');
     if (pgaEl) pgaEl.innerText = hasData ? (station.pgaStr || `${(station.pga || 0).toFixed(3)} gal`) : '—';
-    if (intEl) intEl.innerText = hasData ? `${station.intensity || 0}` : '—';
+    if (intEl) intEl.innerText = hasData ? (station.intensity > 0 ? formatIntensity(station.intensity) : '0') : '—';
     if (ratioEl) {
       ratioEl.innerText = hasData && station.staLtaRatio ? station.staLtaRatio.toFixed(2) : '—';
       ratioEl.style.color = '#e2e8f0';
@@ -1350,7 +1378,7 @@ export class SeedLinkUIManager {
     }
 
     if (pgaEl) pgaEl.innerText = msg.pgaStr || `${(msg.pga || msg.acceleration || 0).toFixed(3)} gal`;
-    if (intEl) intEl.innerText = `${msg.intensity || 0}`;
+    if (intEl) intEl.innerText = msg.intensity > 0 ? formatIntensity(msg.intensity) : '0';
     if (ratioEl && msg.staLta) {
       ratioEl.innerText = `${msg.staLta.ratio.toFixed(2)} ${msg.staLta.triggered ? '⚡ DISPARO' : ''}`;
       ratioEl.style.color = msg.staLta.triggered ? '#ef4444' : '#e2e8f0';
@@ -1419,8 +1447,8 @@ export class SeedLinkUIManager {
       const st = this.activeStation;
       const code = st ? `${st.network || 'AM'}.${st.code}` : '';
       const site = st ? (st.site || st.name || '') : '';
-      const srv = st && st.serverSource && st.serverSource !== '—' ? ` desde ${st.serverSource}` : '';
-      ctx.fillText(`Esperando señal en vivo de ${code} ${site ? `(${site})` : ''}${srv}...`, w / 2, h / 2);
+      const srv = st && st.serverSource && st.serverSource !== '—' ? t('seedlink.fromServer', { server: st.serverSource }) : '';
+      ctx.fillText(t('seedlink.waitingLive', { code, site: site ? ` (${site})` : '', server: srv }), w / 2, h / 2);
       return;
     }
 
@@ -1475,11 +1503,11 @@ export class SeedLinkUIManager {
     ctx.fillText(`+${currentScale.toFixed(3)} gal`, 8, 14);
     ctx.fillText(`-${currentScale.toFixed(3)} gal`, 8, h - 6);
     ctx.fillStyle = '#64748b';
-    ctx.fillText('0.000 gal (Línea Base)', 8, h / 2 - 4);
+    ctx.fillText(t('seedlink.baseline'), 8, h / 2 - 4);
 
     ctx.textAlign = 'right';
     ctx.fillStyle = '#4ade80';
-    ctx.fillText(`${pts.length} pts • FILTRO LOCAL (1 - 10 Hz) • EN VIVO`, w - 10, 14);
+    ctx.fillText(t('seedlink.liveFooter', { n: pts.length }), w - 10, 14);
   }
 
   renderStaLtaCanvas() {
@@ -1514,7 +1542,7 @@ export class SeedLinkUIManager {
     ctx.fillStyle = '#ef4444';
     ctx.font = '9px monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('Umbral Disparo: 3.5 STA/LTA (Onda P)', 6, Math.max(12, yThresh - 4));
+    ctx.fillText(t('seedlink.threshold'), 6, Math.max(12, yThresh - 4));
 
     const pts = this.waveformBuffer;
     if (!pts || pts.length < 2) return;
@@ -1646,7 +1674,7 @@ export class SeedLinkUIManager {
   handleEarthquakeCancelled(msg) {
     const eventId = msg?.eventId || msg?.id;
     const displayId = msg?.displayId || '';
-    const message = msg?.message || 'Sismo cancelado / desconfirmado por el operador';
+    const message = msg?.message || t('seedlink.cancelledDefault');
 
     console.log(`[SeedLinkUI] 🛑 SISMO CANCELADO: ID=${eventId} [${displayId}]. Reproduciendo desconfirmacion.mp3`);
 
@@ -1699,7 +1727,7 @@ export class SeedLinkUIManager {
     toast.innerHTML = `
       <span style="display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; background:rgba(245, 158, 11, 0.2); color:#fbbf24; font-weight:bold; font-size:12px;">✕</span>
       <div>
-        <strong style="color: #fbbf24;">Sismo Descartado</strong>
+        <strong style="color: #fbbf24;">${t('seedlink.discarded')}</strong>
         ${displayId ? `<span style="font-size: 10px; font-family: monospace; color: #94a3b8; margin-left: 6px;">#${displayId}</span>` : ''}
         <div style="font-size: 11px; color: #cbd5e1; margin-top: 2px;">${message}</div>
       </div>
@@ -1776,7 +1804,7 @@ export class SeedLinkUIManager {
         }
       } catch (_) {}
 
-      this.showUpdateReloadNotification('Actualizando monitor sísmico a la versión más reciente...');
+      this.showUpdateReloadNotification(t('seedlink.updatingSite'));
       setTimeout(() => {
         window.location.reload();
       }, 600);
@@ -1790,7 +1818,7 @@ export class SeedLinkUIManager {
     if (this.isReloadingDueToUpdate) return;
     this.isReloadingDueToUpdate = true;
     console.log(`[SeedLinkUI] 🔄 Orden de refresco recibida del servidor (${reason}). Actualizando sitio...`);
-    this.showUpdateReloadNotification('El servidor fue actualizado. Refrescando sitio...');
+    this.showUpdateReloadNotification(t('seedlink.serverUpdated'));
     setTimeout(() => {
       window.location.reload();
     }, 600);
@@ -1861,23 +1889,25 @@ export class SeedLinkUIManager {
       listEl.innerHTML = `
         <div class="history-empty-state" id="historyEmpty">
           <span style="font-size: 20px; opacity: 0.6;">📡</span>
-          <span>Sin eventos sísmicos registrados</span>
+          <span>${t('sidebar.noEvents')}</span>
         </div>
       `;
       return;
     }
 
-    const romanMap = ['—', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X'];
+    // Orden cronológico descendente (más reciente primero); no muta this.earthquakes
+    const eventEpoch = (e) => e.timeEpoch || Date.parse(e.time) || 0;
+    const sortedEvents = [...this.earthquakes].sort((a, b) => eventEpoch(b) - eventEpoch(a));
 
-    listEl.innerHTML = this.earthquakes
+    listEl.innerHTML = sortedEvents
       .map((ev) => {
         const intVal = Math.max(1, Math.min(10, Math.round(ev.maxIntensity || 1)));
-        const roman = romanMap[intVal] || 'I';
+        const roman = formatIntensity(intVal);
         const theme = getIntensityTheme(intVal);
 
         const d = ev.time ? new Date(ev.time) : new Date();
-        const dateStr = d.toLocaleDateString('es-MX', { month: 'short', day: 'numeric' });
-        const timeStr = d.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const dateStr = d.toLocaleDateString(getLocale(), { month: 'short', day: 'numeric' });
+        const timeStr = d.toLocaleTimeString(getLocale(), { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
         const isInter = Boolean(
           ev.isInter ||
@@ -1953,21 +1983,19 @@ export class SeedLinkUIManager {
       if (!this.earthquakes || this.earthquakes.length === 0) {
         mobileListEl.innerHTML = `
           <div style="color: #64748b; font-size: 11px; text-align: center; padding: 20px;">
-            Sin eventos sísmicos registrados
+            ${t('sidebar.noEvents')}
           </div>
         `;
       } else {
         const lastSavedId = this.engine?.state?.lastSavedEvent?.id;
-        mobileListEl.innerHTML = this.earthquakes.map((ev) => {
+        mobileListEl.innerHTML = sortedEvents.map((ev) => {
           const intVal = Math.max(1, Math.min(10, Math.round(ev.maxIntensity || 1)));
-          const roman = romanMap[intVal] || 'I';
+          const roman = formatIntensity(intVal);
           const theme = getIntensityTheme(intVal);
 
           const d = ev.time ? new Date(ev.time) : new Date();
-          const months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-          const dateStr = `${d.getDate()} de ${months[d.getMonth()]}`;
-          const pad = (n) => String(n).padStart(2, '0');
-          const timeStr = `${pad(d.getHours())}:${pad(d.getMinutes())} hrs`;
+          const dateStr = formatEventDate(d);
+          const timeStr = '';
 
           const isInter = Boolean(
             ev.isInter ||
@@ -1985,7 +2013,7 @@ export class SeedLinkUIManager {
               <div class="mob-hist-info">
                 <div class="mob-hist-top-line">
                   <span class="mob-hist-title" title="${ev.location}">${ev.location}</span>
-                  ${isSelected ? '<span class="mob-btn-map-active">Ver en mapa ▶</span>' : ''}
+                  ${isSelected ? `<span class="mob-btn-map-active">${t('map.viewOnMap')}</span>` : ''}
                 </div>
                 <div class="mob-hist-time">${dateStr} ${timeStr}</div>
                 <div class="mob-hist-metrics">
@@ -2055,7 +2083,7 @@ export class SeedLinkUIManager {
           location: 'Costa de Guerrero (Cerca de Acapulco)',
           maxIntensity: 6,
           stationCount: 9,
-          source: 'Detección Simulada (Algoritmo 3 Etapas)',
+          source: t('seedlink.simDetection'),
         };
         this.handleEarthquakeDetected(fallbackEvent);
       });
@@ -2064,9 +2092,9 @@ export class SeedLinkUIManager {
   showSismosMpNotification(data) {
     if (!data) return;
     const code = data.code || 'wawa';
-    const message = data.message || 'sismosMP activo';
+    const message = data.message || t('seedlink.sismosmpDefault');
     const source = data.source || 'SismosMP';
-    const timeStr = data.timeStr || new Date().toLocaleTimeString('es-MX');
+    const timeStr = data.timeStr || new Date().toLocaleTimeString(getLocale());
 
     // 1. Mostrar en la consola del navegador
     console.log(

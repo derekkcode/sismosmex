@@ -4,6 +4,7 @@
  * ============================================================================
  */
 import { UPDATES_CONFIG } from './updates-config.js';
+import { t, getLanguage } from '/desing/scripts/i18n.js';
 
 export class UpdatesUIManager {
   constructor() {
@@ -58,6 +59,10 @@ export class UpdatesUIManager {
       if (e.key === 'Escape' || e.key === 'Enter') this.handleDismiss();
       if (e.key === 'ArrowLeft') this.prevPage();
       if (e.key === 'ArrowRight') this.nextPage();
+    });
+
+    window.addEventListener('sismosmex:languagechange', () => {
+      if (this.isOpen()) this.render();
     });
   }
 
@@ -117,7 +122,7 @@ export class UpdatesUIManager {
 
     // Título superior
     if (this.modalTitle) {
-      this.modalTitle.innerText = pageData.title || UPDATES_CONFIG.title || 'Actualizaciones';
+      this.modalTitle.innerText = t('updates.pageTitle');
     }
 
     // Estado del checkbox sincronizado con localStorage
@@ -130,9 +135,9 @@ export class UpdatesUIManager {
       if (this.pages.length > 1) {
         this.pageControls.style.display = 'flex';
         this.pageControls.innerHTML = `
-          <button type="button" class="updates-page-nav-arrow" id="btnPagePrev" ${this.currentPageIndex === 0 ? 'disabled' : ''} title="Página anterior">‹</button>
+          <button type="button" class="updates-page-nav-arrow" id="btnPagePrev" ${this.currentPageIndex === 0 ? 'disabled' : ''} title="${t('updates.prevPage')}">‹</button>
           <span class="updates-page-num">${this.currentPageIndex + 1} / ${this.pages.length}</span>
-          <button type="button" class="updates-page-nav-arrow" id="btnPageNext" ${this.currentPageIndex === this.pages.length - 1 ? 'disabled' : ''} title="Siguiente página">›</button>
+          <button type="button" class="updates-page-nav-arrow" id="btnPageNext" ${this.currentPageIndex === this.pages.length - 1 ? 'disabled' : ''} title="${t('updates.nextPage')}">›</button>
         `;
 
         document.getElementById('btnPagePrev')?.addEventListener('click', () => this.prevPage());
@@ -146,12 +151,13 @@ export class UpdatesUIManager {
     if (this.modalBody) {
       const versions = Array.isArray(pageData.versions) ? pageData.versions : [];
       if (versions.length === 0) {
-        this.modalBody.innerHTML = '<div style="color: #94a3b8; font-size: 13px; text-align: center; padding: 20px;">Sin registros para esta página.</div>';
+        this.modalBody.innerHTML = `<div style="color: #94a3b8; font-size: 13px; text-align: center; padding: 20px;">${t('updates.empty')}</div>`;
         return;
       }
 
       this.modalBody.innerHTML = versions.map((v) => {
-        const changes = Array.isArray(v.changes) ? v.changes : [];
+        const lang = getLanguage();
+        const changes = (v.translations && v.translations[lang]) || (Array.isArray(v.changes) ? v.changes : []);
         const changesHtml = changes.map(ch => `<li class="update-bullet-item"><span class="update-bullet-dot">•</span><span class="update-bullet-text">${ch}</span></li>`).join('');
 
         return `

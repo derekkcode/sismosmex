@@ -12,10 +12,17 @@
  * - Prioridad 2: Síntesis robótica nativa Web Speech API (Voz en español neutra/robótica)
  */
 
+import { t, getLanguage, getLocale } from './i18n.js';
+
+// Idiomas con voz Fish Audio en el servidor; el resto usa la voz del navegador
+const FISH_AUDIO_LANGUAGES = ['es', 'en', 'ja'];
+
 export class SeismicNarratorClient {
   constructor(options = {}) {
     this.enabled = true;
     this.volume = 1.0;
+    this.rate = 0.95;
+    this.voiceName = '';
     this.isSpeaking = false;
     this.queue = [];
     this.audioElement = new Audio();
@@ -35,23 +42,66 @@ export class SeismicNarratorClient {
       }
     } catch (_) {}
 
+    // Preferencias de voz guardadas (velocidad, volumen y voz elegida)
+    try {
+      const rate = parseFloat(localStorage.getItem('sismosmex_narrator_rate'));
+      if (!Number.isNaN(rate)) this.rate = Math.min(1.5, Math.max(0.5, rate));
+      const volume = parseFloat(localStorage.getItem('sismosmex_narrator_volume'));
+      if (!Number.isNaN(volume)) this.volume = Math.min(1, Math.max(0, volume));
+      this.voiceName = localStorage.getItem('sismosmex_narrator_voice') || '';
+    } catch (_) {}
+
     this.initWebSpeech();
   }
 
   initWebSpeech() {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-    const findVoice = () => {
-      const voices = window.speechSynthesis.getVoices();
-      // Buscar voz mexicana, española o neutra
-      this.currentVoice = voices.find(v => v.lang === 'es-MX') ||
-                          voices.find(v => v.lang.startsWith('es-')) ||
-                          voices.find(v => v.lang.includes('es')) ||
-                          null;
-    };
-    findVoice();
-    if (window.speechSynthesis.onvoiceschanged !== undefined) {
-      window.speechSynthesis.onvoiceschanged = findVoice;
+    // Algunos navegadores cargan las voces de forma asíncrona
+    window.speechSynthesis.getVoices();
+  }
+
+  /** Voces del navegador que coinciden con el idioma activo */
+  getVoicesForLanguage() {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return [];
+    const prefix = getLanguage();
+    return window.speechSynthesis.getVoices().filter((v) => (v.lang || '').toLowerCase().startsWith(prefix));
+  }
+
+  /** Voz elegida por el usuario o, si no hay, la mejor del idioma activo */
+  resolveVoice() {
+    const voices = this.getVoicesForLanguage();
+    if (this.voiceName) {
+      const chosen = voices.find((v) => v.name === this.voiceName);
+      if (chosen) return chosen;
     }
+    const locale = getLocale().toLowerCase();
+    return voices.find((v) => v.lang.toLowerCase() === locale) || voices[0] || null;
+  }
+
+  setVoiceName(name) {
+    this.voiceName = name || '';
+    try {
+      localStorage.setItem('sismosmex_narrator_voice', this.voiceName);
+    } catch (_) {}
+  }
+
+  setRate(value) {
+    this.rate = Math.min(1.5, Math.max(0.5, Number(value)));
+    try {
+      localStorage.setItem('sismosmex_narrator_rate', String(this.rate));
+    } catch (_) {}
+  }
+
+  setVolume(value) {
+    this.volume = Math.min(1, Math.max(0, Number(value)));
+    if (this.audioElement) this.audioElement.volume = this.volume;
+    try {
+      localStorage.setItem('sismosmex_narrator_volume', String(this.volume));
+    } catch (_) {}
+  }
+
+  testVoice() {
+    this.speak(t('narr.test'), { category: 'test', urgent: true });
   }
 
   toggle() {
@@ -162,11 +212,17 @@ export class SeismicNarratorClient {
 
   speakSingleItem(text, options = {}) {
     return new Promise((resolve) => {
+      // Fish Audio tiene voz para español, inglés y japonés; el resto usa la voz del navegador
+      const language = getLanguage();
+      if (!FISH_AUDIO_LANGUAGES.includes(language)) {
+        this.fallbackWebSpeech(text, resolve);
+        return;
+      }
       // 1. Intentar Fish Audio API a través de nuestro endpoint server
       fetch('/api/narrator/speak', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, lang: language }),
       })
         .then(async (resp) => {
           const contentType = resp.headers.get('content-type') || '';
@@ -209,11 +265,12 @@ export class SeismicNarratorClient {
     try {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'es-MX';
-      if (this.currentVoice) {
-        utterance.voice = this.currentVoice;
+      utterance.lang = getLocale();
+      const voice = this.resolveVoice();
+      if (voice) {
+        utterance.voice = voice;
       }
-      utterance.rate = 0.95; // Cadencia robótica clara y metódica
+      utterance.rate = this.rate; // Cadencia robótica clara y metódica (ajustable en Ajustes)
       utterance.pitch = 0.95; // Tono serio y profesional
       utterance.volume = this.volume;
 
@@ -277,20 +334,20 @@ export class SeismicNarratorClient {
 
     let phrase = '';
     if (full.includes('guerrero')) {
-      phrase = 'Costa de Guerrero: vibración detectada.';
+      phrase = t('narr.trigger.guerrero');
     } else if (full.includes('oaxaca')) {
-      phrase = 'Oaxaca, región costera: movimiento detectado en estación remota.';
+      phrase = t('narr.trigger.oaxaca');
     } else if (full.includes('michoac')) {
-      phrase = 'Michoacán: señal sísmica registrada en la red local.';
+      phrase = t('narr.trigger.michoacan');
     } else if (full.includes('chiapas')) {
-      phrase = 'Chiapas: actividad sísmica detectada en estación de monitoreo.';
+      phrase = t('narr.trigger.chiapas');
     } else if (full.includes('jalisco') || full.includes('colima')) {
-      phrase = 'Colima y Jalisco: vibración detectada en sensores costeros.';
+      phrase = t('narr.trigger.colimaJalisco');
     } else if (full.includes('puebla') || full.includes('morelos')) {
-      phrase = 'Región centro: vibración detectada en la red local.';
+      phrase = t('narr.trigger.central');
     } else {
-      const regionLabel = station.state || name || 'costa del Pacífico';
-      phrase = `Aviso: Actividad inusual detectada en el sector ${regionLabel}.`;
+      const regionLabel = station.state || name || t('narr.trigger.defaultRegion');
+      phrase = t('narr.trigger.unusual', { region: regionLabel });
     }
 
     this.speak(phrase, { category: 'trigger', urgent: false });
@@ -301,15 +358,15 @@ export class SeismicNarratorClient {
    */
   announceEarlyAlert(options = {}) {
     if (!this.enabled) return;
-    const zonas = options.estados || 'Guerrero, Michoacán y Valle de México';
+    const zonas = options.estados || t('narr.early.defaultZones');
     const seconds = options.seconds;
 
     let phrase = '';
     if (seconds && seconds > 0) {
       const secWord = this.numberToWord(seconds);
-      phrase = `Alerta sísmica activada. Zonas en prevención: ${zonas}. Tiempo estimado para la llegada de ondas principales a la región centro: ${secWord} segundos.`;
+      phrase = t('narr.early.withTime', { zones: zonas, seconds: secWord });
     } else {
-      phrase = `Aviso de alerta sísmica. Zonas en prevención: ${zonas}. Prepárense ante la llegada de movimiento fuerte. Mantenga la calma y ubíquese en zona de seguridad.`;
+      phrase = t('narr.early.noTime', { zones: zonas });
     }
 
     this.speak(phrase, { category: 'alerta_temprana', urgent: true });
@@ -333,20 +390,20 @@ export class SeismicNarratorClient {
     }
 
     const mag = Number(event.magnitude || event.mag || 0).toFixed(1);
-    const loc = event.location || 'México';
+    const loc = event.location || t('narr.bulletin.defaultLoc');
     const depth = Math.round(event.depth || 15);
     const reportNum = event.reportNumber || 1;
     const isUpdate = reportNum > 1;
 
     let phrase = '';
     if (isUpdate) {
-      phrase = `Actualización de sismo. Epicentro recalculado: ${loc}. Magnitud ajustada: ${mag}. Profundidad focal: ${depth} kilómetros.`;
+      phrase = t('narr.bulletin.update', { loc, mag, depth });
     } else {
       const now = new Date();
       const h = now.getHours();
       const m = now.getMinutes();
-      const timeStr = `A las ${this.numberToWord(h)} horas con ${this.numberToWord(m)} minutos`;
-      phrase = `Información sísmica. ${timeStr}, se registró un sismo. Epicentro: ${loc}. Profundidad focal: ${depth} kilómetros. Magnitud estimada: ${mag}.`;
+      const timeStr = t('narr.bulletin.time', { h: this.numberToWord(h), m: this.numberToWord(m) });
+      phrase = t('narr.bulletin.new', { time: timeStr, loc, depth, mag });
     }
 
     this.speak(phrase, { category: 'boletin', urgent: false });
@@ -358,10 +415,10 @@ export class SeismicNarratorClient {
   announceInternationalEarthquake(event) {
     if (!this.enabled || !event) return;
     const mag = Number(event.magnitude || event.mag || 0).toFixed(1);
-    const loc = event.location || 'el continente americano';
+    const loc = event.location || t('narr.inter.defaultLoc');
     const depth = Math.round(event.depth || 10);
 
-    const phrase = `Boletín internacional. Se registró un sismo en el continente americano. Ubicación: ${loc}. Magnitud: ${mag}. Profundidad focal: ${depth} kilómetros. Sin riesgo para la red nacional.`;
+    const phrase = t('narr.inter.body', { loc, mag, depth });
     this.speak(phrase, { category: 'boletin_inter', urgent: false });
   }
 
@@ -371,32 +428,35 @@ export class SeismicNarratorClient {
   announceIntensity(intensityName, regions = []) {
     if (!this.enabled) return;
     let phrase = '';
+    const level = intensityName.toLowerCase();
     if (regions && regions.length > 0) {
-      phrase = `Aviso de intensidad. Se observó intensidad ${intensityName.toLowerCase()} en ${regions.join(', ')}.`;
+      phrase = t('narr.intensity.regions', { level, regions: regions.join(', ') });
     } else {
-      phrase = `Aviso de intensidad. Se observó intensidad ${intensityName.toLowerCase()}.`;
+      phrase = t('narr.intensity.plain', { level });
     }
     this.speak(phrase, { category: 'intensidad', urgent: false });
   }
 
-  announceTsunamiRisk(hasRisk, region = 'costas del Pacífico central') {
+  announceTsunamiRisk(hasRisk, region = null) {
     if (!this.enabled) return;
     let phrase = '';
     if (hasRisk) {
-      phrase = `Atención: Se ha emitido un aviso preventivo de maremoto para las ${region}.`;
+      phrase = t('narr.tsunami.alert', { region: region || t('narr.tsunami.defaultRegion') });
     } else {
-      phrase = `Este sismo no representa riesgo de tsunami para el litoral mexicano.`;
+      phrase = t('narr.tsunami.none');
     }
     this.speak(phrase, { category: 'tsunami', urgent: true });
   }
 
   announceNoNews() {
     if (!this.enabled) return;
-    const phrase = 'Actualización del sistema de monitoreo sísmico. Sin novedades reportadas en las últimas dos horas.';
+    const phrase = t('narr.noNews');
     this.speak(phrase, { category: 'no_news', urgent: false });
   }
 
   numberToWord(n) {
+    // Fuera de español se leen los números como cifras
+    if (getLanguage() !== 'es') return String(n);
     const words = [
       'cero', 'un', 'dos', 'tres', 'cuatro', 'cinco', 'seis', 'siete', 'ocho', 'nueve', 'diez',
       'once', 'doce', 'trece', 'catorce', 'quince', 'dieciséis', 'diecisiete', 'dieciocho', 'diecinueve', 'veinte',

@@ -14,6 +14,8 @@ import { SeismicDspEngine, ProcessedPacketResult, isRaspberryShake, DEFAULT_STA_
 import { MiniSeedRecord } from './miniseed';
 import { SeismicDetectorEngine, generateDisplayId } from './detector';
 import { NoiseCalibrator } from './noise-calibrator';
+import { StationReceptionQc } from './station-qc';
+import { OnsetBuffer } from './pick-refiner';
 
 export interface StationMetadata {
   network: string;
@@ -45,7 +47,7 @@ export interface LiveStationState {
   amp: number;
   ampUnit: string;
   ampStr: string;
-  status: 'Recibiendo' | 'En línea' | 'Disparo STA/LTA' | 'Reposo' | 'Sin datos';
+  status: 'Recibiendo' | 'En línea' | 'Disparo STA/LTA' | 'Reposo' | 'Sin datos' | 'Recepción degradada' | 'Recuperando traza';
   delay: string;
   delaySec: number;
   pga: number;
@@ -85,6 +87,8 @@ export class SeedLinkService {
   private stationsCatalog: Map<string, StationMetadata> = new Map();
   private liveStates: Map<string, LiveStationState> = new Map();
   private streamLastPacketTime: Map<string, number> = new Map();
+  private readonly receptionQc = new StationReceptionQc();
+  private readonly onsetBuffers: Map<string, OnsetBuffer> = new Map();
 
   // Identificador único de inicio de sesión del servidor y fecha de arranque
   public readonly serverBootId: string = `boot_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
@@ -510,7 +514,38 @@ export class SeedLinkService {
     // Item 15: Paquetes con más de 180s (3 minutos) de retraso corresponden a backfill / reconexión
     // No deben evaluarse como disparos en tiempo real
     const isBackfill = delaySec > 180;
-    const effectiveTriggered = isBackfill ? false : processed.staLta.triggered;
+
+    // Control de recepción: huecos, muestras planas o saltos de reloj bloquean el flujo para el detector
+    const reception = this.receptionQc.observe({
+      streamKey,
+      packetStartMs: packetTimeMs,
+      packetEndMs,
+      prevEndMs: lastPacketEndMs,
+      delaySec,
+      samples: record.samples,
+    });
+    if (reception.transition) {
+      const detail = reception.reasons.length > 0 ? `: ${reception.reasons.join('; ')}` : '';
+      console.warn(`[SeedLinkService] Recepción ${reception.gate === 'BLOCKED' ? 'bloqueada' : 'restablecida'} en ${streamKey}${detail}`);
+    }
+    const receptionBlocked = reception.gate === 'BLOCKED';
+    const effectiveTriggered = isBackfill || receptionBlocked ? false : processed.staLta.triggered;
+
+    // Refinar la llegada P con AIC sobre la traza vertical; si el AIC no es confiable se usa el cruce STA/LTA
+    let refinedPickIso: string | null = null;
+    if (record.channel.toUpperCase().endsWith('Z')) {
+      let onsetBuffer = this.onsetBuffers.get(streamKey);
+      if (!onsetBuffer) {
+        onsetBuffer = new OnsetBuffer();
+        this.onsetBuffers.set(streamKey, onsetBuffer);
+      }
+      onsetBuffer.append(packetTimeMs, sampleRate, record.samples);
+      const crossingMs = processed.staLta.triggerTimeIso ? new Date(processed.staLta.triggerTimeIso).getTime() : NaN;
+      if (processed.staLta.triggered && !isBackfill && !receptionBlocked && Number.isFinite(crossingMs)) {
+        const pickMs = onsetBuffer.refineOnset(crossingMs);
+        if (pickMs !== null) refinedPickIso = new Date(pickMs).toISOString();
+      }
+    }
 
     // Amplitud máxima en esta trama
     let maxAmp = 0;
@@ -536,7 +571,7 @@ export class SeedLinkService {
         amp: processed.amplitudePhysical,
         ampUnit: processed.amplitudeUnit,
         ampStr: processed.amplitudeStr,
-        status: effectiveTriggered ? 'Disparo STA/LTA' : (isBackfill ? 'Recuperando traza' : 'Recibiendo'),
+        status: effectiveTriggered ? 'Disparo STA/LTA' : (receptionBlocked ? 'Recepción degradada' : (isBackfill ? 'Recuperando traza' : 'Recibiendo')),
         delay: delayStr,
         delaySec,
         pga: processed.pga,
@@ -568,7 +603,7 @@ export class SeedLinkService {
       state.amp = processed.amplitudePhysical;
       state.ampUnit = processed.amplitudeUnit;
       state.ampStr = processed.amplitudeStr;
-      state.status = effectiveTriggered ? 'Disparo STA/LTA' : (isBackfill ? 'Recuperando traza' : 'Recibiendo');
+      state.status = effectiveTriggered ? 'Disparo STA/LTA' : (receptionBlocked ? 'Recepción degradada' : (isBackfill ? 'Recuperando traza' : 'Recibiendo'));
       state.delay = delayStr;
       state.delaySec = delaySec;
       state.pga = processed.pga;
@@ -586,7 +621,7 @@ export class SeedLinkService {
 
     // Solo alimentar el detector sismológico con datos en tiempo real (< 180s de delay)
     // Se procesan todos los componentes reales; los canales verticales fijan tP y los horizontales aportan PGA máximo
-    if (!isBackfill) {
+    if (!isBackfill && !receptionBlocked) {
       this.detector.processStationTelemetry({
         station: cleanStation,
         network: state.network,
@@ -607,11 +642,12 @@ export class SeedLinkService {
         triggered: processed.staLta.triggered,
         triggerSampleIndex: processed.staLta.triggerSampleIndex,
         triggerTimeIso: processed.staLta.triggerTimeIso,
+        refinedPickIso,
         minPgaThreshold: processed.staLta.minPgaGal,
         noiseClass: processed.noise.noiseClass,
       });
     } else {
-      // Para tramas de backfill histórico (> 180s de retraso), limpiar cualquier disparo retenido
+      // Backfill histórico (> 180s de retraso) o flujo con recepción bloqueada: limpiar cualquier disparo retenido
       this.detector.clearStationTrigger(cleanStation);
     }
 

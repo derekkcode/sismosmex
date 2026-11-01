@@ -5,8 +5,10 @@
  */
 
 import { SeismicAudioManager } from '/desing/scripts/audio-manager.js';
+import { getLocale, t } from '/desing/scripts/i18n.js';
+import { formatIntensity, getAutoZoomEnabled, getIntensityScale } from '/desing/scripts/display-settings.js';
 
-export const MERCALLI_ROMAN = ["0", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
+export const MERCALLI_ROMAN = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];
 
 /**
  * Relación continua de Intensidad Mercalli Modificada (MMI) Wald et al. (1999) (Item 25)
@@ -142,7 +144,7 @@ export class SeismicMonitorEngine {
     // Cámara interactiva (Pan & Zoom con FlyTo suave)
     this.panX = 0;
     this.panY = 0;
-    this.zoom = 1.0;
+    this.zoom = this.getDefaultZoom();
     this.isDragging = false;
     this.lastMouseX = 0;
     this.lastMouseY = 0;
@@ -150,6 +152,16 @@ export class SeismicMonitorEngine {
 
     // Animación de cámara suave (FlyTo)
     this.cameraAnim = null;
+
+    // Zoom automático que sigue la actividad sísmica (se activa/desactiva en Ajustes)
+    this.autoZoom = {
+      lastCheck: 0,
+      lastRetarget: 0,
+      lastCandidateAt: 0,
+      targetCode: null,
+      engaged: false,
+      userPausedUntil: 0,
+    };
 
     // Red de estaciones sísmicas y acelerográficas
     this.stations = [];
@@ -252,7 +264,7 @@ export class SeismicMonitorEngine {
               } else {
                 this.stations.push({
                   network: st.network || 'IG',
-                  networkName: st.networkName || (st.network === 'GI' ? 'INSIVUMEH (Guatemala)' : st.network === 'HN' ? 'Red Sísmica de Honduras' : 'Servicio Sismológico Nacional (SSN - UNAM)'),
+                  networkName: st.networkName || (st.network === 'GI' ? 'INSIVUMEH (Guatemala)' : st.network === 'HN' ? t('net.honduras') : `${t('net.nationalSsn')} (SSN - UNAM)`),
                   code: st.code,
                   fullCode: st.fullCode || `${st.network || 'IG'}.${st.code}`,
                   site: st.site || st.name || st.code,
@@ -413,8 +425,8 @@ export class SeismicMonitorEngine {
        this.state.lastSavedEvent.category === 'inter' ||
        (this.state.lastSavedEvent.source && (this.state.lastSavedEvent.source.toLowerCase().includes('inter') || this.state.lastSavedEvent.source.toLowerCase().includes('usgs'))))
     );
-    // Bloquear zoom máximo en 1.8x para eventos nacionales/regionales y permitir hasta 10.0x para sismos internacionales
-    const maxZoomLimit = isInterEvent ? 10.0 : 1.8;
+    // Zoom máximo 4x para eventos nacionales/regionales y 10x para sismos internacionales
+    const maxZoomLimit = isInterEvent ? 10.0 : 4.0;
     const oldZoom = this.zoom;
     const newZoom = Math.max(0.95, Math.min(maxZoomLimit, oldZoom * factor));
     if (newZoom === oldZoom) return;
@@ -443,8 +455,12 @@ export class SeismicMonitorEngine {
     this.zoomAt(0.8, this.width / 2, this.height / 2);
   }
 
+  getDefaultZoom() {
+    return window.matchMedia('(max-width: 768px)').matches ? 1.3 : 1.0;
+  }
+
   recenter() {
-    this.zoom = 1.0;
+    this.zoom = this.getDefaultZoom();
     this.panX = 0;
     this.panY = 0;
     this.clampPan();
@@ -540,6 +556,7 @@ export class SeismicMonitorEngine {
       this.lastMouseY = e.clientY;
       this.canvas.style.cursor = "grabbing";
       this.cameraAnim = null; // Interrumpir flyTo si el usuario arrastra
+      this.markUserCameraInteraction();
     });
 
     window.addEventListener("mousemove", (e) => {
@@ -575,6 +592,7 @@ export class SeismicMonitorEngine {
     this.canvas.addEventListener("wheel", (e) => {
       e.preventDefault();
       this.cameraAnim = null;
+      this.markUserCameraInteraction();
       const rect = this.canvas.getBoundingClientRect();
       const cursorX = e.clientX - rect.left;
       const cursorY = e.clientY - rect.top;
@@ -584,6 +602,7 @@ export class SeismicMonitorEngine {
 
     this.canvas.addEventListener("touchstart", (e) => {
       this.cameraAnim = null;
+      this.markUserCameraInteraction();
       if (e.touches.length === 1) {
         this.isDragging = true;
         this.lastMouseX = e.touches[0].clientX;
@@ -811,13 +830,13 @@ export class SeismicMonitorEngine {
     // RESOLUCIÓN DE REGIONES DE JAPÓN (Tohoku, Kanto, Morioka, Sendai, etc.)
     // =========================================================================
     if (lon > 120 && lon < 150 && lat > 28 && lat < 48) {
-      if (lat >= 39.2 && lat <= 40.4 && lon >= 140.7 && lon <= 142.2) return 'Morioka, Prefectura de Iwate (Japón)';
-      if (lat >= 37.8 && lat < 39.2 && lon >= 140.6 && lon <= 142.1) return 'Sendai / Costa de Miyagi (Japón)';
-      if (lat >= 36.6 && lat < 37.8 && lon >= 139.8 && lon <= 141.5) return 'Fukushima (Japón)';
-      if (lat >= 35.0 && lat < 36.6 && lon >= 138.8 && lon <= 140.8) return 'Tokyo / Región de Kanto (Japón)';
-      if (lat >= 39.0 && lat <= 40.5 && lon >= 139.8 && lon < 140.7) return 'Akita / Costa Oeste de Tohoku (Japón)';
-      if (lat >= 40.4 && lon >= 140.0 && lon <= 141.8) return 'Aomori / Norte de Tohoku (Japón)';
-      return 'Costa Este de Tohoku (Japón)';
+      if (lat >= 39.2 && lat <= 40.4 && lon >= 140.7 && lon <= 142.2) return t('geo.tsunami.morioka');
+      if (lat >= 37.8 && lat < 39.2 && lon >= 140.6 && lon <= 142.1) return t('geo.tsunami.sendai');
+      if (lat >= 36.6 && lat < 37.8 && lon >= 139.8 && lon <= 141.5) return t('geo.tsunami.fukushima');
+      if (lat >= 35.0 && lat < 36.6 && lon >= 138.8 && lon <= 140.8) return t('geo.tsunami.kanto');
+      if (lat >= 39.0 && lat <= 40.5 && lon >= 139.8 && lon < 140.7) return t('geo.tsunami.akita');
+      if (lat >= 40.4 && lon >= 140.0 && lon <= 141.8) return t('geo.tsunami.aomori');
+      return t('geo.tsunami.tohokuEast');
     }
 
     // =========================================================================
@@ -826,19 +845,19 @@ export class SeismicMonitorEngine {
     // fuera de región / internacional en vez de forzarla a una ciudad mexicana.
     // =========================================================================
     if (lat < 13.5 && lon > -87.8) {
-      return 'Región de Nicaragua / Centroamérica (Fuera de cobertura nacional)';
+      return t('geo.centam.nicaragua');
     }
     if (lat < 13.8 && lon >= -90.5 && lon <= -87.5) {
-      return 'Región de El Salvador / Centroamérica (Fuera de cobertura nacional)';
+      return t('geo.centam.elsalvador');
     }
     if (lat < 11.5 && lon > -86.0) {
-      return 'Región de Costa Rica (Fuera de cobertura nacional)';
+      return t('geo.centam.costarica');
     }
     if (lat < 14.2 && lon < -90.0) {
-      return 'Región de Guatemala / Centroamérica (Fuera de cobertura nacional)';
+      return t('geo.centam.guatemala');
     }
     if (lat > 33.2) {
-      return 'Frontera Norte / EE.UU. (Fuera de cobertura nacional)';
+      return t('geo.northBorder');
     }
     if (lon < -119.5 || lon > -85.5) {
       return 'Océano / Fuera de territorio nacional';
@@ -965,7 +984,7 @@ export class SeismicMonitorEngine {
     }
     const depth = Number(eventData.depth ?? 15);
     const location = eventData.location || this.resolveMexicanLocation(lat, lon);
-    const timeStr = eventData.timeStr || (eventData.time ? new Date(eventData.time).toLocaleTimeString('es-MX') : "Reciente");
+    const timeStr = eventData.timeStr || (eventData.time ? new Date(eventData.time).toLocaleTimeString(getLocale()) : "Reciente");
     const intVal = eventData.maxIntensity || (mag >= 7.5 ? 9 : mag >= 6.8 ? 8 : mag >= 6.0 ? 7 : mag >= 5.2 ? 5 : mag >= 4.2 ? 4 : mag >= 3.0 ? 2 : 1);
 
     const initialOffset = Math.max(0, initialElapsedMs);
@@ -1488,6 +1507,7 @@ export class SeismicMonitorEngine {
       const dt = Math.min((currentTime - this.lastFrameTime) / 1000, 0.1);
       this.lastFrameTime = currentTime;
 
+      this.updateAutoZoom(currentTime);
       this.updateCameraAnimation(currentTime);
       this.updateSimulation(dt);
       this.render();
@@ -1503,6 +1523,67 @@ export class SeismicMonitorEngine {
       this.animationFrameId = null;
     }
     window.removeEventListener("resize", this.resize);
+  }
+
+  /** Pausa el zoom automático unos segundos tras una interacción manual del usuario */
+  markUserCameraInteraction() {
+    this.autoZoom.userPausedUntil = performance.now() + 15000;
+  }
+
+  /**
+   * Zoom automático: sigue la estación con aceleración anormal más fuerte (zoom parcial).
+   * Si no hay actividad durante 20 s y no hay sismo activo, regresa a la vista por defecto.
+   */
+  updateAutoZoom(now) {
+    const az = this.autoZoom;
+    if (!getAutoZoomEnabled()) {
+      if (az.engaged) this.returnToDefaultView();
+      return;
+    }
+    if (now - az.lastCheck < 500) return;
+    az.lastCheck = now;
+    if (now < az.userPausedUntil) return;
+    // No interrumpir un encuadre de evento en curso
+    if (this.cameraAnim && this.cameraAnim.source !== 'auto') return;
+
+    let best = null;
+    for (const st of this.stations) {
+      if (!st.autoZoomActiveAt || now - st.autoZoomActiveAt > 3000) continue;
+      if (typeof st.lat !== 'number' || typeof st.lon !== 'number') continue;
+      if (!best || st.pga > best.pga) best = st;
+    }
+
+    if (best) {
+      az.lastCandidateAt = now;
+      if (best.code !== az.targetCode && now - az.lastRetarget >= 3000) {
+        this.smoothFlyTo(best.lat, best.lon, 1.6, 900);
+        if (this.cameraAnim) this.cameraAnim.source = 'auto';
+        az.targetCode = best.code;
+        az.lastRetarget = now;
+        az.engaged = true;
+      }
+      return;
+    }
+
+    if (az.engaged && now - az.lastCandidateAt > 20000 && !this.state.activeEvent) {
+      this.returnToDefaultView();
+    }
+  }
+
+  returnToDefaultView() {
+    this.autoZoom.engaged = false;
+    this.autoZoom.targetCode = null;
+    this.cameraAnim = {
+      startPanX: this.panX,
+      startPanY: this.panY,
+      startZoom: this.zoom,
+      targetPanX: 0,
+      targetPanY: 0,
+      targetZoom: this.getDefaultZoom(),
+      startTime: performance.now(),
+      durationMs: 1400,
+      source: 'auto',
+    };
   }
 
   updateCameraAnimation(currentTime) {
@@ -1710,7 +1791,7 @@ export class SeismicMonitorEngine {
             }
           }
 
-          const regName = st.state || st.site || 'Región Sísmica';
+          const regName = st.state || st.site || t('geo.seismicRegion');
           if (!regionMap.has(regName) || regionMap.get(regName).int < effInt) {
             regionMap.set(regName, { name: regName, int: effInt, pga: effPga });
           }
@@ -1812,15 +1893,15 @@ export class SeismicMonitorEngine {
         // Locución de Reporte de Intensidad (Plantilla 4)
         if (this.audioManager && this.state.topRegions && this.state.topRegions.length > 0) {
           const topReg = this.state.topRegions[0];
-          const intLabels = ['', 'leve', 'débil', 'leve', 'moderada', 'poco fuerte', 'fuerte', 'muy fuerte', 'destructiva', 'violenta', 'extrema'];
-          const intName = intLabels[topReg.int] || 'moderada';
+          const intKeys = ['', 'intensity.1', 'intensity.2', 'intensity.3', 'intensity.4', 'intensity.5', 'intensity.6', 'intensity.7', 'intensity.8', 'intensity.9', 'intensity.10'];
+          const intName = t(intKeys[topReg.int] || 'intensity.4');
           const regNames = this.state.topRegions.map(r => r.name);
           setTimeout(() => {
             this.audioManager.narrateIntensity(intName, regNames);
             // Aviso de Tsunami si es en costas del Pacífico
             setTimeout(() => {
               const hasTsunamiRisk = (ev.mag >= 7.0 && ev.depth <= 35 && ev.lat <= 22 && ev.lon <= -90);
-              this.audioManager.narrateTsunamiRisk(hasTsunamiRisk, 'costas del Pacífico central');
+              this.audioManager.narrateTsunamiRisk(hasTsunamiRisk, t('narr.tsunami.defaultRegion'));
             }, 3000);
           }, 1200);
         }
@@ -2097,11 +2178,11 @@ export class SeismicMonitorEngine {
 
     // Niveles de intensidad con umbrales mínimos de aceleración en gal
     const tiers = [
-      { int: 7, roman: 'VII+', minPga: 140.0, color: '#a855f7', alpha: 0.16, borderAlpha: 0.60 },
-      { int: 6, roman: 'VI',   minPga: 40.0,  color: '#ef4444', alpha: 0.13, borderAlpha: 0.55 },
-      { int: 5, roman: 'V',    minPga: 12.0,  color: '#f97316', alpha: 0.10, borderAlpha: 0.50 },
-      { int: 4, roman: 'IV',   minPga: 3.5,   color: '#eab308', alpha: 0.08, borderAlpha: 0.45 },
-      { int: 3, roman: 'III',  minPga: 1.0,   color: '#22c55e', alpha: 0.06, borderAlpha: 0.40 },
+      { int: 7, roman: '7+', minPga: 140.0, color: '#a855f7', alpha: 0.16, borderAlpha: 0.60 },
+      { int: 6, roman: '6',   minPga: 40.0,  color: '#ef4444', alpha: 0.13, borderAlpha: 0.55 },
+      { int: 5, roman: '5',    minPga: 12.0,  color: '#f97316', alpha: 0.10, borderAlpha: 0.50 },
+      { int: 4, roman: '4',   minPga: 3.5,   color: '#eab308', alpha: 0.08, borderAlpha: 0.45 },
+      { int: 3, roman: '3',  minPga: 1.0,   color: '#22c55e', alpha: 0.06, borderAlpha: 0.40 },
     ];
 
     for (let i = tiers.length - 1; i >= 0; i--) {
@@ -2137,7 +2218,7 @@ export class SeismicMonitorEngine {
           ctx.fillStyle = tier.color;
           ctx.font = 'bold 8px monospace';
           ctx.textAlign = 'center';
-          ctx.fillText(tier.roman, cx + isoRadiusPix - 4, cy - 2);
+          ctx.fillText(formatIntensity(tier.int) + (tier.int === 7 && getIntensityScale() === 'mercalli' ? '+' : ''), cx + isoRadiusPix - 4, cy - 2);
         }
       }
       ctx.restore();
@@ -2293,10 +2374,10 @@ export class SeismicMonitorEngine {
 
       // 4. Número de intensidad centrado de alta legibilidad (SOLO el número, sin nombres de estados o ciudades)
       ctx.fillStyle = badgeStyle.text;
-      ctx.font = `900 ${Math.round(boxSize * 0.60)}px system-ui, -apple-system, sans-serif`;
+      ctx.font = `900 ${Math.round(boxSize * (String(recInt).length > 1 ? 0.5 : 0.6))}px system-ui, -apple-system, sans-serif`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText(String(recInt), rx, ry + 0.5);
+      ctx.fillText(formatIntensity(recInt), rx, ry + 0.5);
     }
 
     ctx.restore();
@@ -2488,7 +2569,7 @@ export class SeismicMonitorEngine {
         if (fallbackCity && minDist <= 160) {
           regionName = fallbackCity.state || fallbackCity.name;
         } else {
-          regionName = item.site || item.code || 'Región';
+          regionName = item.site || item.code || t('geo.region');
         }
       }
 
@@ -2600,7 +2681,7 @@ export class SeismicMonitorEngine {
     const duracion = Number(alertConfig.duracion || alertConfig.duration || 30);
     const tipoRaw = String(alertConfig.tipo || alertConfig.type || 'ALERTA SISMICA').trim().toUpperCase();
     const isSimulacro = tipoRaw.includes('SIMULACR') || Boolean(alertConfig.isSimulacro);
-    const tipoTexto = isSimulacro ? 'ALERTA SÍSMICA SIMULACRO' : 'ALERTA SÍSMICA';
+    const tipoTexto = isSimulacro ? t('activity.alertDrill') : t('activity.alertBanner');
     const nivelRaw = String(alertConfig.nivel || alertConfig.level || 'SEVERA').trim().toUpperCase();
     const color = alertConfig.color || this.resolveAlertColor(nivelRaw);
 
@@ -3610,11 +3691,12 @@ export class SeismicMonitorEngine {
           ctx.lineWidth = 1.6;
           ctx.stroke();
 
+          const badgeLabel = formatIntensity(displayInt);
           ctx.fillStyle = theme.text;
-          ctx.font = `900 ${Math.round(badgeRadius * 1.15)}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+          ctx.font = `900 ${Math.round(badgeRadius * (badgeLabel.length > 2 ? 0.85 : badgeLabel.length > 1 ? 0.95 : 1.15))}px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText(String(displayInt), sx, sy + 0.5);
+          ctx.fillText(badgeLabel, sx, sy + 0.5);
 
           // Anillo de estado exterior reactivo a la aceleración
           this.drawStationStatusRing(ctx, sx, sy, st, badgeRadius, now, true);
@@ -3683,6 +3765,10 @@ export class SeismicMonitorEngine {
       const isIG = SeismicMonitorEngine.isMexicanIG(st);
       const isSV = SeismicMonitorEngine.isElSalvador(st);
       const isMotion = SeismicMonitorEngine.isSeismicMotion(st.pga, st.staLtaRatio, st.triggered, isAm, isIG, isSV);
+      // Las estaciones AM (Raspberry Shake) no activan el auto-zoom
+      if (!isAm && isMotion && st.pga >= this.sectorAlertThreshold.minPga) {
+        st.autoZoomActiveAt = performance.now();
+      }
 
       // Si es la estación IG.PAVE y presenta saturación excesiva o picos locales de digitalizador sin sismo confirmado
       const isPAVE = (st.code || '').trim().toUpperCase() === 'PAVE';
@@ -3788,7 +3874,7 @@ export class SeismicMonitorEngine {
       if (inCoverage && !this.stations.some((s) => (s.code || '').trim().toUpperCase() === codeUpper)) {
         this.stations.push({
           network: live.network || 'AM',
-          networkName: live.network === 'AM' ? 'Red Raspberry Shake' : 'Servicio Sismológico Nacional',
+          networkName: live.network === 'AM' ? t('net.raspberry') : t('net.nationalSsn'),
           code: live.code,
           fullCode: live.fullCode || `${live.network}.${live.code}`,
           site: live.site || live.code,

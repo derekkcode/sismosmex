@@ -9945,5 +9945,7302 @@
     "primaryChannel": "HHZ",
     "source": "EarthScope FDSN (station service)",
     "work": true
+  },
+  {
+    "network": "CU",
+    "networkName": "Caribbean Network (USGS)",
+    "code": "BCIP",
+    "fullCode": "CU.BCIP",
+    "site": "Isla Barro Colorado, Panama",
+    "state": "",
+    "lat": 9.1665,
+    "lon": -79.8373,
+    "alt": 61,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "00",
+        "sampleRate": 40,
+        "sensitivity": 2447800000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "Caribbean Network (USGS) / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "RD808",
+    "fullCode": "AM.RD808",
+    "site": "Waspam, RACCN, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 14.738572,
+    "lon": -83.974352,
+    "alt": 40,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 399650000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "REEC9",
+    "fullCode": "AM.REEC9",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.4291,
+    "lon": -87.6338,
+    "alt": 590,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 360000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R9A1D",
+    "fullCode": "AM.R9A1D",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.594595,
+    "lon": -88.777064,
+    "alt": 1400,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 360000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "RD8A8",
+    "fullCode": "AM.RD8A8",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 13.324324,
+    "lon": -87.130492,
+    "alt": 57,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 399650000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 384500,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R4B96",
+    "fullCode": "AM.R4B96",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 13.990991,
+    "lon": -86.569172,
+    "alt": 789,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 360000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R1F53",
+    "fullCode": "AM.R1F53",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.792793,
+    "lon": -88.771309,
+    "alt": 1124,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 360000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R3CD4",
+    "fullCode": "AM.R3CD4",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.666667,
+    "lon": -86.207599,
+    "alt": 392,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 360000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "REF82",
+    "fullCode": "AM.REF82",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 15.5307,
+    "lon": -88.0364,
+    "alt": 107,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 360000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R4A19",
+    "fullCode": "AM.R4A19",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.585586,
+    "lon": -88.577535,
+    "alt": 794,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381407000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R8B7C",
+    "fullCode": "AM.R8B7C",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.792793,
+    "lon": -88.771227,
+    "alt": 1124,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381407000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R909F",
+    "fullCode": "AM.R909F",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.072072,
+    "lon": -87.185971,
+    "alt": 974,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381407000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R76A3",
+    "fullCode": "AM.R76A3",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.063063,
+    "lon": -87.164611,
+    "alt": 1021,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "SHZ",
+        "locationCode": "00",
+        "sampleRate": 50,
+        "sensitivity": 469087000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "SHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "RA9E2",
+    "fullCode": "AM.RA9E2",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 15.486486,
+    "lon": -86.57943,
+    "alt": 188,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381407000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R1D8F",
+    "fullCode": "AM.R1D8F",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.072072,
+    "lon": -87.185856,
+    "alt": 972,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381407000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R9DAC",
+    "fullCode": "AM.R9DAC",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 15.378378,
+    "lon": -87.802905,
+    "alt": 35,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381407000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R7DE3",
+    "fullCode": "AM.R7DE3",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 13.171171,
+    "lon": -87.42785,
+    "alt": 13,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 360000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R604D",
+    "fullCode": "AM.R604D",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 15.144144,
+    "lon": -87.079845,
+    "alt": 672,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 360000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "RB0FC",
+    "fullCode": "AM.RB0FC",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 15.081081,
+    "lon": -85.552812,
+    "alt": 509,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 360000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R9AE6",
+    "fullCode": "AM.R9AE6",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.396396,
+    "lon": -87.096077,
+    "alt": 385,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381407000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "AM",
+    "networkName": "OSOP",
+    "code": "R86AD",
+    "fullCode": "AM.R86AD",
+    "site": "Raspberry Shake Citizen Science Station",
+    "state": "",
+    "lat": 14.81982,
+    "lon": -86.567038,
+    "alt": 633,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381407000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "OSOP / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "BLLM",
+    "fullCode": "SN.BLLM",
+    "site": "Bella Mira, El Salvador",
+    "state": "",
+    "lat": 13.4425,
+    "lon": -88.2378,
+    "alt": 642,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 141647540.7,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "BOQ6",
+    "fullCode": "SN.BOQ6",
+    "site": "Boqueron, El Salvador",
+    "state": "",
+    "lat": 13.735,
+    "lon": -89.28,
+    "alt": 1830,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 141647540.7,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "CAHU",
+    "fullCode": "SN.CAHU",
+    "site": "Cacahuatique",
+    "state": "",
+    "lat": 13.7707,
+    "lon": -88.211,
+    "alt": 1682,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 12388592.16,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "LBR3",
+    "fullCode": "SN.LBR3",
+    "site": "Las Brisas, El Salvador",
+    "state": "",
+    "lat": 13.7383,
+    "lon": -89.0433,
+    "alt": 770,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 141647540.7,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "LCY",
+    "fullCode": "SN.LCY",
+    "site": "Lacayo, El Salvador",
+    "state": "",
+    "lat": 13.4233,
+    "lon": -88.2945,
+    "alt": 1001,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 24718197.6,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "LFR1",
+    "fullCode": "SN.LFR1",
+    "site": "El Faro, El Salvador",
+    "state": "",
+    "lat": 13.6233,
+    "lon": -89.0617,
+    "alt": 1000,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 141647540.7,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "LFU",
+    "fullCode": "SN.LFU",
+    "site": "La Fuente, El Salvador",
+    "state": "",
+    "lat": 13.7487,
+    "lon": -89.1138,
+    "alt": 732,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 141647540.7,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "RTR",
+    "fullCode": "SN.RTR",
+    "site": "Retiro, El Salvador",
+    "state": "",
+    "lat": 13.8972,
+    "lon": -89.6457,
+    "alt": 1499,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 98402277.6,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "SNVI",
+    "fullCode": "SN.SNVI",
+    "site": "San Vicente, El Salvador",
+    "state": "",
+    "lat": 13.6125,
+    "lon": -88.8388,
+    "alt": 1312,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 42188800,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "TECA",
+    "fullCode": "SN.TECA",
+    "site": "SN station",
+    "state": "",
+    "lat": 13.4945,
+    "lon": -88.5023,
+    "alt": 1603,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 141647540.7,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "VSM",
+    "fullCode": "SN.VSM",
+    "site": "San Miguel, El Salvador",
+    "state": "",
+    "lat": 13.4413,
+    "lon": -88.2725,
+    "alt": 1708,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 259129104.8,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "COLS",
+    "fullCode": "SN.COLS",
+    "site": "Las Colinas, El Salvador",
+    "state": "",
+    "lat": 13.6652,
+    "lon": -89.2987,
+    "alt": 1105,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 98406223.2,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "CUS1",
+    "fullCode": "SN.CUS1",
+    "site": "Cusmapa, El Salvador",
+    "state": "",
+    "lat": 13.9125,
+    "lon": -89.9463,
+    "alt": 662,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 129869604.8,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "GRDA",
+    "fullCode": "SN.GRDA",
+    "site": "Granadillas, El Salvador",
+    "state": "",
+    "lat": 13.7592,
+    "lon": -89.2865,
+    "alt": 1387,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 98403757.2,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "MONT",
+    "fullCode": "SN.MONT",
+    "site": "Montana, El Salvador",
+    "state": "",
+    "lat": 13.8577,
+    "lon": -89.6472,
+    "alt": 2054,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 98402277.6,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "SN",
+    "networkName": "Southern Great Basin Network",
+    "code": "RBDL",
+    "fullCode": "SN.RBDL",
+    "site": "Robledal, El Salvador",
+    "state": "",
+    "lat": 14.113,
+    "lon": -89.6827,
+    "alt": 1431,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 98402277.6,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Southern Great Basin Network / database.dat",
+    "work": true
+  },
+  {
+    "network": "GE",
+    "networkName": "GEOFON Program, GFZ Potsdam, Germany",
+    "code": "BOAB",
+    "fullCode": "GE.BOAB",
+    "site": "INETER/GEOFON Station INETER, GEOFON Station Boaco/Nicaragua",
+    "state": "",
+    "lat": 12.4493,
+    "lon": -85.6659,
+    "alt": 381,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "GEOFON Program, GFZ Potsdam, Germany / database.dat",
+    "work": true
+  },
+  {
+    "network": "G",
+    "networkName": "GEOSCOPE - French Global Network of Seismological Broadband Stations",
+    "code": "HDC",
+    "fullCode": "G.HDC",
+    "site": "Heredia, Costa Rica",
+    "state": "",
+    "lat": 10.00201,
+    "lon": -84.11142,
+    "alt": 1186,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "00",
+        "sampleRate": 20,
+        "sensitivity": 2516640000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "GEOSCOPE - French Global Network of Seismological Broadband Stations / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ACON",
+    "fullCode": "NU.ACON",
+    "site": "Station Acoyapa, NicaraguaNicaragua",
+    "state": "",
+    "lat": 11.968,
+    "lon": -85.174,
+    "alt": 107,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "SHZ",
+        "locationCode": "",
+        "sampleRate": 50,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "BLUN",
+    "fullCode": "NU.BLUN",
+    "site": "Station Bluefields, NicaraguaNicaragua",
+    "state": "",
+    "lat": 12.0052,
+    "lon": -83.7763,
+    "alt": 50,
+    "channelCount": 5,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "SHZ",
+        "locationCode": "",
+        "sampleRate": 50,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HHZ",
+        "locationCode": "10",
+        "sampleRate": 100,
+        "sensitivity": 301720000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "10",
+        "sampleRate": 20,
+        "sensitivity": 301720000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CNGN",
+    "fullCode": "NU.CNGN",
+    "site": "Station Cerro Negro, NicaraguaNicaragua",
+    "state": "",
+    "lat": 12.5,
+    "lon": -86.6985,
+    "alt": 515,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "SHZ",
+        "locationCode": "",
+        "sampleRate": 50,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CRIN",
+    "fullCode": "NU.CRIN",
+    "site": "Station San Cristobal, NicaraguaNicaragua",
+    "state": "",
+    "lat": 12.7,
+    "lon": -87.05,
+    "alt": 685,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "SHZ",
+        "locationCode": "",
+        "sampleRate": 50,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ESPN",
+    "fullCode": "NU.ESPN",
+    "site": "Station La Esperanza, NicaraguaNicaragua",
+    "state": "",
+    "lat": 12.195,
+    "lon": -84.3003,
+    "alt": 45,
+    "channelCount": 5,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "SHZ",
+        "locationCode": "",
+        "sampleRate": 50,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 469087000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 469087000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ESTN",
+    "fullCode": "NU.ESTN",
+    "site": "Station Esteli, NicaraguaNicaragua",
+    "state": "",
+    "lat": 13.1017,
+    "lon": -86.3692,
+    "alt": 862,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "SHZ",
+        "locationCode": "",
+        "sampleRate": 50,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MASN",
+    "fullCode": "NU.MASN",
+    "site": "Station Volcano Masya, NicaraguaNicaragua",
+    "state": "",
+    "lat": 12.0028,
+    "lon": -86.149,
+    "alt": 150,
+    "channelCount": 5,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "SHZ",
+        "locationCode": "",
+        "sampleRate": 50,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 1500000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MGAN",
+    "fullCode": "NU.MGAN",
+    "site": "Station Managua, NicaraguaNicaragua",
+    "state": "",
+    "lat": 12.1468,
+    "lon": -86.2472,
+    "alt": 0,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 652124000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 652124000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 1,
+        "sensitivity": 427694,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ALTN",
+    "fullCode": "NU.ALTN",
+    "site": "Altagracia, Isla de ometepe",
+    "state": "",
+    "lat": 11.541983,
+    "lon": -85.600754,
+    "alt": 425,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 3355440000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "APQ2",
+    "fullCode": "NU.APQ2",
+    "site": "Apoyeque, Nicaragua",
+    "state": "",
+    "lat": 12.197483,
+    "lon": -86.325333,
+    "alt": 48,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 224000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "APQ4",
+    "fullCode": "NU.APQ4",
+    "site": "Volcan Apoyeque sitio 4, Nicaragua",
+    "state": "",
+    "lat": 12.280183,
+    "lon": -86.329765,
+    "alt": 73,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 224000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "APQN",
+    "fullCode": "NU.APQN",
+    "site": "BB Volcan Apoyeque, Nicaragua",
+    "state": "",
+    "lat": 12.221697,
+    "lon": -86.299171,
+    "alt": 76,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1145880000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "APYN",
+    "fullCode": "NU.APYN",
+    "site": "Volcan Apoyeque",
+    "state": "",
+    "lat": 12.2387,
+    "lon": -86.353561,
+    "alt": 300,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 3355440000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "BILN",
+    "fullCode": "NU.BILN",
+    "site": "Z",
+    "state": "",
+    "lat": 14.0488,
+    "lon": -83.374641,
+    "alt": 30,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "10",
+        "sampleRate": 0,
+        "sensitivity": 477413000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "BRAN",
+    "fullCode": "NU.BRAN",
+    "site": "ENATREL Los Brasiles",
+    "state": "",
+    "lat": 12.166043,
+    "lon": -86.343697,
+    "alt": 83,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 268436000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CARN",
+    "fullCode": "NU.CARN",
+    "site": "Z",
+    "state": "",
+    "lat": 11.187226,
+    "lon": -85.522179,
+    "alt": 64,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "00",
+        "sampleRate": 0,
+        "sensitivity": 477413000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CNGA",
+    "fullCode": "NU.CNGA",
+    "site": "Al SSO del Volcan Cerro Negro",
+    "state": "",
+    "lat": 12.494383,
+    "lon": -86.701614,
+    "alt": 489,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 268436000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CONN",
+    "fullCode": "NU.CONN",
+    "site": "Central Sismica - INETER",
+    "state": "",
+    "lat": 11.564872,
+    "lon": -85.62532,
+    "alt": 256,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 268436000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "COPN",
+    "fullCode": "NU.COPN",
+    "site": "Copaltepe",
+    "state": "",
+    "lat": 12.18,
+    "lon": -86.591698,
+    "alt": 150,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 15594600000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CSGN",
+    "fullCode": "NU.CSGN",
+    "site": "COSIGUINA",
+    "state": "",
+    "lat": 12.9763,
+    "lon": -87.558701,
+    "alt": 476,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 748930000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "EHZ",
+        "locationCode": "01",
+        "sampleRate": 100,
+        "sensitivity": 1024660000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "HERN",
+    "fullCode": "NU.HERN",
+    "site": "Volcan Telica, Nicaragua",
+    "state": "",
+    "lat": 12.6093,
+    "lon": -86.831001,
+    "alt": 758,
+    "channelCount": 4,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 15594600000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 15594600000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "HUEN",
+    "fullCode": "NU.HUEN",
+    "site": "BB Puenta Huete, Nicaragua",
+    "state": "",
+    "lat": 12.3363,
+    "lon": -86.169365,
+    "alt": 79,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ILCN",
+    "fullCode": "NU.ILCN",
+    "site": "San Idelfonso, Volcan Cerro Negro",
+    "state": "",
+    "lat": 12.5773,
+    "lon": -86.699997,
+    "alt": 168,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 3355440000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "JAPN",
+    "fullCode": "NU.JAPN",
+    "site": "Al SSO del Volcan Masaya",
+    "state": "",
+    "lat": 11.5258,
+    "lon": -85.678299,
+    "alt": 154,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 503317000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "LEVN",
+    "fullCode": "NU.LEVN",
+    "site": "Ruinas Leon Viejo, Nicaragua",
+    "state": "",
+    "lat": 12.401453,
+    "lon": -86.616417,
+    "alt": 20,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 224000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "LIMN",
+    "fullCode": "NU.LIMN",
+    "site": "Finca el Limon",
+    "state": "",
+    "lat": 13.062363,
+    "lon": -86.366196,
+    "alt": 888,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1145880000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MACN",
+    "fullCode": "NU.MACN",
+    "site": "El Madrono, SAT Cerro Negro",
+    "state": "",
+    "lat": 12.465809,
+    "lon": -86.674759,
+    "alt": 440,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "20",
+        "sampleRate": 100,
+        "sensitivity": 1024660000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MAS3",
+    "fullCode": "NU.MAS3",
+    "site": "Al N del Volcan Masaya",
+    "state": "",
+    "lat": 12.0243,
+    "lon": -86.175697,
+    "alt": 347,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "10",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MATN",
+    "fullCode": "NU.MATN",
+    "site": "Matagalpa City, Nicaragua",
+    "state": "",
+    "lat": 12.9298,
+    "lon": -85.925499,
+    "alt": 869,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 1507140000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MOM2",
+    "fullCode": "NU.MOM2",
+    "site": "El cardon, Momotombo, NIcaragua",
+    "state": "",
+    "lat": 12.437198,
+    "lon": -86.484489,
+    "alt": 53,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "50",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MOM3",
+    "fullCode": "NU.MOM3",
+    "site": "MOM3",
+    "state": "",
+    "lat": 12.511,
+    "lon": -86.517799,
+    "alt": 127,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 224000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MOMN",
+    "fullCode": "NU.MOMN",
+    "site": "al SSO del Volcan Momtombo",
+    "state": "",
+    "lat": 12.406,
+    "lon": -86.540802,
+    "alt": 410,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "10",
+        "sampleRate": 100,
+        "sensitivity": 3355440000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MORN",
+    "fullCode": "NU.MORN",
+    "site": "Al O del Volcan Concepcion",
+    "state": "",
+    "lat": 11.5467,
+    "lon": -85.648003,
+    "alt": 350,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "10",
+        "sampleRate": 100,
+        "sensitivity": 1676000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "NADN",
+    "fullCode": "NU.NADN",
+    "site": "ENATREL Nandaime",
+    "state": "",
+    "lat": 11.7488,
+    "lon": -86.032303,
+    "alt": 115,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 268436000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "NANN",
+    "fullCode": "NU.NANN",
+    "site": "Nandasmo, Nicaragua",
+    "state": "",
+    "lat": 11.939032,
+    "lon": -86.121277,
+    "alt": 327,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 748930000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 748930000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "OCON",
+    "fullCode": "NU.OCON",
+    "site": "Estacion meteorologica de Ocotal",
+    "state": "",
+    "lat": 13.6308,
+    "lon": -86.477501,
+    "alt": 622,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "10",
+        "sampleRate": 100,
+        "sensitivity": 3355440000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "PACN",
+    "fullCode": "NU.PACN",
+    "site": "Al O del Volcan Cerro Negro",
+    "state": "",
+    "lat": 12.5008,
+    "lon": -86.792297,
+    "alt": 220,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 268436000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "PKGN",
+    "fullCode": "NU.PKGN",
+    "site": "Cerro Pekin, Nicaragua",
+    "state": "",
+    "lat": 12.669418,
+    "lon": -86.976982,
+    "alt": 82,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 224000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "PLRN",
+    "fullCode": "NU.PLRN",
+    "site": "Geotermica Polaris, Volcan Telica",
+    "state": "",
+    "lat": 12.584,
+    "lon": -86.768303,
+    "alt": 230,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 268436000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "POLN",
+    "fullCode": "NU.POLN",
+    "site": "Al Sur del Volcan Telica",
+    "state": "",
+    "lat": 12.6493,
+    "lon": -86.812798,
+    "alt": 330,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 3355440000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "POTN",
+    "fullCode": "NU.POTN",
+    "site": "POTOSI, COSIGUINA",
+    "state": "",
+    "lat": 12.999861,
+    "lon": -87.506287,
+    "alt": 40,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2894070000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "QUEN",
+    "fullCode": "NU.QUEN",
+    "site": "Al S del Volcan Telica",
+    "state": "",
+    "lat": 12.5918,
+    "lon": -86.851799,
+    "alt": 460,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 268436000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "RCFN",
+    "fullCode": "NU.RCFN",
+    "site": "Al S de San Juan del Rio Coco",
+    "state": "",
+    "lat": 13.53135,
+    "lon": -86.21225,
+    "alt": 1335,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 7574390000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "RCON",
+    "fullCode": "NU.RCON",
+    "site": "San Jose del Ojoche, San Juan de Rio Coco, Nicaragua",
+    "state": "",
+    "lat": 13.48417,
+    "lon": -86.155998,
+    "alt": 1324,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 748930000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1434450000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "RCPN",
+    "fullCode": "NU.RCPN",
+    "site": "Sur Rio San Juan del Rio Coco",
+    "state": "",
+    "lat": 13.526,
+    "lon": -86.094002,
+    "alt": 1069,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 0,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "RCVN",
+    "fullCode": "NU.RCVN",
+    "site": "varillal2",
+    "state": "",
+    "lat": 13.5836,
+    "lon": -86.193604,
+    "alt": 1245,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2321970000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "RIBN",
+    "fullCode": "NU.RIBN",
+    "site": "Rio Blanco, Nicaragua",
+    "state": "",
+    "lat": 12.94153,
+    "lon": -85.232002,
+    "alt": 288,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "10",
+        "sampleRate": 0,
+        "sensitivity": 477413000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ROCN",
+    "fullCode": "NU.ROCN",
+    "site": "ROTA CERRO NEGRO",
+    "state": "",
+    "lat": 12.5196,
+    "lon": -86.743698,
+    "alt": 267,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 3355440000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SABN",
+    "fullCode": "NU.SABN",
+    "site": "Sabanita, volcan Masaya",
+    "state": "",
+    "lat": 11.9567,
+    "lon": -86.162003,
+    "alt": 355,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2894070000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SAPN",
+    "fullCode": "NU.SAPN",
+    "site": "BB Ciudad Sandino San Andres de las Palancas, Nicaragua",
+    "state": "",
+    "lat": 12.169313,
+    "lon": -86.404839,
+    "alt": 156,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1145880000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SIUN",
+    "fullCode": "NU.SIUN",
+    "site": "Universidad URACAN, Siuna, Nicaragua",
+    "state": "",
+    "lat": 13.71616,
+    "lon": -84.773499,
+    "alt": 178,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "10",
+        "sampleRate": 0,
+        "sensitivity": 477413000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SOMN",
+    "fullCode": "NU.SOMN",
+    "site": "Somoto, Nicaragua",
+    "state": "",
+    "lat": 13.511133,
+    "lon": -86.532471,
+    "alt": 1224,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 268436000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "TEL3",
+    "fullCode": "NU.TEL3",
+    "site": "Al SSE del Volcan Telica",
+    "state": "",
+    "lat": 12.5722,
+    "lon": -86.844803,
+    "alt": 300,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2894070000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "TISN",
+    "fullCode": "NU.TISN",
+    "site": "Estado Mayor, Ejercito Nacional",
+    "state": "",
+    "lat": 12.1425,
+    "lon": -86.269302,
+    "alt": 200,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2384520000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "UNAN",
+    "fullCode": "NU.UNAN",
+    "site": "CIGEO UNAN",
+    "state": "",
+    "lat": 12.111105,
+    "lon": -86.270668,
+    "alt": 204,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "01",
+        "sampleRate": 100,
+        "sensitivity": 268436000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "WILN",
+    "fullCode": "NU.WILN",
+    "site": "Casa de Wilfried Americas Dos, Nicaragua",
+    "state": "",
+    "lat": 12.161463,
+    "lon": -86.187698,
+    "alt": 20,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "30",
+        "sampleRate": 100,
+        "sensitivity": 224000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ABCN",
+    "fullCode": "NU.ABCN",
+    "site": "Banco Central, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.121693,
+    "lon": -86.309857,
+    "alt": 162,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AENN",
+    "fullCode": "NU.AENN",
+    "site": "ENATREL, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.114243,
+    "lon": -86.261493,
+    "alt": 170,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AERN",
+    "fullCode": "NU.AERN",
+    "site": "Aeropuerto ACS, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.144395,
+    "lon": -86.167767,
+    "alt": 56,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AESN",
+    "fullCode": "NU.AESN",
+    "site": "El Sauce, Leon, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.888635,
+    "lon": -86.540169,
+    "alt": 172,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AHMN",
+    "fullCode": "NU.AHMN",
+    "site": "Montelimar, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.806106,
+    "lon": -86.516278,
+    "alt": 26,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "11",
+        "sampleRate": 200,
+        "sensitivity": 204000,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AINN",
+    "fullCode": "NU.AINN",
+    "site": "INETER, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.148985,
+    "lon": -86.248277,
+    "alt": 65,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 4278190,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ALLN",
+    "fullCode": "NU.ALLN",
+    "site": "TELCOR, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.155188,
+    "lon": -86.274172,
+    "alt": 53,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AMFN",
+    "fullCode": "NU.AMFN",
+    "site": "MAGFOR, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.094483,
+    "lon": -86.238943,
+    "alt": 234,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AMON",
+    "fullCode": "NU.AMON",
+    "site": "Momotombo, Leon, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.394058,
+    "lon": -86.54035,
+    "alt": 92,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AMTN",
+    "fullCode": "NU.AMTN",
+    "site": "Mateare, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.236283,
+    "lon": -86.430932,
+    "alt": 65,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ARMN",
+    "fullCode": "NU.ARMN",
+    "site": "UNAN, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.116387,
+    "lon": -86.273876,
+    "alt": 166,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ASGN",
+    "fullCode": "NU.ASGN",
+    "site": "Santa Gertrudis, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.29422,
+    "lon": -86.185332,
+    "alt": 48,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SMRN",
+    "fullCode": "NU.SMRN",
+    "site": "San Miguelito, Rio San Juan, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.41639,
+    "lon": -84.89999,
+    "alt": 43,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "10",
+        "sampleRate": 100,
+        "sensitivity": 301720000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "STCN",
+    "fullCode": "NU.STCN",
+    "site": "oeste del v. San cristobal, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.7243,
+    "lon": -86.953,
+    "alt": 350,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1634650000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AR2N",
+    "fullCode": "NU.AR2N",
+    "site": "ENATREL Rivas, Rivas, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.454157,
+    "lon": -85.834028,
+    "alt": 66,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CATN",
+    "fullCode": "NU.CATN",
+    "site": "ENATREL Catarina, Masaya, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.915897,
+    "lon": -86.079734,
+    "alt": 503,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CCGN",
+    "fullCode": "NU.CCGN",
+    "site": "ENATREL Chichigalpa, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.580753,
+    "lon": -87.032859,
+    "alt": 91,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "9J",
+        "sampleRate": 100,
+        "sensitivity": -1,
+        "inputType": "UNKNOWN"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CRTN",
+    "fullCode": "NU.CRTN",
+    "site": "ENATREL Corinto, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.50728,
+    "lon": -87.188336,
+    "alt": 8,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "DIRN",
+    "fullCode": "NU.DIRN",
+    "site": "ENATREL Diriamba, Carazo, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.866098,
+    "lon": -86.235231,
+    "alt": 595,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "EMAN",
+    "fullCode": "NU.EMAN",
+    "site": "ENATREL Masaya, Masaya, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.00413,
+    "lon": -86.085316,
+    "alt": 252,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ESQUI",
+    "fullCode": "NU.ESQUI",
+    "site": "ENATREL Equipulas, Ometepe, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.506623,
+    "lon": -85.711779,
+    "alt": 42,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "GPAN",
+    "fullCode": "NU.GPAN",
+    "site": "Gran Pacifica, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.9227,
+    "lon": -86.6124,
+    "alt": 13,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "LPCN",
+    "fullCode": "NU.LPCN",
+    "site": "ENATREL La pazcentro, Leon, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.346849,
+    "lon": -86.672848,
+    "alt": 76,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MALN",
+    "fullCode": "NU.MALN",
+    "site": "ENATREL Malpaicillo, Leon, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.605231,
+    "lon": -86.667181,
+    "alt": 108,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": -1,
+        "inputType": "UNKNOWN"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MAYN",
+    "fullCode": "NU.MAYN",
+    "site": "AMAYO, Rivas, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.323188,
+    "lon": -85.716994,
+    "alt": 38,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MLEON",
+    "fullCode": "NU.MLEON",
+    "site": "Est. Meteo Leon, Leon, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.427365,
+    "lon": -86.909731,
+    "alt": 77,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": -1,
+        "inputType": "UNKNOWN"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MSTN",
+    "fullCode": "NU.MSTN",
+    "site": "ENATREL Masatepe, Masaya, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.903833,
+    "lon": -86.146642,
+    "alt": 457,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "NA2N",
+    "fullCode": "NU.NA2N",
+    "site": "ENATREL Nagarote, Leon, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.279981,
+    "lon": -86.575678,
+    "alt": 69,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "PARN",
+    "fullCode": "NU.PARN",
+    "site": "Padre Ramos, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.7606,
+    "lon": -87.4647,
+    "alt": 9,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "0J",
+        "sampleRate": 100,
+        "sensitivity": -1,
+        "inputType": "UNKNOWN"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "PTSN",
+    "fullCode": "NU.PTSN",
+    "site": "Naval Potosi, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 13.010077,
+    "lon": -87.50518,
+    "alt": 10,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": -1,
+        "inputType": "UNKNOWN"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SANN",
+    "fullCode": "NU.SANN",
+    "site": "ENATREL Sandino, Leon, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.202323,
+    "lon": -86.728381,
+    "alt": 13,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SB1N",
+    "fullCode": "NU.SB1N",
+    "site": "ENATREL San Benito, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.256014,
+    "lon": -86.084415,
+    "alt": 62,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SJUAN",
+    "fullCode": "NU.SJUAN",
+    "site": "ENATREL San Juan del Sur, Rivas, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.316466,
+    "lon": -85.821995,
+    "alt": 62,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SRAN",
+    "fullCode": "NU.SRAN",
+    "site": "ENATREL San Rafael del sur, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.855132,
+    "lon": -86.423955,
+    "alt": 139,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "TI2N",
+    "fullCode": "NU.TI2N",
+    "site": "ENATREL Ticuantepe, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.032036,
+    "lon": -86.201354,
+    "alt": 264,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "VCAN",
+    "fullCode": "NU.VCAN",
+    "site": "ENATREL Villa el Carmen, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.070223,
+    "lon": -86.485176,
+    "alt": 140,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": -1,
+        "inputType": "UNKNOWN"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "VIEJO",
+    "fullCode": "NU.VIEJO",
+    "site": "ENATREL El viejo, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.658756,
+    "lon": -87.120767,
+    "alt": 106,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "VIRN",
+    "fullCode": "NU.VIRN",
+    "site": "ENATREL La virgen, Rivas, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.394181,
+    "lon": -85.797467,
+    "alt": 54,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "05",
+        "sampleRate": 100,
+        "sensitivity": 429088,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1650.3,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ACAHU",
+    "fullCode": "NU.ACAHU",
+    "site": "Enatrel Acahualinca, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.158736,
+    "lon": -86.310753,
+    "alt": 51,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AEROP",
+    "fullCode": "NU.AEROP",
+    "site": "Enatrel Aeropuerto, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.153253,
+    "lon": -86.145935,
+    "alt": 50,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ALTAM",
+    "fullCode": "NU.ALTAM",
+    "site": "Enatrel Altamira, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.120885,
+    "lon": -86.2463,
+    "alt": 134,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AMERR",
+    "fullCode": "NU.AMERR",
+    "site": "Enatrel Amerrisque, Chontales, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.132475,
+    "lon": -85.454959,
+    "alt": 113,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1157630000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ASOSO",
+    "fullCode": "NU.ASOSO",
+    "site": "Enatrel Asososca, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.138674,
+    "lon": -86.307141,
+    "alt": 104,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "BANDE",
+    "fullCode": "NU.BANDE",
+    "site": "Enatrel Las Banderas, Matagalpa, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.325891,
+    "lon": -85.952318,
+    "alt": 88,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 981467000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "BATAH",
+    "fullCode": "NU.BATAH",
+    "site": "Enatrel Batahola, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.124101,
+    "lon": -86.311465,
+    "alt": 155,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "BIOLN",
+    "fullCode": "NU.BIOLN",
+    "site": "Centro Biologico, Isla de Ometepe, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.416452,
+    "lon": -85.538465,
+    "alt": 57,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "BOAC",
+    "fullCode": "NU.BOAC",
+    "site": "Enatrel Boaco, Boaco, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.4206,
+    "lon": -85.7422,
+    "alt": 205,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1532180000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "COLIN",
+    "fullCode": "NU.COLIN",
+    "site": "Enatrel Las Colinas, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.08353,
+    "lon": -86.22546,
+    "alt": 240,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CORO",
+    "fullCode": "NU.CORO",
+    "site": "Enatrel Corocito, Rio San Juan, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.7659,
+    "lon": -84.5825,
+    "alt": 213,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2894070000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "DALIA",
+    "fullCode": "NU.DALIA",
+    "site": "Tuma La Dalia, Matagalpa, NIcaragua NIcaragua",
+    "state": "",
+    "lat": 13.144958,
+    "lon": -85.731339,
+    "alt": 750,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2315260000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "GATEA",
+    "fullCode": "NU.GATEA",
+    "site": "La Gateada, RAAS, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.0006,
+    "lon": -84.7628,
+    "alt": 188,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2315260000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MARIA",
+    "fullCode": "NU.MARIA",
+    "site": "Enatrel Santa Maria, RAAS, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.102055,
+    "lon": -85.3985,
+    "alt": 80,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1157630000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MATAN",
+    "fullCode": "NU.MATAN",
+    "site": "Enatrel Matagalpa, Matagalpa, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.911302,
+    "lon": -85.957007,
+    "alt": 700,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1157630000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MATIG",
+    "fullCode": "NU.MATIG",
+    "site": "Enatrel Matiguas, Matagalpa, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.825205,
+    "lon": -85.482808,
+    "alt": 316,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2315260000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MCARL",
+    "fullCode": "NU.MCARL",
+    "site": "Enatrel San Carlos, Rio San Juan, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.1443,
+    "lon": -84.7655,
+    "alt": 53,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2894070000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "NANDA",
+    "fullCode": "NU.NANDA",
+    "site": "Enatrel Nandaime, Granada, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.749057,
+    "lon": -86.032382,
+    "alt": 116,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ORIEN",
+    "fullCode": "NU.ORIEN",
+    "site": "Enatrel Oriental, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.14103,
+    "lon": -86.203838,
+    "alt": 85,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "PERIO",
+    "fullCode": "NU.PERIO",
+    "site": "Enatrel Rotonda Periodista, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.120538,
+    "lon": -86.283743,
+    "alt": 159,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "PORTE",
+    "fullCode": "NU.PORTE",
+    "site": "Enatrel Portezuelo, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.162333,
+    "lon": -86.225544,
+    "alt": 48,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SACN",
+    "fullCode": "NU.SACN",
+    "site": "Enatrel Santa Clara, Nueva Segovia, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 13.710936,
+    "lon": -86.253426,
+    "alt": 745,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 981467000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SAUN",
+    "fullCode": "NU.SAUN",
+    "site": "Enatrel Sauce, Leon, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.85476,
+    "lon": -86.52297,
+    "alt": 202,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1157630000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SEBN",
+    "fullCode": "NU.SEBN",
+    "site": "Enatrel Sebaco, Matagalpa, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.8583,
+    "lon": -86.102451,
+    "alt": 471,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SINAP",
+    "fullCode": "NU.SINAP",
+    "site": "SINAPRED, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.148045,
+    "lon": -86.273261,
+    "alt": 67,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "TIPTN",
+    "fullCode": "NU.TIPTN",
+    "site": "Enatrel Tipitapa, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.168806,
+    "lon": -86.10667,
+    "alt": 59,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "VINN",
+    "fullCode": "NU.VINN",
+    "site": "Enatrel Villa Nueva, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.961297,
+    "lon": -86.82108,
+    "alt": 52,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 2894070000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "YALAG",
+    "fullCode": "NU.YALAG",
+    "site": "Enatrel Yalaguina, Madriz, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 13.480563,
+    "lon": -86.48728,
+    "alt": 635,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "COPAN",
+    "fullCode": "NU.COPAN",
+    "site": "Conchita Palacios, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.126243,
+    "lon": -86.22587,
+    "alt": 122,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MAGN",
+    "fullCode": "NU.MAGN",
+    "site": "Magdalena, Isla ometepe, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.482531,
+    "lon": -85.509408,
+    "alt": 147,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 399650000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "SARN",
+    "fullCode": "NU.SARN",
+    "site": "San Remigio, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.868075,
+    "lon": -87.350262,
+    "alt": 18,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "UAMN",
+    "fullCode": "NU.UAMN",
+    "site": "Universidad Americana, Managua Managua",
+    "state": "",
+    "lat": 12.1089,
+    "lon": -86.2575,
+    "alt": 185,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ASTUR",
+    "fullCode": "NU.ASTUR",
+    "site": "Asturias, Jinotega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 13.2455,
+    "lon": -85.8998,
+    "alt": 949,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "JINOT",
+    "fullCode": "NU.JINOT",
+    "site": "Apanas, Jinotega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 13.0741,
+    "lon": -86.0013,
+    "alt": 1066,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "10",
+        "sampleRate": 100,
+        "sensitivity": 1676000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MAT2",
+    "fullCode": "NU.MAT2",
+    "site": "Cerro el calvario, Matagalpa, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.930151,
+    "lon": -85.925298,
+    "alt": 832,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1676000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AASN",
+    "fullCode": "NU.AASN",
+    "site": "Aserraderos, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.625638,
+    "lon": -87.343107,
+    "alt": 8,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "11",
+        "sampleRate": 200,
+        "sensitivity": 204000,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ACDN",
+    "fullCode": "NU.ACDN",
+    "site": "Cardenas, Rivas, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.187187,
+    "lon": -85.522228,
+    "alt": 55,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "11",
+        "sampleRate": 200,
+        "sensitivity": 204000,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ASFN",
+    "fullCode": "NU.ASFN",
+    "site": "San Francisco Libre, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.507627,
+    "lon": -86.290451,
+    "alt": 60,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 160392,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "ASSN",
+    "fullCode": "NU.ASSN",
+    "site": "San Juan del sur, Rivas, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.253059,
+    "lon": -85.867673,
+    "alt": 36,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "11",
+        "sampleRate": 200,
+        "sensitivity": 204000,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CRUCE",
+    "fullCode": "NU.CRUCE",
+    "site": "Crucero, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.99137,
+    "lon": -86.310895,
+    "alt": 926,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "HMAS",
+    "fullCode": "NU.HMAS",
+    "site": "H. la mascota, Managua, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.123996,
+    "lon": -86.236417,
+    "alt": 130,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "LAIG",
+    "fullCode": "NU.LAIG",
+    "site": "Hacienda Iguana, Rivas, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.415069,
+    "lon": -86.047994,
+    "alt": 10,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MIR2",
+    "fullCode": "NU.MIR2",
+    "site": "Mirador 2, Volcan Masaya, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.982778,
+    "lon": -86.169417,
+    "alt": 539,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "URAC",
+    "fullCode": "NU.URAC",
+    "site": "Waspam, RACCN, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 14.738572,
+    "lon": -83.974352,
+    "alt": 40,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "HATON",
+    "fullCode": "NU.HATON",
+    "site": "Hostal Hato Nuevo, Chinandega, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.825611,
+    "lon": -87.413028,
+    "alt": 28,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 660519000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "MOGON",
+    "fullCode": "NU.MOGON",
+    "site": "Mogote, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.4886,
+    "lon": -85.6298,
+    "alt": 133,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 335815000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 386825,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "AHUET",
+    "fullCode": "NU.AHUET",
+    "site": "Cardenas, Rivas, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 11.629442,
+    "lon": -86.338587,
+    "alt": 14,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "11",
+        "sampleRate": 200,
+        "sensitivity": 204000,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "CNGN2",
+    "fullCode": "NU.CNGN2",
+    "site": "El Limon, Esteli, Nicaragua Nicaragua",
+    "state": "",
+    "lat": 12.5012,
+    "lon": -86.69934,
+    "alt": 510,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 474950000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "NU",
+    "networkName": "Nicaragua National Seismological Network (NU-Net)",
+    "code": "UNI2",
+    "fullCode": "NU.UNI2",
+    "site": "INETER",
+    "state": "",
+    "lat": 12.148923,
+    "lon": -86.248297,
+    "alt": 64,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "11",
+        "sampleRate": 100,
+        "sensitivity": 28.8,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Nicaragua National Seismological Network (NU-Net) / database.dat",
+    "work": true
+  },
+  {
+    "network": "II",
+    "networkName": "(GSN) Global Seismograph Network (IRIS/IDA)",
+    "code": "JTS",
+    "fullCode": "II.JTS",
+    "site": "Las Juntas de Abangares, Costa Rica",
+    "state": "",
+    "lat": 10.2908,
+    "lon": -84.9525,
+    "alt": 340,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "00",
+        "sampleRate": 40,
+        "sensitivity": 1974690000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 426909,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "BHZ",
+        "locationCode": "10",
+        "sampleRate": 40,
+        "sensitivity": 1991400000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "(GSN) Global Seismograph Network (IRIS/IDA) / database.dat",
+    "work": true
+  },
+  {
+    "network": "GI",
+    "networkName": "Red Sismologica Nacional- Guatemala ()",
+    "code": "AVPA",
+    "fullCode": "GI.AVPA",
+    "site": "Panzos, Alta Verapaz",
+    "state": "",
+    "lat": 15.3972,
+    "lon": -89.6417,
+    "alt": 16,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 432431,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Red Sismologica Nacional- Guatemala () / database.dat",
+    "work": true
+  },
+  {
+    "network": "GI",
+    "networkName": "Red Sismologica Nacional- Guatemala ()",
+    "code": "ESSJ",
+    "fullCode": "GI.ESSJ",
+    "site": "San Jose, Escuintla Escuintla",
+    "state": "",
+    "lat": 13.93657,
+    "lon": -90.834868,
+    "alt": 8,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 432431,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "9J",
+        "sampleRate": 100,
+        "sensitivity": -1,
+        "inputType": "UNKNOWN"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Red Sismologica Nacional- Guatemala () / database.dat",
+    "work": true
+  },
+  {
+    "network": "GI",
+    "networkName": "Red Sismologica Nacional- Guatemala ()",
+    "code": "QCJY",
+    "fullCode": "GI.QCJY",
+    "site": "Joyabaj, Quiche Quiche",
+    "state": "",
+    "lat": 14.994192,
+    "lon": -90.807258,
+    "alt": 1435,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 432431,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Red Sismologica Nacional- Guatemala () / database.dat",
+    "work": true
+  },
+  {
+    "network": "GI",
+    "networkName": "Red Sismologica Nacional- Guatemala ()",
+    "code": "SRTX",
+    "fullCode": "GI.SRTX",
+    "site": "Taxisco, Santa Rosa Santa Rosa",
+    "state": "",
+    "lat": 13.9213,
+    "lon": -90.61,
+    "alt": 15,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 432431,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Red Sismologica Nacional- Guatemala () / database.dat",
+    "work": true
+  },
+  {
+    "network": "GI",
+    "networkName": "Red Sismologica Nacional- Guatemala ()",
+    "code": "SONA",
+    "fullCode": "GI.SONA",
+    "site": "Nahuala, Solola - INSIVUMEHGuatemala",
+    "state": "",
+    "lat": 14.820628,
+    "lon": -91.403407,
+    "alt": 3209,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 200,
+        "sensitivity": 1038970,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Red Sismologica Nacional- Guatemala () / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "CDITO",
+    "fullCode": "OV.CDITO",
+    "site": "COLORADITO, Corredores",
+    "state": "",
+    "lat": 8.5732,
+    "lon": -82.872704,
+    "alt": 118,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 627604000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 427894,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "COVE",
+    "fullCode": "OV.COVE",
+    "site": "COOPE VEGA, San Carlos, Alajuela",
+    "state": "",
+    "lat": 10.7195,
+    "lon": -84.401901,
+    "alt": 115,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1955240000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 427894,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "HZTE",
+    "fullCode": "OV.HZTE",
+    "site": "HORIZONTES, Guanacaste",
+    "state": "",
+    "lat": 10.7137,
+    "lon": -85.595398,
+    "alt": 194,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 627604000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 427894,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "LAFE",
+    "fullCode": "OV.LAFE",
+    "site": "Finca La Fe,Paquera, Puntarenas",
+    "state": "",
+    "lat": 9.8072,
+    "lon": -84.910301,
+    "alt": 69,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1378310000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "SARO",
+    "fullCode": "OV.SARO",
+    "site": "SARO",
+    "state": "",
+    "lat": 10.843065,
+    "lon": -85.615723,
+    "alt": 303,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "01",
+        "sampleRate": 200,
+        "sensitivity": 429939,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "VAVL",
+    "fullCode": "OV.VAVL",
+    "site": "VAVL, Volcan Arenal, Volcano Lodge",
+    "state": "",
+    "lat": 10.4373,
+    "lon": -84.709099,
+    "alt": 749,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 299113000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "VRBA",
+    "fullCode": "OV.VRBA",
+    "site": "Volcan Rincon de la Vieja, Sensoria,Buenos Aires,",
+    "state": "",
+    "lat": 10.8664,
+    "lon": -85.326,
+    "alt": 732,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1955240000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "VTUN",
+    "fullCode": "OV.VTUN",
+    "site": "CRATER CENTRAL, Volcan Turrialba, Cartago",
+    "state": "",
+    "lat": 10.0226,
+    "lon": -83.7635,
+    "alt": 3239,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 299113000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "CRUC",
+    "fullCode": "OV.CRUC",
+    "site": "Las Cruces",
+    "state": "",
+    "lat": 8.888498,
+    "lon": -83.147736,
+    "alt": 1008,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1686.74,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 200,
+        "sensitivity": 431952,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "01",
+        "sampleRate": 200,
+        "sensitivity": 431952,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "EART",
+    "fullCode": "OV.EART",
+    "site": "EART",
+    "state": "",
+    "lat": 10.212687,
+    "lon": -83.594337,
+    "alt": 44.2,
+    "channelCount": 4,
+    "channels": [
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1623.49,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 429151,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "01",
+        "sampleRate": 200,
+        "sensitivity": 429151,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1623.49,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "OV",
+    "networkName": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI)",
+    "code": "TOAL",
+    "fullCode": "OV.TOAL",
+    "site": "TOAL",
+    "state": "",
+    "lat": 8.786703,
+    "lon": -82.988365,
+    "alt": 1481.1,
+    "channelCount": 3,
+    "channels": [
+      {
+        "code": "ENZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1657.49,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 200,
+        "sensitivity": 431661,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "01",
+        "sampleRate": 200,
+        "sensitivity": 431661,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "ENZ",
+    "source": "Observatorio Vulcanológico y Sismológico de Costa Rica (OVSICORI) / database.dat",
+    "work": true
+  },
+  {
+    "network": "PA",
+    "networkName": "ChiriNet ()",
+    "code": "BRU2",
+    "fullCode": "PA.BRU2",
+    "site": "bru2, Barilles, OSOP, Panama",
+    "state": "",
+    "lat": 8.794,
+    "lon": -82.687798,
+    "alt": 1320,
+    "channelCount": 4,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 299572000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 407981,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "HHZ",
+        "locationCode": "30",
+        "sampleRate": 100,
+        "sensitivity": 7489300000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "30",
+        "sampleRate": 100,
+        "sensitivity": 2039900,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "ChiriNet () / database.dat",
+    "work": true
+  },
+  {
+    "network": "PA",
+    "networkName": "ChiriNet ()",
+    "code": "KKNTU",
+    "fullCode": "PA.KKNTU",
+    "site": "PA-KKNTU",
+    "state": "",
+    "lat": 8.84012,
+    "lon": -81.80622,
+    "alt": 101,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "SHZ",
+        "locationCode": "00",
+        "sampleRate": 50,
+        "sensitivity": 469087300,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "SHZ",
+    "source": "ChiriNet () / database.dat",
+    "work": true
+  },
+  {
+    "network": "PA",
+    "networkName": "ChiriNet ()",
+    "code": "RBALA",
+    "fullCode": "PA.RBALA",
+    "site": "PA-RBALA",
+    "state": "",
+    "lat": 8.879,
+    "lon": -82.153,
+    "alt": 102,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "SHZ",
+        "locationCode": "00",
+        "sampleRate": 50,
+        "sensitivity": 469087300,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "SHZ",
+    "source": "ChiriNet () / database.dat",
+    "work": true
+  },
+  {
+    "network": "PA",
+    "networkName": "ChiriNet ()",
+    "code": "SHARK",
+    "fullCode": "PA.SHARK",
+    "site": "0",
+    "state": "",
+    "lat": 0.0,
+    "lon": 0.0,
+    "alt": 0,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1085130,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": -1,
+        "inputType": "UNKNOWN"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ChiriNet () / database.dat",
+    "work": true
+  },
+  {
+    "network": "PA",
+    "networkName": "ChiriNet ()",
+    "code": "CIMA1",
+    "fullCode": "PA.CIMA1",
+    "site": "PA-CIMA1",
+    "state": "",
+    "lat": 8.255,
+    "lon": -81.577,
+    "alt": 429,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381406600,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "EHZ",
+        "locationCode": "01",
+        "sampleRate": 100,
+        "sensitivity": -1,
+        "inputType": "UNKNOWN"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ChiriNet () / database.dat",
+    "work": true
+  },
+  {
+    "network": "PA",
+    "networkName": "ChiriNet ()",
+    "code": "GREIS",
+    "fullCode": "PA.GREIS",
+    "site": "PA-GREIS",
+    "state": "",
+    "lat": 8.2855,
+    "lon": -82.8527,
+    "alt": 500,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381406600,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ChiriNet () / database.dat",
+    "work": true
+  },
+  {
+    "network": "PA",
+    "networkName": "ChiriNet ()",
+    "code": "VOLCI",
+    "fullCode": "PA.VOLCI",
+    "site": "PA-VOLCI",
+    "state": "",
+    "lat": 8.7811,
+    "lon": -82.458,
+    "alt": 1399,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381406600,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ChiriNet () / database.dat",
+    "work": true
+  },
+  {
+    "network": "PA",
+    "networkName": "ChiriNet ()",
+    "code": "CANA",
+    "fullCode": "PA.CANA",
+    "site": "PA-CANA",
+    "state": "",
+    "lat": 8.6498,
+    "lon": -80.4168,
+    "alt": 225,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 381406600,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ChiriNet () / database.dat",
+    "work": true
+  },
+  {
+    "network": "SV",
+    "networkName": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB)",
+    "code": "ITCA",
+    "fullCode": "SV.ITCA",
+    "site": "instalaciones ITCA",
+    "state": "",
+    "lat": 13.673548,
+    "lon": -89.278206,
+    "alt": 926,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 53571.5,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB) / database.dat",
+    "work": true
+  },
+  {
+    "network": "SV",
+    "networkName": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB)",
+    "code": "LOAL",
+    "fullCode": "SV.LOAL",
+    "site": "Lomas de Alarcon",
+    "state": "",
+    "lat": 13.998183,
+    "lon": -89.78056,
+    "alt": 575,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 53571.5,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB) / database.dat",
+    "work": true
+  },
+  {
+    "network": "SV",
+    "networkName": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB)",
+    "code": "LALI",
+    "fullCode": "SV.LALI",
+    "site": "Alcaldia de La Libertad'",
+    "state": "",
+    "lat": 13.48839,
+    "lon": -89.32086,
+    "alt": 18,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 2095000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB) / database.dat",
+    "work": true
+  },
+  {
+    "network": "SV",
+    "networkName": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB)",
+    "code": "ARTIL",
+    "fullCode": "SV.ARTIL",
+    "site": "Artilleria",
+    "state": "",
+    "lat": 13.837375,
+    "lon": -89.365123,
+    "alt": 615,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 301720000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB) / database.dat",
+    "work": true
+  },
+  {
+    "network": "SV",
+    "networkName": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB)",
+    "code": "BOLA",
+    "fullCode": "SV.BOLA",
+    "site": "Centro escolar Bola de Monte",
+    "state": "",
+    "lat": 13.739703,
+    "lon": -90.115578,
+    "alt": 5.5,
+    "channelCount": 8,
+    "channels": [
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 200,
+        "sensitivity": 432068,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 1694.49,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ANZ",
+        "locationCode": "0J",
+        "sampleRate": 5000,
+        "sensitivity": 432068,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ANZ",
+        "locationCode": "0K",
+        "sampleRate": 5000,
+        "sensitivity": 432068,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ANZ",
+        "locationCode": "0L",
+        "sampleRate": 5000,
+        "sensitivity": 432068,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ANZ",
+        "locationCode": "0M",
+        "sampleRate": 5000,
+        "sensitivity": 432068,
+        "inputType": "ACCELERATION"
+      },
+      {
+        "code": "ANZ",
+        "locationCode": "9L",
+        "sampleRate": 500,
+        "sensitivity": 1694.49,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ANZ",
+        "locationCode": "9M",
+        "sampleRate": 500,
+        "sensitivity": 1694.49,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB) / database.dat",
+    "work": true
+  },
+  {
+    "network": "SV",
+    "networkName": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB)",
+    "code": "ACAJ",
+    "fullCode": "SV.ACAJ",
+    "site": "Suelo Medio, permanentEl Salvador",
+    "state": "",
+    "lat": 13.575144,
+    "lon": -89.832943,
+    "alt": 10,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "ENZ",
+        "locationCode": "99",
+        "sampleRate": 100,
+        "sensitivity": 432431,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 432430.1738,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "ENZ",
+    "source": "Servicio Nacional de Estudios Territoriales (SNET), El Salvador (SNET-BB) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "ARE1",
+    "fullCode": "TC.ARE1",
+    "site": "Volcan Arenal Fortuna",
+    "state": "",
+    "lat": 10.461,
+    "lon": -84.719,
+    "alt": 800,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624830000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "CVTC",
+    "fullCode": "TC.CVTC",
+    "site": "Volcan Turrialba, Cartago",
+    "state": "",
+    "lat": 10.0183,
+    "lon": -83.75988,
+    "alt": 3306,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624830000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "CVTQ",
+    "fullCode": "TC.CVTQ",
+    "site": "Volcan Turrialba, Quemados, Cartago",
+    "state": "",
+    "lat": 10.004462,
+    "lon": -83.767247,
+    "alt": 2837,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624830000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "CVTR",
+    "fullCode": "TC.CVTR",
+    "site": "Volcan Turrialba Cartago",
+    "state": "",
+    "lat": 10.02,
+    "lon": -83.759331,
+    "alt": 3225,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624830000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "CVTV",
+    "fullCode": "TC.CVTV",
+    "site": "Las Virtudes",
+    "state": "",
+    "lat": 10.004134,
+    "lon": -83.749283,
+    "alt": 2561,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624830000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "DRK0",
+    "fullCode": "TC.DRK0",
+    "site": "Durika",
+    "state": "",
+    "lat": 9.2624,
+    "lon": -83.2454,
+    "alt": 1434,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 684631000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "EGUA",
+    "fullCode": "TC.EGUA",
+    "site": "Earth Guacimo",
+    "state": "",
+    "lat": 10.212277,
+    "lon": -83.589685,
+    "alt": 46,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624571000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "ELI1",
+    "fullCode": "TC.ELI1",
+    "site": "Earth Liberia",
+    "state": "",
+    "lat": 10.645,
+    "lon": -85.5528,
+    "alt": 82,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "ICC1",
+    "fullCode": "TC.ICC1",
+    "site": "Isla del Coco, Costa Rica, Pacific Ocean",
+    "state": "",
+    "lat": 5.543883,
+    "lon": -87.055099,
+    "alt": 10,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 684631000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "ICR3",
+    "fullCode": "TC.ICR3",
+    "site": "Volcan Irazu Cartago",
+    "state": "",
+    "lat": 9.98,
+    "lon": -83.83683,
+    "alt": 3370,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 684631000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "LCR2",
+    "fullCode": "TC.LCR2",
+    "site": "Finca La Lucha San Jose",
+    "state": "",
+    "lat": 9.7415,
+    "lon": -84.005333,
+    "alt": 1704,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624830000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "MARA",
+    "fullCode": "TC.MARA",
+    "site": "Maravilla",
+    "state": "",
+    "lat": 10.0195,
+    "lon": -85.425499,
+    "alt": 629,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 684631000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "PIRO",
+    "fullCode": "TC.PIRO",
+    "site": "PIRO, Osa Puntarenas",
+    "state": "",
+    "lat": 8.4109,
+    "lon": -83.319504,
+    "alt": 235,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624830000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "PTJ1",
+    "fullCode": "TC.PTJ1",
+    "site": "Peninsula de Osa Puntarenas",
+    "state": "",
+    "lat": 8.53567,
+    "lon": -83.302299,
+    "alt": 20,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 684631000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "QUEP",
+    "fullCode": "TC.QUEP",
+    "site": "Quepos",
+    "state": "",
+    "lat": 9.431,
+    "lon": -84.164001,
+    "alt": 10,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 2280,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "RAFA",
+    "fullCode": "TC.RAFA",
+    "site": "San Rafael, Volcan Turrialba, Cartago",
+    "state": "",
+    "lat": 9.958185,
+    "lon": -83.811212,
+    "alt": 2575,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 684631000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "RGM0",
+    "fullCode": "TC.RGM0",
+    "site": "GANDOCA",
+    "state": "",
+    "lat": 9.5902,
+    "lon": -82.607399,
+    "alt": 17,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624830000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "SOCE",
+    "fullCode": "TC.SOCE",
+    "site": "Soltis Center",
+    "state": "",
+    "lat": 10.383333,
+    "lon": -84.618446,
+    "alt": 450,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "TCS1",
+    "fullCode": "TC.TCS1",
+    "site": "Tacares, Grecia, Alajuela",
+    "state": "",
+    "lat": 10.0421,
+    "lon": -84.299797,
+    "alt": 629,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 684631000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "TRB2",
+    "fullCode": "TC.TRB2",
+    "site": "Colegio de Turrubares San Jose",
+    "state": "",
+    "lat": 9.91383,
+    "lon": -84.44833,
+    "alt": 369,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "TRT1",
+    "fullCode": "TC.TRT1",
+    "site": "Linda vista de Cariari",
+    "state": "",
+    "lat": 10.598402,
+    "lon": -83.699265,
+    "alt": 63,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 40,
+        "sensitivity": 4641770000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "TRT2",
+    "fullCode": "TC.TRT2",
+    "site": "Tortugero",
+    "state": "",
+    "lat": 10.55736,
+    "lon": -83.73526,
+    "alt": 46,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624830000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "UPAL",
+    "fullCode": "TC.UPAL",
+    "site": "Upala",
+    "state": "",
+    "lat": 10.8972,
+    "lon": -85.012283,
+    "alt": 62,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 2280,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "VORI",
+    "fullCode": "TC.VORI",
+    "site": "Volcan Rincon",
+    "state": "",
+    "lat": 10.8201,
+    "lon": -85.346497,
+    "alt": 1508,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 9358860,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "VPS6",
+    "fullCode": "TC.VPS6",
+    "site": "Volcan Poas Alajuela",
+    "state": "",
+    "lat": 10.19033,
+    "lon": -84.232002,
+    "alt": 2601,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "VPS7",
+    "fullCode": "TC.VPS7",
+    "site": "Volcan Poas",
+    "state": "",
+    "lat": 10.186,
+    "lon": -84.236,
+    "alt": 2572,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 624571000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "VPS8",
+    "fullCode": "TC.VPS8",
+    "site": "Volcan Poas",
+    "state": "",
+    "lat": 10.179,
+    "lon": -84.241997,
+    "alt": 2625,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 684631000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "TC",
+    "networkName": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE)",
+    "code": "VERB",
+    "fullCode": "TC.VERB",
+    "site": "Verbena",
+    "state": "",
+    "lat": 9.9447,
+    "lon": -83.697,
+    "alt": 1161,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 146789000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "Red Sismológica Nacional de Costa Rica (RSN: UCR-ICE) / database.dat",
+    "work": true
+  },
+  {
+    "network": "IG",
+    "networkName": "SSN",
+    "code": "H06N",
+    "fullCode": "IG.H06N",
+    "site": "H06N Playa Norte, Isla Socorro Isla Socorro",
+    "state": "",
+    "lat": 18.8617,
+    "lon": -110.9861,
+    "alt": 15,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 2999980000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "SSN / database.dat",
+    "work": true
+  },
+  {
+    "network": "IG",
+    "networkName": "SSN",
+    "code": "H06S",
+    "fullCode": "IG.H06S",
+    "site": "Estaci[on El barquito, Isla Socorro Isla Socorro",
+    "state": "",
+    "lat": 18.7346,
+    "lon": -110.9575,
+    "alt": 35,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "BHZ",
+        "locationCode": "",
+        "sampleRate": 20,
+        "sensitivity": 6170720000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "BHZ",
+    "source": "SSN / database.dat",
+    "work": true
+  },
+  {
+    "network": "HN",
+    "networkName": "COPECO",
+    "code": "INTHN",
+    "fullCode": "HN.INTHN",
+    "site": "La Esperanza, Intibuca Intibuca",
+    "state": "",
+    "lat": 14.313675,
+    "lon": -88.103474,
+    "alt": 2027,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1671940000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "COPECO / database.dat",
+    "work": true
+  },
+  {
+    "network": "HN",
+    "networkName": "COPECO",
+    "code": "SARH",
+    "fullCode": "HN.SARH",
+    "site": "Santa Rosa de Copan",
+    "state": "",
+    "lat": 14.775583,
+    "lon": -88.760466,
+    "alt": 707,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1671940000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "COPECO / database.dat",
+    "work": true
+  },
+  {
+    "network": "HN",
+    "networkName": "COPECO",
+    "code": "YUSH",
+    "fullCode": "HN.YUSH",
+    "site": "Yuscaran, El Paraiso El Paraiso",
+    "state": "",
+    "lat": 13.953895,
+    "lon": -86.842601,
+    "alt": 918,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1671940000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "COPECO / database.dat",
+    "work": true
+  },
+  {
+    "network": "HN",
+    "networkName": "COPECO",
+    "code": "CEIBH",
+    "fullCode": "HN.CEIBH",
+    "site": "La Ceiba, Atlantida Atlantida",
+    "state": "",
+    "lat": 15.759795,
+    "lon": -86.769303,
+    "alt": 38,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1671940000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "COPECO / database.dat",
+    "work": true
+  },
+  {
+    "network": "HN",
+    "networkName": "COPECO",
+    "code": "CEIHN",
+    "fullCode": "HN.CEIHN",
+    "site": "La Ceiba, Atlantida Atlantida",
+    "state": "",
+    "lat": 15.759795,
+    "lon": -86.769303,
+    "alt": 38,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1671940000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "COPECO / database.dat",
+    "work": true
+  },
+  {
+    "network": "HN",
+    "networkName": "COPECO",
+    "code": "CHOHN",
+    "fullCode": "HN.CHOHN",
+    "site": "Orocuina, Choluteca Choluteca",
+    "state": "",
+    "lat": 13.479895,
+    "lon": -87.158441,
+    "alt": 1000,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1671940000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "COPECO / database.dat",
+    "work": true
+  },
+  {
+    "network": "HN",
+    "networkName": "COPECO",
+    "code": "SAPH",
+    "fullCode": "HN.SAPH",
+    "site": "San Pedro Sula",
+    "state": "",
+    "lat": 15.507694,
+    "lon": -88.066207,
+    "alt": 704,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1671940000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "COPECO / database.dat",
+    "work": true
+  },
+  {
+    "network": "HN",
+    "networkName": "COPECO",
+    "code": "ROTH",
+    "fullCode": "HN.ROTH",
+    "site": "Roatan, Islas de la BahiaHonduras",
+    "state": "",
+    "lat": 16.336877,
+    "lon": -86.502201,
+    "alt": 43.19,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "00",
+        "sampleRate": 100,
+        "sensitivity": 1671940000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "COPECO / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "CAZU",
+    "fullCode": "PC.CAZU",
+    "site": "Cerro Azul",
+    "state": "",
+    "lat": 9.238283,
+    "lon": -79.407825,
+    "alt": 940,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 299572000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 407881,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HNZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "CGOR",
+    "fullCode": "PC.CGOR",
+    "site": "Cerro Gordo",
+    "state": "",
+    "lat": 9.03867,
+    "lon": -79.665459,
+    "alt": 306,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 820864000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "FLAM",
+    "fullCode": "PC.FLAM",
+    "site": "Isla Flamenco",
+    "state": "",
+    "lat": 8.907985,
+    "lon": -79.520897,
+    "alt": 104,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 820864000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "FRIJ",
+    "fullCode": "PC.FRIJ",
+    "site": "Finca Ines Madrigal, El Jiral El Jiral",
+    "state": "",
+    "lat": 9.220089,
+    "lon": -79.715792,
+    "alt": 350,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 820864000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "GAMB1",
+    "fullCode": "PC.GAMB1",
+    "site": "ACP, Gamboa Pozo 110 m, Panama Panama",
+    "state": "",
+    "lat": 9.121781,
+    "lon": -79.71201,
+    "alt": 30,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 200,
+        "sensitivity": 248587000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "MAD1",
+    "fullCode": "PC.MAD1",
+    "site": "EDIF 49 MADDEN",
+    "state": "",
+    "lat": 9.209693,
+    "lon": -79.617409,
+    "alt": 45.3,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 496660,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "MLIR",
+    "fullCode": "PC.MLIR",
+    "site": "Isla Monte Lirio, Lago Gat.n Lago Gat.n",
+    "state": "",
+    "lat": 9.24115,
+    "lon": -79.853308,
+    "alt": 34,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 820864000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "PINA",
+    "fullCode": "PC.PINA",
+    "site": "Finca Laurentino Cortizo",
+    "state": "",
+    "lat": 9.253972,
+    "lon": -80.063586,
+    "alt": 0,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 820864000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "SHER",
+    "fullCode": "PC.SHER",
+    "site": "FUERTE SHERMAN",
+    "state": "",
+    "lat": 9.3714,
+    "lon": -79.94987,
+    "alt": 3,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 300000000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "ENZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 496660,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "PC",
+    "networkName": "ACP",
+    "code": "ZANG",
+    "fullCode": "PC.ZANG",
+    "site": "Finca Agustin Diaz, Zanguenga Zanguenga",
+    "state": "",
+    "lat": 8.956114,
+    "lon": -79.866739,
+    "alt": 110,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "EHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 820864000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "EHZ",
+    "source": "ACP / database.dat",
+    "work": true
+  },
+  {
+    "network": "RP",
+    "networkName": "UPA",
+    "code": "PTP",
+    "fullCode": "RP.PTP",
+    "site": "ptp, panama panama",
+    "state": "",
+    "lat": 8.2,
+    "lon": -82.87,
+    "alt": 63,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 299572000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 407981,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "UPA / database.dat",
+    "work": true
+  },
+  {
+    "network": "RP",
+    "networkName": "UPA",
+    "code": "AZU",
+    "fullCode": "RP.AZU",
+    "site": "azu, panama panama",
+    "state": "",
+    "lat": 7.7894,
+    "lon": -80.2743,
+    "alt": 45,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 478192000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 407981,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "UPA / database.dat",
+    "work": true
+  },
+  {
+    "network": "RP",
+    "networkName": "UPA",
+    "code": "PNME",
+    "fullCode": "RP.PNME",
+    "site": "Penonome, Cocle; Panama Cocle; Panama",
+    "state": "",
+    "lat": 8.486,
+    "lon": -80.3269,
+    "alt": 0,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1257770000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 160384,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "UPA / database.dat",
+    "work": true
+  },
+  {
+    "network": "RP",
+    "networkName": "UPA",
+    "code": "UPA",
+    "fullCode": "RP.UPA",
+    "site": "Campus, Universidad de Panama Universidad de Panama",
+    "state": "",
+    "lat": 8.982795,
+    "lon": -79.533908,
+    "alt": 83.8,
+    "channelCount": 1,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 625853000,
+        "inputType": "VELOCITY"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "UPA / database.dat",
+    "work": true
+  },
+  {
+    "network": "RP",
+    "networkName": "UPA",
+    "code": "UPD2",
+    "fullCode": "RP.UPD2",
+    "site": "Meteti, Darien; Panama Darien; Panama",
+    "state": "",
+    "lat": 8.5475,
+    "lon": -78.0148,
+    "alt": 86,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 1257770000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 160384,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "UPA / database.dat",
+    "work": true
+  },
+  {
+    "network": "RP",
+    "networkName": "UPA",
+    "code": "GMAL",
+    "fullCode": "RP.GMAL",
+    "site": "gmal, panama panama",
+    "state": "",
+    "lat": 7.8,
+    "lon": -81.25,
+    "alt": 4,
+    "channelCount": 2,
+    "channels": [
+      {
+        "code": "HHZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 299572000,
+        "inputType": "VELOCITY"
+      },
+      {
+        "code": "HNZ",
+        "locationCode": "",
+        "sampleRate": 100,
+        "sensitivity": 407981,
+        "inputType": "ACCELERATION"
+      }
+    ],
+    "primaryChannel": "HHZ",
+    "source": "UPA / database.dat",
+    "work": true
   }
 ]

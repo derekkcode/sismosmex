@@ -8,9 +8,9 @@
   <meta property="og:title" content="Monitor de Intensidad Sísmica en Tiempo Real">
   <meta property="og:description" content="Sistema de monitoreo e intensidad sísmica SismosMex">
 
-  <!-- Estilos del Sistema de Diseño -->
-  <script type="module" crossorigin src="/assets/main-h6PxnyZB.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-DJQ_t5Ae.css">
+  <!-- Estilos del Sistema de Diseño -->
+  <script type="module" crossorigin src="/assets/main-dvWn8K-r.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-DI_6z4eI.css">
 </head>
 <body>
   <div class="monitor-app-layout" id="appRoot">
@@ -29,7 +29,7 @@
         <div class="sidebar-section-header" style="display: flex; align-items: center;">
           <div style="display: flex; align-items: center; gap: 8px;">
             <span style="font-size: 15px;">ⓘ</span>
-            <span>Vista de Intensidades</span>
+            <span data-i18n="sidebar.intensitiesView">Vista de Intensidades</span>
           </div>
         </div>
 
@@ -39,13 +39,13 @@
             <!-- Header superior de la tarjeta -->
             <div class="jma-card-top-header">
               <span class="jma-top-header-icon">ⓘ</span>
-              <span class="jma-top-header-title">Información de Intensidades</span>
+              <span class="jma-top-header-title" data-i18n="sidebar.intensityInfo">Información de Intensidades</span>
             </div>
 
             <div class="jma-card-body">
               <!-- Banner redondeado interior con Intensidad Máxima y Número -->
               <div class="jma-intensity-banner" id="jquakeBigIntBox">
-                <span class="jma-intensity-label" id="jquakeIntensityLabel">Intensidad Máxima</span>
+                <span class="jma-intensity-label" id="jquakeIntensityLabel" data-i18n="sidebar.maxIntensity">Intensidad Máxima</span>
                 <span class="jma-intensity-num" id="jquakeIntensityNum">4</span>
               </div>
 
@@ -56,12 +56,12 @@
               <div class="jma-location-text" id="jquakeLocationTitle">86 km al Suroeste de Mapastepec, Chis</div>
 
               <!-- Subtítulo: で地震がありました -> Ocurrió un sismo -->
-              <div class="jma-event-subtitle" id="jquakeEventSubtitle">Ocurrió un sismo</div>
+              <div class="jma-event-subtitle" id="jquakeEventSubtitle" data-i18n="sidebar.occurred">Ocurrió un sismo</div>
 
               <!-- Métricas en orden exacto: 1. Magnitud con barra cian, 2. Profundidad con barra ámbar -->
               <div class="jma-metrics-stack">
                 <div class="jma-metric-row">
-                  <span class="jma-metric-label">Magnitud</span>
+                  <span class="jma-metric-label" data-i18n="sidebar.magnitude">Magnitud</span>
                   <div class="jma-metric-val-group">
                     <span class="jma-metric-number" id="jquakeMagVal">4.0</span>
                     <span class="jma-accent-bar bar-cyan" id="jquakeMagBar"></span>
@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="jma-metric-row">
-                  <span class="jma-metric-label">Profundidad</span>
+                  <span class="jma-metric-label" data-i18n="sidebar.depth">Profundidad</span>
                   <div class="jma-metric-val-group">
                     <span class="jma-metric-number jma-metric-depth" id="jquakeDepthVal">106km</span>
                     <span class="jma-accent-bar bar-amber" id="jquakeDepthBar"></span>
@@ -83,14 +83,14 @@
         <!-- Historial de Sismos Registrados -->
         <div class="sidebar-history-section">
           <div class="sidebar-section-header" style="border-top: 1px solid #1a2838; font-size: 12px; padding: 6px 12px; display: flex; justify-content: space-between; align-items: center;">
-            <span>Historial de Sismos</span>
-            <span style="font-size: 10px; color: #64748b;">(Solo reportes del monitor)</span>
+            <span data-i18n="sidebar.history">Historial de Sismos</span>
+            <span style="font-size: 10px; color: #64748b;" data-i18n="sidebar.historyNote">(Solo reportes del monitor)</span>
           </div>
 
           <div class="history-scroll-list" id="historyList">
             <div class="history-empty-state" id="historyEmpty">
               <span style="font-size: 20px; opacity: 0.6;">📡</span>
-              <span>Sin eventos sísmicos registrados</span>
+              <span data-i18n="sidebar.noEvents">Sin eventos sísmicos registrados</span>
             </div>
           </div>
         </div>
@@ -106,14 +106,14 @@
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="color: #38bdf8;">
               <path d="M2 12h4l2-6 4 13 3-9 2 4 1-2h4" />
             </svg>
-            <span>Actividad</span>
+            <span data-i18n="sidebar.activity">Actividad</span>
           </div>
-          <span id="activityLiveIndicator" style="font-size: 10px; font-weight: 800; color: #38bdf8; background: rgba(56,189,248,0.15); padding: 1px 6px; border-radius: 4px;">EN VIVO</span>
+          <span id="activityLiveIndicator" data-i18n="sidebar.live" style="font-size: 10px; font-weight: 800; color: #38bdf8; background: rgba(56,189,248,0.15); padding: 1px 6px; border-radius: 4px;">EN VIVO</span>
         </div>
 
         <!-- Estado Vacío cuando no hay actividad sísmica (En Español) -->
         <div class="activity-empty-screen" id="activityEmptyScreen">
-          <div class="activity-empty-text">Sin actividad sísmica para mostrar</div>
+          <div class="activity-empty-text" data-i18n="sidebar.noActivity">Sin actividad sísmica para mostrar</div>
         </div>
 
         <!-- Contenedor con actividad sísmica activa -->
@@ -126,8 +126,8 @@
           <div class="jquake-eew-card" id="activityEqCard" style="display: none;">
             <!-- Header con dos bloques: "Sismo" y "En Progreso" + Reporte # en lugar de ID -->
             <div class="jquake-eew-header">
-              <div class="jquake-eew-pill-sismo">Sismo</div>
-              <div class="jquake-eew-pill-report" id="activityEqReportPill" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b;">En Progreso</div>
+              <div class="jquake-eew-pill-sismo" data-i18n="activity.quake">Sismo</div>
+              <div class="jquake-eew-pill-report" id="activityEqReportPill" data-i18n="activity.inProgress" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b;">En Progreso</div>
               <span id="activityEqReportNumber" style="font-size: 11px; color: #38bdf8; font-family: monospace; font-weight: 700; margin-left: auto; letter-spacing: 0.5px; text-transform: uppercase;">Reporte #01</span>
             </div>
             
@@ -143,15 +143,15 @@
               <!-- Recuadro de Intensidad Máxima Estimada -->
               <div class="jquake-eew-est-box" id="activityEqEstBox">
                 <div class="jquake-eew-est-label">
-                  <span>Intensidad</span>
-                  <span>Máx. Estimada</span>
+                  <span data-i18n="activity.intensity">Intensidad</span>
+                  <span data-i18n="activity.maxEstimated">Máx. Estimada</span>
                 </div>
-                <div class="jquake-eew-est-num" id="activityEqEstNum">V</div>
+                <div class="jquake-eew-est-num" id="activityEqEstNum">5</div>
               </div>
 
               <!-- Magnitud con barra morada -->
               <div class="jquake-eew-metric-row">
-                <span class="jquake-eew-metric-lbl">Magnitud</span>
+                <span class="jquake-eew-metric-lbl" data-i18n="sidebar.magnitude">Magnitud</span>
                 <div class="jquake-eew-metric-val-wrap">
                   <span class="jquake-eew-metric-val" id="activityEqMag">7.9</span>
                   <span class="jquake-eew-bar bar-purple"></span>
@@ -160,7 +160,7 @@
 
               <!-- Profundidad con barra roja -->
               <div class="jquake-eew-metric-row">
-                <span class="jquake-eew-metric-lbl">Profundidad</span>
+                <span class="jquake-eew-metric-lbl" data-i18n="sidebar.depth">Profundidad</span>
                 <div class="jquake-eew-metric-val-wrap">
                   <span class="jquake-eew-metric-val" id="activityEqDepth">10 km</span>
                   <span class="jquake-eew-bar bar-red"></span>
@@ -168,7 +168,7 @@
               </div>
 
               <!-- Aviso legal / aclaración al pie de la tarjeta -->
-              <div class="jquake-eew-disclaimer">
+              <div class="jquake-eew-disclaimer" data-i18n="activity.disclaimer">
                 Estimación preliminar automatizada. La precisión del epicentro depende del número de estaciones disponibles.
               </div>
             </div>
@@ -177,16 +177,16 @@
           <!-- 2. Tarjeta de Sacudida Detectada -->
           <div class="jquake-shaking-card" id="activityShakingCard" style="display: none;">
             <div class="jquake-shaking-header">
-              <span>Sacudida Detectada</span>
+              <span data-i18n="activity.shakingDetected">Sacudida Detectada</span>
             </div>
             <div class="jquake-shaking-body">
               <div class="jquake-shaking-top-row">
                 <div class="jquake-shaking-label-stack">
-                  <span>Tiempo Real</span>
+                  <span data-i18n="activity.realTime">Tiempo Real</span>
                   <span>Intensidad Máxima</span>
                 </div>
                 <div class="jquake-shaking-int-square" id="activityShakingIntSquare">
-                  <span id="activityShakingIntNum">I</span>
+                  <span id="activityShakingIntNum">1</span>
                 </div>
               </div>
 
@@ -199,26 +199,120 @@
         </div>
       </div>
 
+      <!-- ------------------------------------------------------------------
+           PANEL 3: AJUSTES (IDIOMA, NARRADOR Y LEYENDA)
+           Se muestra en el mismo lugar que Vista de Intensidades y Actividad
+           ------------------------------------------------------------------ -->
+      <div class="monitor-sidebar-panel" id="panelSettings" style="display: none;">
+        <div class="sidebar-section-header" style="display: flex; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 15px;">⚙</span>
+            <span data-i18n="settings.title">Ajustes</span>
+          </div>
+        </div>
+
+        <div class="settings-body">
+          <section class="settings-section">
+            <h3 class="settings-section-title" data-i18n="settings.language">Idioma</h3>
+            <div class="settings-row">
+              <select id="settingsLanguage" class="settings-select" data-i18n-aria-label="settings.language" aria-label="Idioma">
+                <option value="es">Español</option>
+                <option value="en">English</option>
+                <option value="ja">日本語</option>
+              </select>
+            </div>
+            <p class="settings-hint" data-i18n="settings.languageHint">Cambia los textos de la interfaz al instante.</p>
+          </section>
+
+          <section class="settings-section">
+            <h3 class="settings-section-title" data-i18n="settings.narrator">Narrador</h3>
+            <label class="settings-row settings-toggle-row">
+              <span data-i18n="settings.narratorEnabled">Narrador activo</span>
+              <input type="checkbox" id="settingsNarratorEnabled" class="settings-checkbox">
+            </label>
+            <div class="settings-row settings-field">
+              <span data-i18n="settings.voice">Voz</span>
+              <select id="settingsVoice" class="settings-select">
+                <option value="" data-i18n="settings.voiceAuto">Automática (según idioma)</option>
+              </select>
+            </div>
+            <div class="settings-row settings-field">
+              <span data-i18n="settings.rate">Velocidad</span>
+              <div class="settings-range-wrap">
+                <input type="range" id="settingsRate" class="settings-range" min="0.5" max="1.5" step="0.05">
+                <span id="settingsRateValue" class="settings-range-value"></span>
+              </div>
+            </div>
+            <div class="settings-row settings-field">
+              <span data-i18n="settings.volume">Volumen</span>
+              <div class="settings-range-wrap">
+                <input type="range" id="settingsVolume" class="settings-range" min="0" max="1" step="0.05">
+                <span id="settingsVolumeValue" class="settings-range-value"></span>
+              </div>
+            </div>
+            <div class="settings-row">
+              <button class="settings-btn" id="btnSettingsTestVoice" data-i18n="settings.test">Probar narrador</button>
+            </div>
+            <p class="settings-hint" data-i18n="settings.narratorNote">En español, inglés y japonés se usa la voz del servidor si está disponible. Si no, se usa la voz del navegador.</p>
+          </section>
+
+          <section class="settings-section">
+            <h3 class="settings-section-title" data-i18n="settings.legend">Leyenda del mapa</h3>
+            <label class="settings-row settings-toggle-row">
+              <span data-i18n="settings.legendVisible">Mostrar leyenda</span>
+              <input type="checkbox" id="settingsLegendVisible" class="settings-checkbox">
+            </label>
+          </section>
+
+          <section class="settings-section">
+            <h3 class="settings-section-title" data-i18n="settings.display">Mapa y escalas</h3>
+            <label class="settings-row settings-toggle-row">
+              <span data-i18n="settings.autoZoom">Zoom automático</span>
+              <input type="checkbox" id="settingsAutoZoom" class="settings-checkbox">
+            </label>
+            <p class="settings-hint" data-i18n="settings.autoZoomHint">Acerca el mapa a la estación con mayor aceleración anormal y regresa a la vista normal cuando no hay actividad.</p>
+            <div class="settings-row settings-field">
+              <span data-i18n="settings.intensityScale">Escala de intensidad</span>
+              <select id="settingsIntensityScale" class="settings-select">
+                <option value="mercalli" data-i18n="settings.scaleMercalli">Mercalli (MMI)</option>
+                <option value="shindo" data-i18n="settings.scaleShindo">Shindo (JMA)</option>
+              </select>
+            </div>
+            <p class="settings-hint" data-i18n="settings.shindoNote">La equivalencia Shindo es aproximada.</p>
+            <label class="settings-row settings-toggle-row" id="settingsRomanRow">
+              <span data-i18n="settings.romanNumerals">Números romanos (I, II, III…)</span>
+              <input type="checkbox" id="settingsRomanNumerals" class="settings-checkbox">
+            </label>
+          </section>
+        </div>
+      </div>
+
     </aside>
 
     <!-- ====================================================================
          2. BARRA DE HERRAMIENTAS VERTICAL FLOTANTE
          ==================================================================== -->
     <div class="vertical-icon-toolbar">
-      <button class="vert-icon-btn active" id="btnLive" title="Vista de Intensidades">ⓘ</button>
-      <button class="vert-icon-btn" id="btnActivity" title="Actividad">
+      <button class="vert-icon-btn active" id="btnLive" data-i18n-title="sidebar.intensitiesView" title="Vista de Intensidades">ⓘ</button>
+            <button class="vert-icon-btn" id="btnActivity" data-i18n-title="toolbar.activity" title="Actividad">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M2 12h4l2-6 4 13 3-9 2 4 1-2h4" />
         </svg>
         <span class="activity-badge-dot" id="activityBadgeDot" style="display: none;"></span>
       </button>
-      <button class="vert-icon-btn" id="btnToggleNarrator" title="Narrador Activo" style="display: none; color: #38bdf8;">
+      <button class="vert-icon-btn" id="btnToggleNarrator" data-i18n-title="toolbar.narrator" title="Narrador Activo" style="display: none; color: #38bdf8;">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
           <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
         </svg>
       </button>
-      <button class="vert-icon-btn menu-seedlink-icon-btn" id="btnToolbarSeedlink" title="Monitor de Red de Estaciones" style="display: none !important;">📡</button>
+      <button class="vert-icon-btn" id="btnSettings" data-i18n-title="toolbar.settings" data-i18n-aria-label="toolbar.settings" title="Ajustes" aria-label="Ajustes">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+      <button class="vert-icon-btn menu-seedlink-icon-btn" id="btnToolbarSeedlink" data-i18n-title="toolbar.seedlink" title="Monitor de Red de Estaciones" style="display: none !important;">📡</button>
     </div>
 
     <!-- ====================================================================
@@ -227,11 +321,11 @@
     <div class="top-floating-header" id="topFloatingHeader">
       <div class="top-timestamp-pill" id="liveClockPill">
         <span id="clockText">2026/09/17 17:04:22</span>
-        <span class="mobile-clock-tag">Actualizado</span>
+        <span class="mobile-clock-tag" data-i18n="mobile.updated">Actualizado</span>
       </div>
     </div>
 
-    <div class="top-right-telemetry" title="Estaciones activas en red">
+    <div class="top-right-telemetry" data-i18n-title="telemetry.activeStations" title="Estaciones activas en red">
       <span id="telemetryStationCount">...</span>
     </div>
 
@@ -239,9 +333,9 @@
          4. CONTROLES DE ZOOM Y MAPA
          ==================================================================== -->
     <div class="map-control-buttons">
-      <button class="map-control-btn" id="btnZoomIn" title="Acercar (Zoom In)">+</button>
-      <button class="map-control-btn" id="btnZoomOut" title="Alejar (Zoom Out)">−</button>
-      <button class="map-control-btn" id="btnRecenter" title="Centrar en México">⛶</button>
+      <button class="map-control-btn" id="btnZoomIn" data-i18n-title="map.zoomIn" title="Acercar (Zoom In)">+</button>
+            <button class="map-control-btn" id="btnZoomOut" data-i18n-title="map.zoomOut" title="Alejar (Zoom Out)">−</button>
+            <button class="map-control-btn" id="btnRecenter" data-i18n-title="map.recenter" title="Centrar en México">⛶</button>
     </div>
 
     <!-- ====================================================================
@@ -252,22 +346,27 @@
         <canvas id="mapCanvas"></canvas>
       </div>
 
-      <!-- Leyenda Flotante en la Esquina Inferior Derecha (Solo visible en detección sísmica) -->
-      <div class="mercalli-legend-card" id="mercalliLegend" style="display: none;">
+      <!-- Leyenda flotante (siempre visible): colores de estaciones por intensidad MMI y símbolo de epicentro -->
+      <div class="mercalli-legend-card" id="mercalliLegend">
         <div class="mercalli-legend-title">
-          <span>Escala Mercalli</span>
-          <span style="font-size: 9px; color: #64748b;">MMI</span>
+          <span data-i18n="legend.title">Leyenda</span>
+          <span class="legend-title-right">
+            <span style="font-size: 9px; color: #64748b;">MMI</span>
+            <button class="legend-close-btn" id="btnLegendClose" data-i18n-title="legend.hide" data-i18n-aria-label="legend.hide" title="Ocultar leyenda" aria-label="Ocultar leyenda">✕</button>
+          </span>
         </div>
-        <div class="legend-scale-row"><span>Intensidad IX+</span><span class="legend-color-chip" style="background: #a855f7;"></span></div>
-        <div class="legend-scale-row"><span>Intensidad VIII</span><span class="legend-color-chip" style="background: #be0f0f;"></span></div>
-        <div class="legend-scale-row"><span>Intensidad VII</span><span class="legend-color-chip" style="background: #ff2626;"></span></div>
-        <div class="legend-scale-row"><span>Intensidad VI</span><span class="legend-color-chip" style="background: #ea580c;"></span></div>
-        <div class="legend-scale-row"><span>Intensidad V</span><span class="legend-color-chip" style="background: #ffd200;"></span></div>
-        <div class="legend-scale-row"><span>Intensidad IV</span><span class="legend-color-chip" style="background: #f97316;"></span></div>
-        <div class="legend-scale-row"><span>Intensidad III</span><span class="legend-color-chip" style="background: #059669;"></span></div>
-        <div class="legend-scale-row"><span>Intensidad II</span><span class="legend-color-chip" style="background: #00d4ba;"></span></div>
-        <div class="legend-scale-row"><span>Intensidad I</span><span class="legend-color-chip" style="background: #007aff;"></span></div>
-        <div class="legend-scale-row"><span>Reposo</span><span class="legend-color-chip" style="background: #001ee0;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.epicenter">Epicentro</span><span style="color: #ff2626; font-weight: 900; font-size: 13px; line-height: 1;">✕</span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="10+">Intensidad 10+</span><span class="legend-color-chip" style="background: #a855f7;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="9">Intensidad 9</span><span class="legend-color-chip" style="background: #880e4f;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="8">Intensidad 8</span><span class="legend-color-chip" style="background: #be0f0f;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="7">Intensidad 7</span><span class="legend-color-chip" style="background: #ff2626;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="6">Intensidad 6</span><span class="legend-color-chip" style="background: #ea580c;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="5">Intensidad 5</span><span class="legend-color-chip" style="background: #ffd200;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="4">Intensidad 4</span><span class="legend-color-chip" style="background: #f97316;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="3">Intensidad 3</span><span class="legend-color-chip" style="background: #059669;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="2">Intensidad 2</span><span class="legend-color-chip" style="background: #00d4ba;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.intensity" data-i18n-n="1">Intensidad 1</span><span class="legend-color-chip" style="background: #007aff;"></span></div>
+        <div class="legend-scale-row"><span data-i18n="legend.rest">Reposo</span><span class="legend-color-chip" style="background: #001ee0;"></span></div>
       </div>
     </main>
 
@@ -284,12 +383,12 @@
             <div class="mobile-card-col" id="mobileCardIntensity">
               <div class="mobile-card-header">
                 <span>ⓘ</span>
-                <span>Información de Intensidad</span>
+                <span data-i18n="mobile.intensityCard">Información de Intensidad</span>
               </div>
               <div class="mobile-card-body">
                 <!-- Banner de Intensidad Máxima estilo Kyoshin / JMA -->
                 <div class="mobile-big-int-box" id="mobileBigIntBox">
-                  <span class="mobile-big-int-label" id="mobileIntensityLabel">INTENSIDAD<br>MÁXIMA</span>
+                  <span class="mobile-big-int-label" id="mobileIntensityLabel" data-i18n-html="mobile.intensityLabel">INTENSIDAD<br>MÁXIMA</span>
                   <span class="mobile-big-int-num" id="mobileIntensityNum">4</span>
                 </div>
                 <!-- Fecha y hora -->
@@ -297,17 +396,17 @@
                 <!-- Ubicación -->
                 <div class="mobile-location-title" id="mobileLocationTitle">86 km al Suroeste de Mapastepec, Chis</div>
                 <!-- Subtítulo -->
-                <div class="mobile-event-subtitle" id="mobileEventSubtitle">Ocurrió un sismo</div>
+                <div class="mobile-event-subtitle" id="mobileEventSubtitle" data-i18n="sidebar.occurred">Ocurrió un sismo</div>
                 <!-- Métricas -->
                 <div class="mobile-metric-row">
-                  <span class="mobile-metric-lbl">Magnitud</span>
+                  <span class="mobile-metric-lbl" data-i18n="sidebar.magnitude">Magnitud</span>
                   <div class="mobile-metric-val-wrap">
                     <span class="mobile-metric-val" id="mobileMagVal">4.0</span>
                     <span class="mobile-metric-bar bar-green" id="mobileMagBar"></span>
                   </div>
                 </div>
                 <div class="mobile-metric-row">
-                  <span class="mobile-metric-lbl">Profundidad</span>
+                  <span class="mobile-metric-lbl" data-i18n="sidebar.depth">Profundidad</span>
                   <div class="mobile-metric-val-wrap">
                     <span class="mobile-metric-val" id="mobileDepthVal">106km</span>
                     <span class="mobile-metric-bar bar-cyan" id="mobileDepthBar"></span>
@@ -319,7 +418,7 @@
             <!-- TARJETA DERECHA: HISTORIAL SÍSMICO -->
             <div class="mobile-card-col" id="mobileCardHistory">
               <div class="mobile-card-header">
-                <span>Historial Sísmico</span>
+                <span data-i18n="mobile.historyCard">Historial Sísmico</span>
               </div>
               <div class="mobile-history-scroll" id="mobileHistoryList">
                 <!-- Se llena dinámicamente con SeedLinkUIManager -->
@@ -336,22 +435,22 @@
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3">
                   <path d="M2 12h4l2-6 4 13 3-9 2 4 1-2h4" />
                 </svg>
-                <span>Tiempo Real • Monitoreo de Ondas</span>
+                <span data-i18n="mobile.liveCard">Tiempo Real • Monitoreo de Ondas</span>
               </div>
-              <span style="font-size: 9px; font-weight: 800; color: #38bdf8; background: rgba(56,189,248,0.15); padding: 1px 5px; border-radius: 3px;">EN VIVO</span>
+              <span data-i18n="sidebar.live" style="font-size: 9px; font-weight: 800; color: #38bdf8; background: rgba(56,189,248,0.15); padding: 1px 5px; border-radius: 3px;">EN VIVO</span>
             </div>
             <div class="mobile-card-scroll-body" id="mobileActivityScroll">
               <!-- Si no hay sismo activo se muestra panel limpio con telemetría en vivo -->
               <div id="mobileActivityEmptyScreen" style="text-align: center; padding: 10px 4px;">
-                <div style="font-size: 13px; font-weight: 700; color: #f1f5f9; margin-bottom: 3px;">Sin actividad sísmica para mostrar</div>
-                <div style="font-size: 10px; color: #94a3b8; margin-bottom: 10px;">Monitoreo en tiempo real activo en estaciones sísmicas</div>
+                <div data-i18n="sidebar.noActivity" style="font-size: 13px; font-weight: 700; color: #f1f5f9; margin-bottom: 3px;">Sin actividad sísmica para mostrar</div>
+                <div data-i18n="mobile.liveDesc" style="font-size: 10px; color: #94a3b8; margin-bottom: 10px;">Monitoreo en tiempo real activo en estaciones sísmicas</div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; text-align: left;">
                   <div style="background: #182332; border: 1px solid #202d3e; border-radius: 6px; padding: 6px 8px;">
-                    <div style="font-size: 9px; color: #94a3b8; font-weight: 700;">ESTACIONES EN LÍNEA</div>
+                    <div data-i18n="mobile.onlineStations" style="font-size: 9px; color: #94a3b8; font-weight: 700;">ESTACIONES EN LÍNEA</div>
                     <div style="font-size: 16px; font-weight: 900; color: #38bdf8;" id="mobOnlineStations">124</div>
                   </div>
                   <div style="background: #182332; border: 1px solid #202d3e; border-radius: 6px; padding: 6px 8px;">
-                    <div style="font-size: 9px; color: #94a3b8; font-weight: 700;">ACELERACIÓN MÁXIMA</div>
+                    <div data-i18n="mobile.maxAcceleration" style="font-size: 9px; color: #94a3b8; font-weight: 700;">ACELERACIÓN MÁXIMA</div>
                     <div style="font-size: 16px; font-weight: 900; color: #22c55e;" id="mobMaxPga">0.000 gal</div>
                   </div>
                 </div>
@@ -361,13 +460,23 @@
             </div>
           </div>
         </div>
+        <!-- PESTAÑA 3: AJUSTES (EL CONTENIDO SE REUBICA AQUÍ EN MÓVIL, Y EN EL PANEL LATERAL EN ESCRITORIO) -->
+        <div class="mobile-tab-view" id="mobileViewSettings">
+          <div class="mobile-single-card">
+            <div class="mobile-card-header" style="padding: 6px 10px;">
+              <span>⚙</span>
+              <span data-i18n="settings.title">Ajustes</span>
+            </div>
+            <div class="mobile-card-scroll-body" id="mobileSettingsHost"></div>
+          </div>
+        </div>
       </div>
 
       <!-- BARRA DE NAVEGACIÓN INFERIOR MÓVIL (DOCK DE 2 PESTAÑAS: INFORMACIÓN Y TIEMPO REAL) -->
       <nav class="mobile-bottom-nav" id="mobileBottomNav">
         <button class="mobile-nav-btn active" data-tab="info" id="mobNavBtnInfo">
           <div class="mobile-nav-icon">ⓘ</div>
-          <span class="mobile-nav-label">Información</span>
+          <span class="mobile-nav-label" data-i18n="mobile.nav.info">Información</span>
         </button>
         <button class="mobile-nav-btn" data-tab="live" id="mobNavBtnLive">
           <div class="mobile-nav-icon">
@@ -375,7 +484,11 @@
               <path d="M2 12h4l2-6 4 13 3-9 2 4 1-2h4" />
             </svg>
           </div>
-          <span class="mobile-nav-label">Tiempo Real</span>
+          <span class="mobile-nav-label" data-i18n="mobile.nav.live">Tiempo Real</span>
+        </button>
+        <button class="mobile-nav-btn" data-tab="settings" id="mobNavBtnSettings">
+          <div class="mobile-nav-icon">⚙</div>
+          <span class="mobile-nav-label" data-i18n="mobile.nav.settings">Ajustes</span>
         </button>
       </nav>
     </div>
@@ -390,45 +503,45 @@
           <div class="dialog-title-group">
             <div class="dialog-title">
               <span class="dialog-title-icon">📡</span>
-              <span>Monitor de Red Sísmica (En Vivo)</span>
+              <span data-i18n="seedlink.title">Monitor de Red Sísmica (En Vivo)</span>
             </div>
-            <div class="dialog-subtitle">
+            <div class="dialog-subtitle" data-i18n="seedlink.subtitle">
               Adquisición TCP continua • Timeout estricto de 20s • Formato MiniSEED • Detección STA/LTA
             </div>
           </div>
-          <button class="dialog-close-btn" id="btnSeedlinkModalClose" title="Cerrar ventana">✕</button>
+          <button class="dialog-close-btn" id="btnSeedlinkModalClose" data-i18n-title="seedlink.closeWindow" title="Cerrar ventana">✕</button>
         </div>
 
         <!-- Metric Ribbon -->
         <div class="seedlink-stats-ribbon">
           <div class="ribbon-card">
-            <span class="ribbon-lbl">Estaciones Totales</span>
+            <span class="ribbon-lbl" data-i18n="seedlink.totalStations">Estaciones Totales</span>
             <span class="ribbon-val" id="statTotalStations">...</span>
           </div>
           <div class="ribbon-card">
-            <span class="ribbon-lbl">Estaciones en Línea</span>
+            <span class="ribbon-lbl" data-i18n="seedlink.onlineStations">Estaciones en Línea</span>
             <span class="ribbon-val stat-val-cyan" id="statOnlineStations">...</span>
           </div>
           <div class="ribbon-card">
-            <span class="ribbon-lbl">Servidores (Timeout 20s)</span>
+            <span class="ribbon-lbl" data-i18n="seedlink.serversTimeout">Servidores (Timeout 20s)</span>
             <span class="ribbon-val stat-val-emerald" id="statConnectedServers">...</span>
           </div>
           <div class="ribbon-card">
-            <span class="ribbon-lbl">PGA Máx Registrado</span>
+            <span class="ribbon-lbl" data-i18n="seedlink.maxPga">PGA Máx Registrado</span>
             <span class="ribbon-val stat-val-amber" id="statMaxPga">0.000 gal</span>
           </div>
         </div>
 
         <!-- Navigation Tabs -->
         <div class="seedlink-tabs-nav">
-          <button class="seedlink-tab-btn active" id="tabBtnStations">
+          <button class="seedlink-tab-btn active" id="tabBtnStations" data-i18n="seedlink.tabStations">
             <span>📊 Estaciones Sísmicas</span>
           </button>
-          <button class="seedlink-tab-btn" id="tabBtnServers">
+          <button class="seedlink-tab-btn" id="tabBtnServers" data-i18n="seedlink.tabServers">
             <span>🖥️ Servidores de Adquisición (20s)</span>
           </button>
           <div class="tab-spacer"></div>
-          <button class="btn-reconnect-all" id="btnSeedlinkReconnectAll" title="Forzar reconexión de servidores">
+          <button class="btn-reconnect-all" id="btnSeedlinkReconnectAll" data-i18n="seedlink.reconnectAll" data-i18n-title="seedlink.reconnectTitle" title="Forzar reconexión de servidores">
             <span>🔄 Reconectar Servidores</span>
           </button>
         </div>
@@ -438,12 +551,12 @@
           <div class="stations-toolbar">
             <div class="station-search-box">
               <span class="search-icon">🔍</span>
-              <input type="text" id="stationSearchInput" class="station-search-input" placeholder="Buscar por código, red o municipio (ej. RAA84, CJIG, Chamela)...">
+              <input type="text" id="stationSearchInput" class="station-search-input" data-i18n-placeholder="seedlink.searchPlaceholder" placeholder="Buscar por código, red o municipio (ej. RAA84, CJIG, Chamela)...">
             </div>
             <div class="filter-chips-row">
-              <button class="station-filter-chip active" data-filter="all">Todas</button>
-              <button class="station-filter-chip" data-filter="online">En línea</button>
-              <button class="station-filter-chip" data-filter="trigger">Disparo STA/LTA</button>
+              <button class="station-filter-chip active" data-filter="all" data-i18n="seedlink.filterAll">Todas</button>
+                            <button class="station-filter-chip" data-filter="online" data-i18n="seedlink.filterOnline">En línea</button>
+                            <button class="station-filter-chip" data-filter="trigger" data-i18n="seedlink.filterTrigger">Disparo STA/LTA</button>
               <button class="station-filter-chip" data-filter="ig">Red IG (SSN)</button>
               <button class="station-filter-chip" data-filter="am">Red AM (Raspberry Shake)</button>
               <button class="station-filter-chip" data-filter="gi">Guatemala (INSIVUMEH)</button>
@@ -456,14 +569,14 @@
             <table class="seedlink-data-table">
               <thead>
                 <tr>
-                  <th style="width: 20%;">Estación</th>
-                  <th style="width: 10%;">Canal</th>
-                  <th style="width: 15%;">Aceleración</th>
-                  <th style="width: 13%;">Amplitud</th>
-                  <th style="width: 15%;">Estado</th>
-                  <th style="width: 9%;">Delay</th>
-                  <th style="width: 10%;">PGA</th>
-                  <th style="width: 8%; text-align: right;">Acción</th>
+                  <th style="width: 20%;" data-i18n="seedlink.colStation">Estación</th>
+                                    <th style="width: 10%;" data-i18n="seedlink.colChannel">Canal</th>
+                                    <th style="width: 15%;" data-i18n="seedlink.colAccel">Aceleración</th>
+                                    <th style="width: 13%;" data-i18n="seedlink.colAmplitude">Amplitud</th>
+                                    <th style="width: 15%;" data-i18n="seedlink.colStatus">Estado</th>
+                                    <th style="width: 9%;" data-i18n="seedlink.colDelay">Delay</th>
+                                    <th style="width: 10%;" data-i18n="seedlink.colPga">PGA</th>
+                                    <th style="width: 8%; text-align: right;" data-i18n="seedlink.colAction">Acción</th>
                 </tr>
               </thead>
               <tbody id="seedlinkStationsTableBody">
@@ -476,18 +589,18 @@
         <!-- Tab 2: Servidores de Adquisición (Timeout 20s) -->
         <div class="seedlink-tab-content" id="viewTabServers" style="display: none;">
           <div class="servers-info-banner">
-            <span>⚡ Servidores TCP configurados con <strong>Timeout de 20s</strong>. Conexión continua persistente.</span>
+            <span data-i18n-html="seedlink.serversBanner">⚡ Servidores TCP configurados con <strong>Timeout de 20s</strong>. Conexión continua persistente.</span>
           </div>
           <div class="table-scroll-container">
             <table class="seedlink-data-table servers-table">
               <thead>
                 <tr>
-                  <th>Servidor / Nodo</th>
-                  <th>Enlace</th>
-                  <th>Puerto</th>
-                  <th>Timeout (s)</th>
-                  <th>Estado</th>
-                  <th>Telemetría</th>
+                  <th data-i18n="seedlink.colServer">Servidor / Nodo</th>
+                                    <th data-i18n="seedlink.colLink">Enlace</th>
+                                    <th data-i18n="seedlink.colPort">Puerto</th>
+                                    <th data-i18n="seedlink.colTimeout">Timeout (s)</th>
+                                    <th data-i18n="seedlink.colState">Estado</th>
+                                    <th data-i18n="seedlink.colTelemetry">Telemetría</th>
                 </tr>
               </thead>
               <tbody id="seedlinkServersTableBody">
@@ -501,9 +614,9 @@
         <div class="dialog-footer">
           <div style="font-size: 11px; color: #64748b; display: flex; align-items: center; gap: 6px;">
             <span class="seedlink-live-dot"></span>
-            <span>Flujo MiniSEED continuo en tiempo real (TCP Port 18000)</span>
+            <span data-i18n="seedlink.footer">Flujo MiniSEED continuo en tiempo real (TCP Port 18000)</span>
           </div>
-          <button class="btn-secondary" id="btnSeedlinkModalCancel">Cerrar</button>
+          <button class="btn-secondary" id="btnSeedlinkModalCancel" data-i18n="common.close">Cerrar</button>
         </div>
       </div>
     </div>
@@ -514,11 +627,11 @@
     <div class="updates-modal-overlay" id="updatesModal" style="display: none;">
       <div class="updates-dialog" role="dialog" aria-modal="true" aria-labelledby="updatesModalTitle">
         <!-- Botón de cierre superior derecho ✕ -->
-        <button class="updates-close-btn" id="btnUpdatesClose" title="Cerrar">✕</button>
+        <button class="updates-close-btn" id="btnUpdatesClose" data-i18n-title="common.close" title="Cerrar">✕</button>
 
         <!-- Encabezado centrado -->
         <div class="updates-header">
-          <div class="updates-title" id="updatesModalTitle">Actualizaciones</div>
+          <div class="updates-title" id="updatesModalTitle" data-i18n="updates.title">Actualizaciones</div>
           <div class="updates-page-controls" id="updatesPageControls" style="display: none;"></div>
         </div>
 
@@ -531,7 +644,7 @@
           <button class="updates-ok-btn" id="btnUpdatesOk">OK</button>
           <label class="updates-pref-label">
             <input type="checkbox" id="updatesDontShowAgain">
-            <span>No volver a mostrar</span>
+            <span data-i18n="updates.dontShow">No volver a mostrar</span>
           </label>
         </div>
       </div>
@@ -546,28 +659,28 @@
           <div class="swarm-station-code" id="swarmStationCode">IG.CJIG — Chamela, Jalisco</div>
           <div class="swarm-station-sub" id="swarmStationSub">Canal: BHN • 20 sps • Lat: 19.53° • Lon: -105.08°</div>
         </div>
-        <button class="dialog-close-btn" id="btnSwarmClose" title="Cerrar oscilograma">✕</button>
+        <button class="dialog-close-btn" id="btnSwarmClose" data-i18n-title="swarm.closeTitle" title="Cerrar oscilograma">✕</button>
       </div>
 
       <div class="swarm-metrics-ribbon">
         <div class="swarm-metric">
-          <span class="swarm-metric-lbl">Delay / Latencia:</span>
+          <span class="swarm-metric-lbl" data-i18n="swarm.delayLatency">Delay / Latencia:</span>
           <span class="swarm-metric-val swarm-delay-badge" id="swarmMetricDelay">—</span>
         </div>
         <div class="swarm-metric">
-          <span class="swarm-metric-lbl">PGA:</span>
+          <span class="swarm-metric-lbl" data-i18n="swarm.pga">PGA:</span>
           <span class="swarm-metric-val" id="swarmMetricPga">0.000 gal</span>
         </div>
         <div class="swarm-metric">
-          <span class="swarm-metric-lbl">Intensidad Mercalli:</span>
+          <span class="swarm-metric-lbl" data-i18n="swarm.intensity">Intensidad:</span>
           <span class="swarm-metric-val" id="swarmMetricInt">0</span>
         </div>
         <div class="swarm-metric">
-          <span class="swarm-metric-lbl">STA/LTA Ratio:</span>
+          <span class="swarm-metric-lbl" data-i18n="swarm.staltaRatio">STA/LTA Ratio:</span>
           <span class="swarm-metric-val" id="swarmMetricRatio">1.00</span>
         </div>
         <div class="swarm-metric swarm-source-metric">
-          <span class="swarm-metric-lbl">Red:</span>
+          <span class="swarm-metric-lbl" data-i18n="swarm.network">Red:</span>
           <span class="swarm-metric-val" id="swarmMetricNet" style="color: #38bdf8;">—</span>
         </div>
       </div>
@@ -581,12 +694,12 @@
       </div>
 
       <div class="swarm-controls-bar">
-        <div class="swarm-filter-badge" id="swarmActiveFilterBadge" title="Filtro pasa-banda sismológico 1 - 10 Hz para detección de eventos locales y ondas P/S">
+        <div class="swarm-filter-badge" id="swarmActiveFilterBadge" data-i18n-title="swarm.filterTitle" title="Filtro pasa-banda sismológico 1 - 10 Hz para detección de eventos locales y ondas P/S">
           <span class="swarm-filter-dot"></span>
-          <span class="swarm-filter-txt">Filtro Local: 1 - 10 Hz</span>
+          <span class="swarm-filter-txt" data-i18n="swarm.filterLocal">Filtro Local: 1 - 10 Hz</span>
         </div>
         <div class="swarm-bottom-delay-wrap">
-          <span class="swarm-bottom-delay-lbl">Delay:</span>
+          <span class="swarm-bottom-delay-lbl" data-i18n="swarm.delay">Delay:</span>
           <span class="swarm-delay-badge" id="swarmBottomDelay">—</span>
         </div>
         <span style="font-size: 10px; color: #64748b; font-weight: 600;">USGS Swarm Real-time Protocol</span>
@@ -594,6 +707,6 @@
     </div>
   </div>
 
-  <!-- Script del Motor Gráfico y Control de Datos -->
+  <!-- Script del Motor Gráfico y Control de Datos -->
 </body>
 </html>

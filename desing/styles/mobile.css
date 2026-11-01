@@ -34,8 +34,41 @@
   .top-right-telemetry {
     display: none !important;
   }
-  .mercalli-legend-card {
+  /* Oscilograma (swarm) desactivado en vista móvil */
+  .swarm-panel,
+  .btn-action-swarm {
     display: none !important;
+  }
+  .mercalli-legend-card {
+    top: auto !important;
+    left: 56px !important;
+    right: 8px !important;
+    bottom: 6px !important;
+    min-width: 0 !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 2px 10px !important;
+    padding: 4px 6px !important;
+    background: rgba(10, 16, 26, 0.92) !important;
+  }
+
+  .mercalli-legend-card .mercalli-legend-title {
+    width: 100% !important;
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    font-size: 9px !important;
+  }
+
+  .mercalli-legend-card .legend-scale-row {
+    font-size: 9px !important;
+    gap: 4px !important;
+  }
+
+  .mercalli-legend-card .legend-color-chip {
+    width: 12px !important;
+    height: 8px !important;
   }
 
   /* 2. Disposición vertical de la aplicación para teléfonos */
@@ -108,7 +141,7 @@
   .map-control-buttons {
     position: absolute !important;
     top: auto !important;
-    bottom: 10px !important;
+    bottom: calc(56dvh + 10px) !important;
     left: 10px !important;
     right: auto !important;
     display: flex !important;
@@ -432,7 +465,7 @@
     background: #080f18 !important;
     border-top: 1px solid #182334 !important;
     display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(3, 1fr) !important;
     align-items: center !important;
     z-index: 100 !important;
     flex-shrink: 0 !important;
@@ -490,6 +523,11 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+  }
+
+  .mobile-card-scroll-body .settings-body {
+    padding: 0;
+    overflow-y: visible;
   }
 
   /* 8. Modales en pantalla móvil */
@@ -558,5 +596,16 @@
   .updates-columns {
     grid-template-columns: 1fr !important;
     gap: 10px !important;
+  }
+}
+
+/* Teléfonos estrechos: las dos tarjetas se apilan para que no se recorten */
+@media (max-width: 480px) {
+  .mobile-dual-cards-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: 1fr 1fr !important;
+  }
+  .mobile-card-col {
+    min-height: 0 !important;
   }
 }

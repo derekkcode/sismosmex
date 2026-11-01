@@ -227,6 +227,14 @@ export function computeMedian(arr: number[]): number {
   return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2.0;
 }
 
+/**
+ * Geometría degenerada: con pocas estaciones concentradas en un solo lado del epicentro
+ * (brecha azimutal > 270°) el hipocentro queda mal restringido y la localización no es confiable.
+ */
+export function isDegenerateGeometry(azimuthalGap: number | undefined, stationCount: number): boolean {
+  return azimuthalGap !== undefined && azimuthalGap > 270 && stationCount < 5;
+}
+
 /** Simplex de Nelder-Mead: minimiza f sin derivadas; se usa para pulir el hipocentro fuera de la rejilla */
 function nelderMead(f: (x: number[]) => number, x0: number[], steps: number[], maxIter: number): { x: number[]; fx: number } {
   const n = x0.length;
@@ -840,6 +848,7 @@ export class SeismicDetectorEngine {
     triggered?: boolean;
     triggerSampleIndex?: number | null;
     triggerTimeIso?: string | null;
+    refinedPickIso?: string | null; // Llegada P refinada con AIC (dentro de la ventana del cruce STA/LTA)
     woodAndersonDispMm?: number;
     minPgaThreshold?: number; // Piso de PGA calibrado del canal (ruido real * margen)
     noiseClass?: NoiseClass;
@@ -863,6 +872,7 @@ export class SeismicDetectorEngine {
       triggered,
       triggerSampleIndex,
       triggerTimeIso,
+      refinedPickIso,
       woodAndersonDispMm = 0,
       minPgaThreshold,
       noiseClass,
@@ -980,6 +990,10 @@ export class SeismicDetectorEngine {
       if (!isNaN(parsedMs)) tP = parsedMs;
     } else if (triggerSampleIndex !== null && triggerSampleIndex !== undefined && sampleRate > 0) {
       tP = packetTimeMs + Math.round((triggerSampleIndex / sampleRate) * 1000);
+    }
+    if (refinedPickIso) {
+      const refinedMs = new Date(refinedPickIso).getTime();
+      if (!isNaN(refinedMs)) tP = refinedMs;
     }
     const tP_iso = new Date(tP).toISOString();
 
@@ -1254,7 +1268,7 @@ export class SeismicDetectorEngine {
           // Re-estimar el Epicentro exacto, la Profundidad y la Magnitud conforme llegan más estaciones
           if (hasNewStations || (now - (recentSameRegion.timeEpoch || 0) < 60000)) {
             const refinedEpi = this.estimateEpicenter(mergedStations);
-            if (refinedEpi && refinedEpi.rmsResidualSec <= 2.8) {
+            if (refinedEpi && refinedEpi.rmsResidualSec <= 2.8 && !isDegenerateGeometry(refinedEpi.azimuthalGap, mergedStations.length)) {
               const magData = this.estimateMagnitude(mergedStations, refinedEpi.latitude, refinedEpi.longitude, refinedEpi.depth);
               const newMag = Number((magData.magnitude || recentSameRegion.magnitude).toFixed(1));
               const newPga = Number(Math.max(recentSameRegion.maxPga, magData.maxPga).toFixed(2));
@@ -1371,7 +1385,7 @@ export class SeismicDetectorEngine {
           }
         }
 
-        if (!epi || epi.rmsResidualSec > 2.0) {
+        if (!epi || epi.rmsResidualSec > 2.0 || isDegenerateGeometry(epi.azimuthalGap, candidateCluster.length)) {
           console.log(`[Detector] Cluster rechazado: Geiger no convergió o residual RMS excesivo (${epi?.rmsResidualSec}s).`);
           continue;
         }
@@ -1722,6 +1736,15 @@ export class SeismicDetectorEngine {
       if (pgaDistanceProduct > 800) {
         const mwpProxy = 0.88 * ml + 0.15 * Math.log10(pgaDistanceProduct);
         ml = Math.max(ml, Math.min(8.8, mwpProxy));
+      }
+
+      // Magnitud local Hutton & Boore (1987) a partir de la amplitud Wood-Anderson sintética (mm).
+      // Se promedia con la estimación por PGA para no depender de un solo método.
+      const waAmpMm = st.woodAndersonAmpMm || 0;
+      if (waAmpMm > 0) {
+        const dWa = Math.max(10.0, distKm);
+        const mlWa = Math.log10(waAmpMm) + 1.11 * Math.log10(dWa / 100.0) + 0.00189 * (dWa - 100.0) + 3.0;
+        if (isFinite(mlWa)) ml = isFinite(ml) ? (ml + mlWa) / 2.0 : mlWa;
       }
 
       if (!isNaN(ml) && isFinite(ml)) {

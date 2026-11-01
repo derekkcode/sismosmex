@@ -439,7 +439,8 @@ export function handleSeedLinkApiRequest(req: IncomingMessage, res: ServerRespon
         }
 
         const narrator = SeismicNarratorService.getInstance();
-        const { audioBuffer, mimeType, cached } = await narrator.synthesizeSpeech(text);
+        const language = typeof payload.lang === 'string' ? payload.lang : 'es';
+        const { audioBuffer, mimeType, cached } = await narrator.synthesizeSpeech(text, language);
 
         if (audioBuffer && audioBuffer.length > 0) {
           res.statusCode = 200;
@@ -471,7 +472,7 @@ export function handleSeedLinkApiRequest(req: IncomingMessage, res: ServerRespon
       ok: true,
       service: 'Fish Audio S2.1 Pro Free + Web Speech Fallback',
       model: 's2.1-pro-free',
-      referenceId: '02061e28525144daa9171e7536475bad',
+      referenceIds: SeismicNarratorService.getInstance().getReferenceIds(),
     });
     return true;
   }

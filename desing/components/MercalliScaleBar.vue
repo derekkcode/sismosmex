@@ -1,6 +1,6 @@
 <template>
   <div class="mercalli-container">
-    <div class="mercalli-title">Escala de Intensidad Sísmica (Mercalli)</div>
+    <div class="mercalli-title">Escala de Intensidad Sísmica</div>
     <div class="mercalli-scale-bar">
       <div
         v-for="step in steps"
@@ -30,15 +30,15 @@ defineEmits<{
 }>();
 
 const steps = [
-  { level: 1, roman: 'I', label: 'I - Muy débil' },
-  { level: 2, roman: 'II', label: 'II - Débil' },
-  { level: 3, roman: 'III', label: 'III - Leve' },
-  { level: 4, roman: 'IV', label: 'IV - Moderado' },
-  { level: 5, roman: 'V', label: 'V - Fuerte' },
-  { level: 6, roman: 'VI', label: 'VI - Muy fuerte' },
-  { level: 7, roman: 'VII', label: 'VII - Severo' },
-  { level: 8, roman: 'VIII', label: 'VIII - Destructivo' },
-  { level: 9, roman: 'IX', label: 'IX - Ruinoso' },
+  { level: 1, roman: '1', label: '1 - Muy débil' },
+  { level: 2, roman: '2', label: '2 - Débil' },
+  { level: 3, roman: '3', label: '3 - Leve' },
+  { level: 4, roman: '4', label: '4 - Moderado' },
+  { level: 5, roman: '5', label: '5 - Fuerte' },
+  { level: 6, roman: '6', label: '6 - Muy fuerte' },
+  { level: 7, roman: '7', label: '7 - Severo' },
+  { level: 8, roman: '8', label: '8 - Destructivo' },
+  { level: 9, roman: '9', label: '9 - Ruinoso' },
 ];
 </script>
 

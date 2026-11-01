@@ -64,8 +64,8 @@ const props = withDefaults(
   }
 );
 
-const romanMap = ['0', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
-const romanIntensity = computed(() => romanMap[props.intensity] || 'VII');
+const romanMap = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const romanIntensity = computed(() => romanMap[props.intensity] || '7');
 </script>
 
 <style scoped>
