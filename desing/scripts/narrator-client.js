@@ -16,6 +16,8 @@ import { t, getLanguage, getLocale } from './i18n.js';
 
 // Idiomas con voz Fish Audio en el servidor; el resto usa la voz del navegador
 const FISH_AUDIO_LANGUAGES = ['es', 'en', 'ja'];
+// Un aviso no urgente que lleva más de este tiempo en cola ya no es relevante
+const NARRATOR_MAX_AGE_MS = 20000;
 
 export class SeismicNarratorClient {
   constructor(options = {}) {
@@ -25,6 +27,10 @@ export class SeismicNarratorClient {
     this.voiceName = '';
     this.isSpeaking = false;
     this.queue = [];
+    // Un solo bucle de reproducción: evita que dos avisos suenen a la vez
+    this.draining = false;
+    this.playToken = 0;
+    this.cancelCurrent = null;
     this.audioElement = new Audio();
     this.currentVoice = null;
     this.onStateChange = options.onStateChange || (() => {});
@@ -129,9 +135,12 @@ export class SeismicNarratorClient {
 
   stop() {
     this.queue = [];
+    this.playToken++;
     const wasSpeaking = this.isSpeaking;
     this.isSpeaking = false;
     if (this.audioElement) {
+      this.audioElement.onended = null;
+      this.audioElement.onerror = null;
       this.audioElement.pause();
       this.audioElement.currentTime = 0;
     }
@@ -139,6 +148,12 @@ export class SeismicNarratorClient {
       try {
         window.speechSynthesis.cancel();
       } catch (_) {}
+    }
+    // Libera la promesa del aviso en curso para que el bucle siga con la cola
+    if (this.cancelCurrent) {
+      const cancel = this.cancelCurrent;
+      this.cancelCurrent = null;
+      cancel();
     }
     if (wasSpeaking) {
       try { this.onSpeakingChange(false); } catch (_) {}
@@ -166,56 +181,72 @@ export class SeismicNarratorClient {
     // Si es urgente (ej. Alerta Sísmica), interrumpir y reproducir de inmediato
     if (options.urgent) {
       this.stop();
-      this.queue = [{ text: cleanText, options }];
+      this.queue = [{ text: cleanText, options, createdAt: now }];
       this.processQueue();
       return;
     }
 
-    // Agregar a la cola (máximo 4 pendientes para no acumular frases desactualizadas)
-    if (this.queue.length >= 4) {
+    // Máximo 2 pendientes y se descartan avisos caducados para no hablar sobre hechos viejos
+    while (this.queue.length >= 2) {
       this.queue.shift();
     }
-    this.queue.push({ text: cleanText, options });
-
-    if (!this.isSpeaking) {
-      this.processQueue();
-    }
+    this.queue.push({ text: cleanText, options, createdAt: now });
+    this.processQueue();
   }
 
   async processQueue() {
-    if (this.queue.length === 0) {
-      const wasSpeaking = this.isSpeaking;
-      this.isSpeaking = false;
-      if (wasSpeaking) {
+    if (this.draining) return;
+    this.draining = true;
+    try {
+      while (this.enabled && this.queue.length > 0) {
+        if (!this.isSpeaking) {
+          this.isSpeaking = true;
+          try { this.onSpeakingChange(true); } catch (_) {}
+        }
+        const item = this.queue.shift();
+        if (!item.options?.urgent && Date.now() - item.createdAt > NARRATOR_MAX_AGE_MS) {
+          continue;
+        }
+        const token = this.playToken;
+        try {
+          await this.speakSingleItem(item.text, item.options, token);
+        } catch (err) {
+          console.warn('[SeismicNarrator] Error en locución:', err);
+        }
+        // Pausa entre frases solo si nadie interrumpió el aviso
+        if (token === this.playToken && this.queue.length > 0) {
+          await new Promise((resolve) => setTimeout(resolve, 350));
+        }
+      }
+    } finally {
+      this.draining = false;
+      if (this.isSpeaking) {
+        this.isSpeaking = false;
         try { this.onSpeakingChange(false); } catch (_) {}
       }
-      return;
-    }
-
-    if (!this.isSpeaking) {
-      this.isSpeaking = true;
-      try { this.onSpeakingChange(true); } catch (_) {}
-    }
-    const item = this.queue.shift();
-
-    try {
-      await this.speakSingleItem(item.text, item.options);
-    } catch (err) {
-      console.warn('[SeismicNarrator] Error en locución:', err);
-    } finally {
-      // Pequeña pausa de 350ms entre frases para mantener cadencia robótica y clara
-      setTimeout(() => {
-        this.processQueue();
-      }, 350);
     }
   }
 
-  speakSingleItem(text, options = {}) {
+  speakSingleItem(text, options = {}, token = this.playToken) {
     return new Promise((resolve) => {
+      let settled = false;
+      const done = () => {
+        if (settled) return;
+        settled = true;
+        if (this.cancelCurrent === done) this.cancelCurrent = null;
+        resolve();
+      };
+      const isStale = () => token !== this.playToken;
+      if (isStale()) {
+        done();
+        return;
+      }
+      this.cancelCurrent = done;
+
       // Fish Audio tiene voz para español, inglés y japonés; el resto usa la voz del navegador
       const language = getLanguage();
       if (!FISH_AUDIO_LANGUAGES.includes(language)) {
-        this.fallbackWebSpeech(text, resolve);
+        this.fallbackWebSpeech(text, done);
         return;
       }
       // 1. Intentar Fish Audio API a través de nuestro endpoint server
@@ -228,27 +259,31 @@ export class SeismicNarratorClient {
           const contentType = resp.headers.get('content-type') || '';
           if (resp.ok && contentType.includes('audio')) {
             const blob = await resp.blob();
+            if (isStale()) {
+              done();
+              return;
+            }
             const url = URL.createObjectURL(blob);
             this.audioElement.src = url;
             this.audioElement.volume = this.volume;
             this.audioElement.onended = () => {
               URL.revokeObjectURL(url);
-              resolve();
+              done();
             };
             this.audioElement.onerror = () => {
               URL.revokeObjectURL(url);
-              this.fallbackWebSpeech(text, resolve);
+              this.fallbackWebSpeech(text, done);
             };
             this.audioElement.play().catch(() => {
-              this.fallbackWebSpeech(text, resolve);
+              this.fallbackWebSpeech(text, done);
             });
           } else {
             // Fish Audio no disponible o error de balance -> Fallback a Web Speech
-            this.fallbackWebSpeech(text, resolve);
+            this.fallbackWebSpeech(text, done);
           }
         })
         .catch(() => {
-          this.fallbackWebSpeech(text, resolve);
+          this.fallbackWebSpeech(text, done);
         });
     });
   }
