@@ -4,9 +4,11 @@
 const INTENSITY_SCALE_KEY = 'sismosmex_intensity_scale';
 const ROMAN_NUMERALS_KEY = 'sismosmex_roman_numerals';
 const AUTO_ZOOM_KEY = 'sismosmex_auto_zoom';
+const HISTORY_SOURCE_KEY = 'sismosmex_history_source';
 export const DISPLAY_SETTINGS_EVENT = 'sismosmex:displaysettingschange';
 
 export const INTENSITY_SCALES = ['mercalli', 'shindo'];
+export const HISTORY_SOURCES = ['monitor', 'ssn'];
 
 // Equivalencia aproximada MMI -> Shindo (JMA). Es orientativa, no una conversión oficial.
 const MMI_TO_SHINDO = {
@@ -77,5 +79,24 @@ export function setAutoZoomEnabled(enabled) {
     localStorage.setItem(AUTO_ZOOM_KEY, String(value));
   } catch (_) {}
   window.dispatchEvent(new CustomEvent(DISPLAY_SETTINGS_EVENT, { detail: { autoZoom: value } }));
+  return value;
+}
+
+/** 'monitor' = historial de MongoDB (con respaldo SSN); 'ssn' = solo catálogo del SSN. */
+export function getHistorySource() {
+  try {
+    const saved = localStorage.getItem(HISTORY_SOURCE_KEY);
+    return HISTORY_SOURCES.includes(saved) ? saved : 'monitor';
+  } catch (_) {
+    return 'monitor';
+  }
+}
+
+export function setHistorySource(source) {
+  const value = HISTORY_SOURCES.includes(source) ? source : 'monitor';
+  try {
+    localStorage.setItem(HISTORY_SOURCE_KEY, value);
+  } catch (_) {}
+  window.dispatchEvent(new CustomEvent(DISPLAY_SETTINGS_EVENT, { detail: { historySource: value } }));
   return value;
 }

@@ -7,7 +7,7 @@
 
 import { getIntensityTheme } from './monitor-engine.js';
 import { t, getLocale, formatEventDate } from './i18n.js';
-import { formatIntensity, getIntensityScale } from './display-settings.js';
+import { formatIntensity, getIntensityScale, getHistorySource, DISPLAY_SETTINGS_EVENT } from './display-settings.js';
 
 const SWARM_MOBILE_QUERY = window.matchMedia('(max-width: 768px)');
 
@@ -169,6 +169,11 @@ export class SeedLinkUIManager {
     this.stations = new Map();
     this.servers = [];
     this.earthquakes = [...INITIAL_EARTHQUAKES];
+
+    // Al cambiar la fuente del historial en ajustes, recargar la lista desde el endpoint elegido
+    window.addEventListener(DISPLAY_SETTINGS_EVENT, (e) => {
+      if (e.detail?.historySource) this.loadEarthquakeHistory();
+    });
 
     // Filtros de búsqueda
     this.stationSearchQuery = '';
@@ -519,7 +524,13 @@ export class SeedLinkUIManager {
       .catch(() => {});
 
     // 3. Recargar catálogo histórico de eventos sísmicos
-    fetch('/api/seedlink/events')
+    this.loadEarthquakeHistory();
+  }
+
+  /** Carga el historial desde el endpoint elegido en ajustes (monitor con respaldo SSN, o solo SSN). */
+  loadEarthquakeHistory() {
+    const endpoint = getHistorySource() === 'ssn' ? '/api/seedlink/events/ssn' : '/api/seedlink/events';
+    return fetch(endpoint)
       .then((r) => r.json())
       .then((events) => {
         this.earthquakes = Array.isArray(events) && events.length > 0 ? events : [...INITIAL_EARTHQUAKES];
@@ -641,8 +652,11 @@ export class SeedLinkUIManager {
         this.servers = msg.servers;
       }
       if (Array.isArray(msg.events)) {
-        this.earthquakes = msg.events.length > 0 ? msg.events : [...INITIAL_EARTHQUAKES];
-        this.renderEarthquakeHistory();
+        // Con fuente SSN el historial lo define el endpoint elegido, no la lista del WebSocket
+        if (getHistorySource() !== 'ssn') {
+          this.earthquakes = msg.events.length > 0 ? msg.events : [...INITIAL_EARTHQUAKES];
+          this.renderEarthquakeHistory();
+        }
 
         // Regla: al reiniciar el servidor o reconectar, reiniciar los eventos activos (no cargarlos en propagación activa)
         this.engine.clearActiveEvent();
@@ -658,7 +672,7 @@ export class SeedLinkUIManager {
       this.showSismosMpNotification(msg);
     } else if (msg.type === 'narrator_speak') {
       if (this.engine?.audioManager?.narrator && msg.text) {
-        this.engine.audioManager.narratePhrase(msg.text, { urgent: Boolean(msg.urgent) });
+        this.engine.audioManager.narratePhrase(msg.text, { urgent: Boolean(msg.urgent), shareKey: `server:${msg.text}`, shareWindowMs: 8000 });
       }
     } else if (msg.type === 'trigger_alerta_sismica') {
       if (typeof window.alertaSismica === 'function') {
@@ -1901,9 +1915,10 @@ export class SeedLinkUIManager {
 
     listEl.innerHTML = sortedEvents
       .map((ev) => {
+        const intKnown = ev.intensityKnown !== false;
         const intVal = Math.max(1, Math.min(10, Math.round(ev.maxIntensity || 1)));
-        const roman = formatIntensity(intVal);
-        const theme = getIntensityTheme(intVal);
+        const roman = intKnown ? formatIntensity(intVal) : '—';
+        const theme = getIntensityTheme(intKnown ? intVal : 1);
 
         const d = ev.time ? new Date(ev.time) : new Date();
         const dateStr = d.toLocaleDateString(getLocale(), { month: 'short', day: 'numeric' });
@@ -1989,9 +2004,10 @@ export class SeedLinkUIManager {
       } else {
         const lastSavedId = this.engine?.state?.lastSavedEvent?.id;
         mobileListEl.innerHTML = sortedEvents.map((ev) => {
+          const intKnown = ev.intensityKnown !== false;
           const intVal = Math.max(1, Math.min(10, Math.round(ev.maxIntensity || 1)));
-          const roman = formatIntensity(intVal);
-          const theme = getIntensityTheme(intVal);
+          const roman = intKnown ? formatIntensity(intVal) : '—';
+          const theme = getIntensityTheme(intKnown ? intVal : 1);
 
           const d = ev.time ? new Date(ev.time) : new Date();
           const dateStr = formatEventDate(d);

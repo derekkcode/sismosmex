@@ -277,29 +277,51 @@ export class SeedLinkWorker extends EventEmitter {
         { code: 'BAHB', net: 'RB' }
       ];
       this.stationQueue = [...SSN_MEXICO_STATIONS];
-    } else if (this.server.host === 'rtserve.iris.washington.edu') {
-      // FDSN / EarthScope: estaciones mexicanas con datos en vivo (verificadas con INFO STATIONS y polígonos de México)
+    } else if (this.server.host === 'rtserve.earthscope.org') {
+      // FDSN / EarthScope (host actual; rtserve.iris.washington.edu fue retirado): red MX verificada con INFO STATIONS
       this.stationQueue = [
-        { code: 'HPIG', net: 'MX' }, { code: 'HSIG', net: 'MX' }, { code: 'SRIG', net: 'MX' },
-        { code: 'TLIG', net: 'MX' }, { code: 'ZAIG', net: 'MX' },
+        { code: 'CCIG', net: 'MX' }, { code: 'HPIG', net: 'MX' }, { code: 'HSIG', net: 'MX' },
+        { code: 'MOIG', net: 'MX' }, { code: 'SRIG', net: 'MX' }, { code: 'TLIG', net: 'MX' },
+        { code: 'ZAIG', net: 'MX' },
         { code: 'CBX', net: 'BC' }, { code: 'RHX', net: 'BC' }, { code: 'SV2X', net: 'BC' },
         { code: 'UNM', net: 'G' }, { code: 'TEIG', net: 'IU' },
       ];
     } else if (this.server.host === '165.98.224.38') {
-      // INETER 4 (Redes Regionales: El Salvador SV y Guatemala GI)
+      // INETER 4 (165.98.224.38): publica México (MX), Panamá (RP/PA), Nicaragua (NU),
+      // El Salvador (SV) y Guatemala (GI). Redes verificadas con INFO STATIONS.
       this.stationQueue = [
+        // México (MX) - estaciones IG del catálogo servidas aquí con red MX
+        { code: 'TGIG', net: 'MX' }, { code: 'TUIG', net: 'MX' }, { code: 'SCIG', net: 'MX' },
+        { code: 'CMIG', net: 'MX' }, { code: 'MYIG', net: 'MX' }, { code: 'PCIG', net: 'MX' },
+        { code: 'THIG', net: 'MX' }, { code: 'HSIG', net: 'MX' }, { code: 'ZAIG', net: 'MX' },
+        { code: 'MOIG', net: 'MX' }, { code: 'SRIG', net: 'MX' }, { code: 'TLIG', net: 'MX' },
+        // Panamá (RP / PA)
+        { code: 'UPA', net: 'RP' }, { code: 'PNME', net: 'RP' }, { code: 'UPD2', net: 'RP' },
+        { code: 'GMAL', net: 'RP' }, { code: 'AZU', net: 'RP' }, { code: 'PTP', net: 'RP' },
+        { code: 'BRU2', net: 'PA' }, { code: 'GREIS', net: 'PA' }, { code: 'CIMA1', net: 'PA' },
+        { code: 'SHARK', net: 'PA' },
+        // Nicaragua (NU)
+        { code: 'ACON', net: 'NU' }, { code: 'BLUN', net: 'NU' }, { code: 'CRIN', net: 'NU' },
+        { code: 'MGAN', net: 'NU' }, { code: 'APQN', net: 'NU' }, { code: 'BILN', net: 'NU' },
+        { code: 'CARN', net: 'NU' }, { code: 'HERN', net: 'NU' }, { code: 'HUEN', net: 'NU' },
+        { code: 'LIMN', net: 'NU' }, { code: 'MATN', net: 'NU' }, { code: 'RCFN', net: 'NU' },
+        { code: 'RIBN', net: 'NU' }, { code: 'SAPN', net: 'NU' }, { code: 'SIUN', net: 'NU' },
+        { code: 'SMRN', net: 'NU' }, { code: 'STCN', net: 'NU' }, { code: 'CNGN2', net: 'NU' },
         // El Salvador (SV)
         { code: 'CALU', net: 'SV' }, { code: 'CEDA', net: 'SV' }, { code: 'FAME', net: 'SV' },
         { code: 'JAYA', net: 'SV' }, { code: 'MTO3', net: 'SV' }, { code: 'VSM2', net: 'SV' },
         { code: 'SNET', net: 'SV' }, { code: 'SENPD', net: 'SV' },
         { code: 'PASA1', net: 'SV' }, { code: 'SANTO', net: 'SV' }, { code: 'ARCE', net: 'SV' },
         { code: 'FAGO', net: 'SV' }, { code: 'AERO', net: 'SV' }, { code: 'CNCH', net: 'SV' },
+        { code: 'NUBE', net: 'SV' }, { code: 'PAVA', net: 'SV' }, { code: 'P5NO', net: 'SV' },
+        { code: 'TECD', net: 'SV' }, { code: 'ACABA', net: 'SV' },
         // Guatemala (GI)
         { code: 'HUHU', net: 'GI' }, { code: 'SMCA', net: 'GI' }, { code: 'RECH', net: 'GI' },
         { code: 'IZPB', net: 'GI' }, { code: 'CQES', net: 'GI' }, { code: 'IZLV', net: 'GI' },
         { code: 'QUIS', net: 'GI' }, { code: 'RERE', net: 'GI' }, { code: 'RESA', net: 'GI' },
         { code: 'SMOC', net: 'GI' }, { code: 'GCG4', net: 'GI' }, { code: 'JAMO', net: 'GI' },
-        { code: 'PEPO', net: 'GI' }, { code: 'BDG', net: 'GI' }
+        { code: 'PEPO', net: 'GI' }, { code: 'BDG', net: 'GI' }, { code: 'IZRD', net: 'GI' },
+        { code: 'JUAM', net: 'GI' }, { code: 'JUMO', net: 'GI' }, { code: 'ZAES', net: 'GI' }
       ];
     } else if (this.server.host === '165.98.224.36') {
       // Más Estaciones (Redes Regionales: Honduras HN y Centroamérica TC/IU/NU)

@@ -948,6 +948,10 @@ export class SeedLinkService {
     return this.detector.getEarthquakeHistory();
   }
 
+  public isMonitorHistoryReady(): boolean {
+    return this.detector.isMonitorHistoryReady();
+  }
+
   /** Perfiles de ruido calibrados por canal (clase, umbrales aprendidos, penalización y cuarentena) */
   public getNoiseProfiles(station?: string) {
     const snapshot = NoiseCalibrator.getInstance().getSnapshot();

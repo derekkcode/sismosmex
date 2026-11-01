@@ -11,6 +11,7 @@ import path from 'path';
 import { SeedLinkService } from './service';
 import { handleSismosMpEndpoint } from '../sismosmp/endpoint';
 import { SeismicNarratorService } from './narrator-service';
+import { getSsnHistory } from './ssn-history';
 
 export function handleSeedLinkApiRequest(req: IncomingMessage, res: ServerResponse): boolean {
   const rawUrl = req.url || '';
@@ -149,9 +150,27 @@ export function handleSeedLinkApiRequest(req: IncomingMessage, res: ServerRespon
     return true;
   }
 
-  // GET /api/seedlink/events (Historial de sismos guardados en archivo local data/earthquakes.json)
+  // GET /api/seedlink/events (Historial del monitor desde MongoDB; si no carga, historial del SSN)
+  // GET /api/seedlink/events/ssn (Historial del SSN, siempre)
+  // Cabecera X-History-Source indica la fuente real: "mongodb" o "ssn".
   if (url === '/api/seedlink/events' && method === 'GET') {
-    sendJson(200, service.getEarthquakeHistory());
+    if (service.isMonitorHistoryReady()) {
+      res.setHeader('X-History-Source', 'mongodb');
+      sendJson(200, service.getEarthquakeHistory());
+    } else {
+      getSsnHistory().then((events) => {
+        res.setHeader('X-History-Source', 'ssn');
+        sendJson(200, events);
+      });
+    }
+    return true;
+  }
+
+  if (url === '/api/seedlink/events/ssn' && method === 'GET') {
+    getSsnHistory().then((events) => {
+      res.setHeader('X-History-Source', 'ssn');
+      sendJson(200, events);
+    });
     return true;
   }
 

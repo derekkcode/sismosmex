@@ -44,7 +44,7 @@ export const SEEDLINK_SERVERS: SeedLinkServerDefinition[] = [
     priority: 1,
   },
   // 2. SERVIDOR FDSN (EarthScope): solo se suscriben sus estaciones dentro de México (ver multi-pool)
-  { id: 'fdsn_mx', name: 'FDSN EarthScope (México)', host: 'rtserve.iris.washington.edu', port: 18000, timeoutSec: 20, priority: 2 },
+  { id: 'fdsn_mx', name: 'FDSN EarthScope (México)', host: 'rtserve.earthscope.org', port: 18000, timeoutSec: 20, priority: 2 },
   // 3. SERVIDORES DE ESTACIONES SÍSMICAS REGIONALES Y CIUDADANAS (RED AM & INETER)
   { id: 'rc67e', name: 'RC67E', host: '132.248.198.89', port: 18000, timeoutSec: 20, stationCode: 'RC67E', networkCode: 'AM', priority: 2 },
   { id: 'raa84', name: 'RAA84', host: '132.248.94.155', port: 18000, timeoutSec: 20, stationCode: 'RAA84', networkCode: 'AM', priority: 2 },

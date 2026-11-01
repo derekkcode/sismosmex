@@ -9,7 +9,7 @@
   <meta property="og:description" content="Sistema de monitoreo e intensidad sísmica SismosMex">
 
   <!-- Estilos del Sistema de Diseño -->
-  <script type="module" crossorigin src="/assets/main-CvibBR5J.js"></script>
+  <script type="module" crossorigin src="/assets/main-DA1Mcs_h.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/main-DI_6z4eI.css">
 </head>
 <body>
@@ -283,6 +283,18 @@
               <span data-i18n="settings.romanNumerals">Números romanos (I, II, III…)</span>
               <input type="checkbox" id="settingsRomanNumerals" class="settings-checkbox">
             </label>
+          </section>
+
+          <section class="settings-section">
+            <h3 class="settings-section-title" data-i18n="settings.history">Historial de sismos</h3>
+            <div class="settings-row settings-field">
+              <span data-i18n="settings.historySource">Cargar historial desde</span>
+              <select id="settingsHistorySource" class="settings-select">
+                <option value="monitor" data-i18n="settings.historyMonitor">Historial del monitor (MongoDB)</option>
+                <option value="ssn" data-i18n="settings.historySsn">Historial del SSN</option>
+              </select>
+            </div>
+            <p class="settings-hint" data-i18n="settings.historyHint">Los sismos del SSN no incluyen intensidad por estación; se muestran sin intensidad en el mapa y en el historial.</p>
           </section>
         </div>
       </div>

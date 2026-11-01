@@ -18,6 +18,38 @@ import { t, getLanguage, getLocale } from './i18n.js';
 const FISH_AUDIO_LANGUAGES = ['es', 'en', 'ja'];
 // Un aviso no urgente que lleva más de este tiempo en cola ya no es relevante
 const NARRATOR_MAX_AGE_MS = 20000;
+// Varias pestañas abiertas comparten el mismo narrador: solo una reproduce a la vez
+const SHARED_LOCK_KEY = 'sismosmex_narrator_lock';
+const SHARED_CLAIM_PREFIX = 'sismosmex_narrator_claim_';
+const SHARED_LEASE_MS = 4000;
+
+function readSharedLock() {
+  try {
+    return JSON.parse(localStorage.getItem(SHARED_LOCK_KEY) || 'null');
+  } catch (_) {
+    return null;
+  }
+}
+
+function writeSharedLock(owner, until) {
+  try {
+    localStorage.setItem(SHARED_LOCK_KEY, JSON.stringify({ owner, until }));
+  } catch (_) {}
+}
+
+// Un mismo evento solo se narra una vez entre todas las pestañas
+function claimSharedKey(key, windowMs) {
+  try {
+    const storageKey = SHARED_CLAIM_PREFIX + key;
+    const last = Number(localStorage.getItem(storageKey) || 0);
+    const now = Date.now();
+    if (now - last < windowMs) return false;
+    localStorage.setItem(storageKey, String(now));
+    return true;
+  } catch (_) {
+    return true;
+  }
+}
 
 export class SeismicNarratorClient {
   constructor(options = {}) {
@@ -31,6 +63,7 @@ export class SeismicNarratorClient {
     this.draining = false;
     this.playToken = 0;
     this.cancelCurrent = null;
+    this.tabId = `${Math.random().toString(36).slice(2)}${Date.now().toString(36)}`;
     this.audioElement = new Audio();
     this.currentVoice = null;
     this.onStateChange = options.onStateChange || (() => {});
@@ -178,6 +211,10 @@ export class SeismicNarratorClient {
     this.lastSpokenKey = dedupeKey;
     this.lastSpokenTimestamp = now;
 
+    if (options.shareKey && !claimSharedKey(options.shareKey, options.shareWindowMs || 8000)) {
+      return;
+    }
+
     // Si es urgente (ej. Alerta Sísmica), interrumpir y reproducir de inmediato
     if (options.urgent) {
       this.stop();
@@ -208,10 +245,14 @@ export class SeismicNarratorClient {
           continue;
         }
         const token = this.playToken;
+        const release = await this.acquireSharedLock(item, token);
+        if (!release) continue;
         try {
           await this.speakSingleItem(item.text, item.options, token);
         } catch (err) {
           console.warn('[SeismicNarrator] Error en locución:', err);
+        } finally {
+          release();
         }
         // Pausa entre frases solo si nadie interrumpió el aviso
         if (token === this.playToken && this.queue.length > 0) {
@@ -225,6 +266,34 @@ export class SeismicNarratorClient {
         try { this.onSpeakingChange(false); } catch (_) {}
       }
     }
+  }
+
+  /**
+   * Espera turno entre pestañas. Devuelve la función para liberar el turno, o null si el aviso ya no aplica.
+   */
+  async acquireSharedLock(item, token) {
+    const urgent = Boolean(item.options?.urgent);
+    const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+    while (this.enabled && token === this.playToken) {
+      if (!urgent && Date.now() - item.createdAt > NARRATOR_MAX_AGE_MS) return null;
+      const now = Date.now();
+      const current = readSharedLock();
+      if (!current || current.until < now || current.owner === this.tabId) {
+        writeSharedLock(this.tabId, now + SHARED_LEASE_MS);
+        await wait(40);
+        if (readSharedLock()?.owner === this.tabId) {
+          const renew = setInterval(() => writeSharedLock(this.tabId, Date.now() + SHARED_LEASE_MS), 1000);
+          return () => {
+            clearInterval(renew);
+            if (readSharedLock()?.owner === this.tabId) {
+              try { localStorage.removeItem(SHARED_LOCK_KEY); } catch (_) {}
+            }
+          };
+        }
+      }
+      await wait(150);
+    }
+    return null;
   }
 
   speakSingleItem(text, options = {}, token = this.playToken) {
@@ -385,7 +454,7 @@ export class SeismicNarratorClient {
       phrase = t('narr.trigger.unusual', { region: regionLabel });
     }
 
-    this.speak(phrase, { category: 'trigger', urgent: false });
+    this.speak(phrase, { category: 'trigger', urgent: false, shareKey: `trigger:${code}`, shareWindowMs: 35000 });
   }
 
   /**
@@ -404,7 +473,7 @@ export class SeismicNarratorClient {
       phrase = t('narr.early.noTime', { zones: zonas });
     }
 
-    this.speak(phrase, { category: 'alerta_temprana', urgent: true });
+    this.speak(phrase, { category: 'alerta_temprana', urgent: true, shareKey: `early:${zonas}:${seconds || 0}`, shareWindowMs: 30000 });
   }
 
   /**
@@ -441,7 +510,7 @@ export class SeismicNarratorClient {
       phrase = t('narr.bulletin.new', { time: timeStr, loc, depth, mag });
     }
 
-    this.speak(phrase, { category: 'boletin', urgent: false });
+    this.speak(phrase, { category: 'boletin', urgent: false, shareKey: `boletin:${loc}:${mag}:${reportNum}`, shareWindowMs: 60000 });
   }
 
   /**
@@ -454,7 +523,7 @@ export class SeismicNarratorClient {
     const depth = Math.round(event.depth || 10);
 
     const phrase = t('narr.inter.body', { loc, mag, depth });
-    this.speak(phrase, { category: 'boletin_inter', urgent: false });
+    this.speak(phrase, { category: 'boletin_inter', urgent: false, shareKey: `inter:${loc}:${mag}`, shareWindowMs: 60000 });
   }
 
   /**
@@ -469,7 +538,7 @@ export class SeismicNarratorClient {
     } else {
       phrase = t('narr.intensity.plain', { level });
     }
-    this.speak(phrase, { category: 'intensidad', urgent: false });
+    this.speak(phrase, { category: 'intensidad', urgent: false, shareKey: `intensidad:${intensityName}:${regions.join('|')}`, shareWindowMs: 60000 });
   }
 
   announceTsunamiRisk(hasRisk, region = null) {
@@ -480,7 +549,7 @@ export class SeismicNarratorClient {
     } else {
       phrase = t('narr.tsunami.none');
     }
-    this.speak(phrase, { category: 'tsunami', urgent: true });
+    this.speak(phrase, { category: 'tsunami', urgent: true, shareKey: `tsunami:${hasRisk}:${region || ''}`, shareWindowMs: 60000 });
   }
 
   announceNoNews() {

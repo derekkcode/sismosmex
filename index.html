@@ -286,6 +286,18 @@
               <input type="checkbox" id="settingsRomanNumerals" class="settings-checkbox">
             </label>
           </section>
+
+          <section class="settings-section">
+            <h3 class="settings-section-title" data-i18n="settings.history">Historial de sismos</h3>
+            <div class="settings-row settings-field">
+              <span data-i18n="settings.historySource">Cargar historial desde</span>
+              <select id="settingsHistorySource" class="settings-select">
+                <option value="monitor" data-i18n="settings.historyMonitor">Historial del monitor (MongoDB)</option>
+                <option value="ssn" data-i18n="settings.historySsn">Historial del SSN</option>
+              </select>
+            </div>
+            <p class="settings-hint" data-i18n="settings.historyHint">Los sismos del SSN no incluyen intensidad por estación; se muestran sin intensidad en el mapa y en el historial.</p>
+          </section>
         </div>
       </div>
 
@@ -715,7 +727,7 @@
     import { SeedLinkUIManager } from '/desing/scripts/seedlink-ui.js';
     import { UpdatesUIManager } from '/desing/scripts/updates-ui.js';
     import { applyTranslations, setLanguage, getLanguage, formatEventDate, t } from '/desing/scripts/i18n.js';
-    import { getIntensityScale, setIntensityScale, getAutoZoomEnabled, setAutoZoomEnabled, formatIntensity, getRomanNumeralsEnabled, setRomanNumeralsEnabled } from '/desing/scripts/display-settings.js';
+    import { getIntensityScale, setIntensityScale, getAutoZoomEnabled, setAutoZoomEnabled, formatIntensity, getRomanNumeralsEnabled, setRomanNumeralsEnabled, getHistorySource, setHistorySource } from '/desing/scripts/display-settings.js';
 
     // 1. Inicializar Motor de Mapa
     let lastEngineSnapshot = null;
@@ -1519,6 +1531,7 @@
     const settingsIntensityScale = document.getElementById('settingsIntensityScale');
     const settingsRomanRow = document.getElementById('settingsRomanRow');
     const settingsRomanNumerals = document.getElementById('settingsRomanNumerals');
+    const settingsHistorySource = document.getElementById('settingsHistorySource');
 
     const LEGEND_KEY = 'sismosmex_legend_visible';
     function setLegendVisible(visible) {
@@ -1572,6 +1585,7 @@
       if (settingsIntensityScale) settingsIntensityScale.value = getIntensityScale();
       if (settingsRomanNumerals) settingsRomanNumerals.checked = getRomanNumeralsEnabled();
       if (settingsRomanRow) settingsRomanRow.style.display = getIntensityScale() === 'mercalli' ? '' : 'none';
+      if (settingsHistorySource) settingsHistorySource.value = getHistorySource();
       populateVoiceOptions();
     }
 
@@ -1589,6 +1603,7 @@
     settingsAutoZoom?.addEventListener('change', (e) => setAutoZoomEnabled(e.target.checked));
     settingsIntensityScale?.addEventListener('change', (e) => setIntensityScale(e.target.value));
     settingsRomanNumerals?.addEventListener('change', (e) => setRomanNumeralsEnabled(e.target.checked));
+    settingsHistorySource?.addEventListener('change', (e) => setHistorySource(e.target.value));
 
     if (narrator) {
       settingsNarratorEnabled?.addEventListener('change', (e) => {

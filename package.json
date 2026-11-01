@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "express": "^5.2.1",
+    "mongodb": "^7.8.0",
     "seisplotjs": "^3.2.7",
     "tsx": "^4.23.13",
     "ws": "^8.21.3"

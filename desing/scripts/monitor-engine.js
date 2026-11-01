@@ -2416,9 +2416,13 @@ export class SeismicMonitorEngine {
     }
     const lat = Number(ev.latitude !== undefined ? ev.latitude : ev.lat);
     const lon = Number(ev.longitude !== undefined ? ev.longitude : ev.lon);
-    let recordedStations = ev.recordedStations ? { ...ev.recordedStations } : null;
+    // Sismos del SSN no traen intensidad por estación: no se estima ni se dibuja intensidad
+    const intensityKnown = ev.intensityKnown !== false;
+    let recordedStations = intensityKnown && ev.recordedStations ? { ...ev.recordedStations } : null;
 
-    if (!recordedStations || Object.keys(recordedStations).length === 0) {
+    if (!intensityKnown) {
+      recordedStations = {};
+    } else if (!recordedStations || Object.keys(recordedStations).length === 0) {
       recordedStations = this.computeEventStationIntensities({
         lat,
         lon,
@@ -2428,7 +2432,7 @@ export class SeismicMonitorEngine {
       });
     }
 
-    const regionalIntensities = ev.regionalIntensities || this.computeRegionalRecordedIntensities(recordedStations);
+    const regionalIntensities = (intensityKnown && ev.regionalIntensities) || this.computeRegionalRecordedIntensities(recordedStations);
 
     const isInter = Boolean(
       ev.isInter ||
@@ -2445,7 +2449,8 @@ export class SeismicMonitorEngine {
       magnitude: Number(ev.magnitude || ev.mag || 4.5),
       location: ev.location || (isInter ? 'Sismo Internacional' : this.resolveMexicanLocation(lat, lon)),
       time: ev.time || new Date().toISOString(),
-      maxIntensity: Number(ev.maxIntensity || 1),
+      maxIntensity: intensityKnown ? Number(ev.maxIntensity || 1) : 0,
+      intensityKnown,
       maxPga: Number(ev.maxPga || 0.1),
       isInter,
       category: ev.category || (isInter ? 'inter' : 'local'),

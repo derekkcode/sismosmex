@@ -6,6 +6,7 @@ import http from 'http';
 import path from 'path';
 import fs from 'fs';
 import readline from 'readline';
+import './src/server/load-env';
 import express from 'express';
 import { WebSocketServer } from 'ws';
 import { SeedLinkService } from './src/server/seedlink/service';

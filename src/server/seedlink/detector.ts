@@ -24,12 +24,13 @@
  * 4. Confirmación y persistencia:
  *    - Un evento se confirma solo con evidencia: >= 3 estaciones coherentes, onda S observada en >= 2
  *      estaciones, o 2 estaciones muy por encima de su piso con PGA >= 0.20 gal. Si no se confirma en 60 s se retira.
- *    - Guarda automáticamente los sismos en data/earthquakes.json.
+ *    - Guarda automáticamente los sismos en MongoDB (colección sismosmex.earthquakes).
  */
 
 import fs from 'fs';
 import path from 'path';
 import { USGSEarthquakeService } from './usgs-service.js';
+import { EarthquakeHistoryStore } from './history-store.js';
 import { NoiseCalibrator, NoiseClass } from './noise-calibrator.js';
 import {
   SeismicDspEngine,
@@ -117,6 +118,7 @@ export interface DetectedEarthquake {
   location: string; // Ej: "24 km al Suroeste de Pinotepa Nacional, Oax"
   maxPga: number; // gal
   maxIntensity: number; // Mercalli (MMI 1 - 10)
+  intensityKnown?: boolean; // false cuando la fuente (SSN) no reporta intensidad
   stationCount: number;
   stations: StationTriggerRecord[];
   status: 'PRELIMINARY' | 'CONFIRMED';
@@ -404,8 +406,12 @@ export function calculateClusterLevel(
 
 export class SeismicDetectorEngine {
   private static instance: SeismicDetectorEngine;
-  private earthquakesFile: string;
   private earthquakes: DetectedEarthquake[] = [];
+  // Historial del monitor en MongoDB. Mientras no esté listo, la API sirve el historial del SSN.
+  private historyStore = new EarthquakeHistoryStore();
+  private historyReady = false;
+  private historyLoading = false;
+  private persistChain: Promise<void> = Promise.resolve();
 
   // Búfer de disparos activos para coincidencia cinemática (ventana amplia regional de 90s para absorber latencias de red)
   private activeTriggers: Map<string, StationTriggerRecord> = new Map();
@@ -521,8 +527,11 @@ export class SeismicDetectorEngine {
   ];
 
   private constructor() {
-    this.earthquakesFile = path.join(process.cwd(), 'data', 'earthquakes.json');
-    this.loadEarthquakesFromDisk();
+    this.loadHistoryFromMongo();
+    // Reintenta la conexión a MongoDB si no estaba disponible al arrancar
+    setInterval(() => {
+      if (!this.historyReady && !this.historyLoading) this.loadHistoryFromMongo();
+    }, 60 * 1000);
 
     // Sincronizar sismos de países de América >= 5.5 desde USGS (inmediato y cada 4 minutos)
     setTimeout(() => this.syncUSGSEarthquakes(), 2500);
@@ -689,7 +698,7 @@ export class SeismicDetectorEngine {
   }
 
   /**
-   * Carga o inicializa el archivo local data/earthquakes.json
+   * Elimina sismos duplicados por id, displayId o cercanía temporal y espacial.
    */
   public deduplicateEarthquakes(list: DetectedEarthquake[]): DetectedEarthquake[] {
     const result: DetectedEarthquake[] = [];
@@ -729,69 +738,48 @@ export class SeismicDetectorEngine {
     return result;
   }
 
-  private loadEarthquakesFromDisk(): void {
+  /**
+   * Carga el historial del monitor desde MongoDB. Si no hay conexión, deja historyReady en false
+   * y la API sirve el historial del SSN hasta que MongoDB responda (se reintenta cada 60 s).
+   */
+  private async loadHistoryFromMongo(): Promise<void> {
+    this.historyLoading = true;
     try {
-      const dataDir = path.dirname(this.earthquakesFile);
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
-      }
-
-      let targetFile = this.earthquakesFile;
-      if (!fs.existsSync(targetFile)) {
-        const altFile = path.join(process.cwd(), 'data', 'earthquake.json');
-        if (fs.existsSync(altFile)) {
-          targetFile = altFile;
+      await this.historyStore.connect();
+      const loaded = await this.historyStore.loadAll();
+      loaded.forEach((eq) => {
+        eq.saved = true;
+        if (eq.status === 'PRELIMINARY' || (eq as any).active) {
+          eq.status = 'CONFIRMED';
+          (eq as any).active = false;
+          (eq as any).isLocked = true;
         }
-      }
-
-      if (fs.existsSync(targetFile)) {
-        const content = fs.readFileSync(targetFile, 'utf8');
-        const parsed = JSON.parse(content || '[]');
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          const raw = parsed.filter(eq => eq && (eq.id || eq.location));
-          this.earthquakes = this.deduplicateEarthquakes(raw);
-        }
-
-        // Marcar eventos cargados desde disco como guardados y confirmados
-        this.earthquakes.forEach((eq) => {
-          eq.saved = true;
-          if (eq.status === 'PRELIMINARY' || (eq as any).active) {
-            eq.status = 'CONFIRMED';
-            (eq as any).active = false;
-            (eq as any).isLocked = true;
-          }
-        });
-
-        this.saveEarthquakesToDisk();
-        console.log(`[Detector] Cargados ${this.earthquakes.length} eventos sísmicos únicos desde ${targetFile}`);
-      } else {
-        this.earthquakes = [];
-      }
+      });
+      this.earthquakes = this.deduplicateEarthquakes([...loaded, ...this.earthquakes]);
+      this.historyReady = true;
+      console.log(`[Detector] Historial cargado desde MongoDB: ${loaded.length} eventos`);
+      this.saveEarthquakesToDisk();
     } catch (err) {
-      console.error('[Detector] Error accediendo a data/earthquakes.json:', err);
-      this.earthquakes = [];
+      this.historyReady = false;
+      console.warn(`[Detector] MongoDB no disponible; se servirá el historial del SSN. Motivo: ${(err as Error).message}`);
+    } finally {
+      this.historyLoading = false;
     }
   }
 
+  /**
+   * Persiste el historial del monitor en MongoDB (el nombre se conserva por compatibilidad con los llamados existentes).
+   * Las escrituras se encolan en orden para no cruzarse. No escribe si MongoDB no está listo, para no pisar el historial guardado.
+   */
   private saveEarthquakesToDisk(): void {
-    try {
-      const dataDir = path.dirname(this.earthquakesFile);
-      if (!fs.existsSync(dataDir)) {
-        fs.mkdirSync(dataDir, { recursive: true });
-      }
-      this.earthquakes = this.deduplicateEarthquakes(this.earthquakes);
-      const tmpFile = `${this.earthquakesFile}.${Date.now()}.${Math.random().toString(36).slice(2, 7)}.tmp`;
-      fs.writeFileSync(tmpFile, JSON.stringify(this.earthquakes, null, 2), 'utf8');
-      fs.renameSync(tmpFile, this.earthquakesFile);
-
-      const altFile = path.join(process.cwd(), 'data', 'earthquake.json');
-      try {
-        fs.writeFileSync(altFile, JSON.stringify(this.earthquakes, null, 2), 'utf8');
-      } catch (_) {}
-    } catch (err) {
-      console.error('[Detector] Error escribiendo en data/earthquakes.json:', err);
-    }
+    if (!this.historyReady) return;
+    this.earthquakes = this.deduplicateEarthquakes(this.earthquakes);
+    const snapshot = structuredClone(this.earthquakes);
+    this.persistChain = this.persistChain
+      .then(() => this.historyStore.saveAll(snapshot))
+      .catch((err) => console.error('[Detector] Error guardando historial en MongoDB:', (err as Error).message));
   }
+
 
   /**
    * Elimina disparos que hayan quedado fuera de la ventana de coincidencia temporal.
@@ -2337,10 +2325,15 @@ export class SeismicDetectorEngine {
     return [...this.earthquakes];
   }
 
+  /** true cuando el historial del monitor está cargado desde MongoDB. */
+  public isMonitorHistoryReady(): boolean {
+    return this.historyReady;
+  }
+
   public clearEarthquakeHistory(): void {
     this.earthquakes = [];
     this.saveEarthquakesToDisk();
-    console.log('[Detector] Historial sísmico eliminado por completo de memoria y disco');
+    console.log('[Detector] Historial sísmico eliminado de memoria y de MongoDB');
   }
 
   /**
