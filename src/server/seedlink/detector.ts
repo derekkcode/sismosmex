@@ -416,6 +416,8 @@ export class SeismicDetectorEngine {
   // Guardar solo inserta o actualiza: lo que no esté aquí nunca se borra de la base.
   private pendingHistoryDeletes: Set<string> = new Set();
   private pendingHistoryClear = false;
+  // Momento (ms) de la última limpieza: los sismos de USGS anteriores a él no vuelven al historial
+  private clearedAtMs = 0;
 
   // Búfer de disparos activos para coincidencia cinemática (ventana amplia regional de 90s para absorber latencias de red)
   private activeTriggers: Map<string, StationTriggerRecord> = new Map();
@@ -546,9 +548,12 @@ export class SeismicDetectorEngine {
   }
 
   public async syncUSGSEarthquakes(): Promise<void> {
+    // Sin historial cargado no se conoce el corte de la última limpieza; la sincronización se repite al terminar la carga
+    if (!this.historyReady) return;
     try {
-      const usgsEvents = await USGSEarthquakeService.getInstance().fetchRecentAmericanEarthquakes(5.5);
-      if (usgsEvents && usgsEvents.length > 0) {
+      const fetched = await USGSEarthquakeService.getInstance().fetchRecentAmericanEarthquakes(5.5);
+      const usgsEvents = (fetched ?? []).filter((eq) => eq.timeEpoch > this.clearedAtMs);
+      if (usgsEvents.length > 0) {
         this.earthquakes = this.dedupeHistory([...this.earthquakes, ...usgsEvents]);
         this.saveEarthquakesToDisk();
       }
@@ -762,9 +767,18 @@ export class SeismicDetectorEngine {
     try {
       await this.historyStore.connect();
       if (this.pendingHistoryClear) {
-        await this.historyStore.clear();
+        const clearAt = this.clearedAtMs;
+        // La bandera se baja antes de escribir: una limpieza pedida durante la escritura no debe perderse
         this.pendingHistoryClear = false;
+        try {
+          await this.historyStore.clear(clearAt);
+        } catch (err) {
+          this.pendingHistoryClear = true;
+          throw err;
+        }
       }
+      const storedCutoff = await this.historyStore.getClearedAt();
+      this.clearedAtMs = Math.max(this.clearedAtMs, storedCutoff);
       const stored = await this.historyStore.loadAll();
       // Si se limpió el historial durante la lectura, no reintroducir lo leído; lo cancelado sin conexión tampoco debe reaparecer
       const loaded = this.pendingHistoryClear ? [] : stored.filter((eq) => !this.pendingHistoryDeletes.has(eq.id));
@@ -780,8 +794,10 @@ export class SeismicDetectorEngine {
       this.historyReady = true;
       console.log(`[Detector] Historial cargado desde MongoDB: ${loaded.length} eventos`);
       this.saveEarthquakesToDisk();
+      void this.syncUSGSEarthquakes();
     } catch (err) {
       this.historyReady = false;
+      await this.historyStore.close();
       console.warn(`[Detector] MongoDB no disponible; se servirá el historial del SSN. Motivo: ${(err as Error).message}`);
     } finally {
       this.historyLoading = false;
@@ -800,11 +816,12 @@ export class SeismicDetectorEngine {
     const live = new Set(snapshot.map((e) => e.id));
     const toDelete = [...this.pendingHistoryDeletes].filter((id) => !live.has(id));
     const clearFirst = this.pendingHistoryClear;
+    const clearAt = this.clearedAtMs;
     this.pendingHistoryDeletes.clear();
     this.pendingHistoryClear = false;
     this.persistChain = this.persistChain
       .then(async () => {
-        if (clearFirst) await this.historyStore.clear();
+        if (clearFirst) await this.historyStore.clear(clearAt);
         await this.historyStore.saveAll(snapshot);
         await this.historyStore.deleteIds(toDelete);
       })
@@ -2372,6 +2389,7 @@ export class SeismicDetectorEngine {
     this.earthquakes = [];
     this.pendingHistoryDeletes.clear();
     this.pendingHistoryClear = true;
+    this.clearedAtMs = Math.max(this.clearedAtMs, Date.now());
     this.saveEarthquakesToDisk();
     console.log('[Detector] Historial sísmico eliminado de memoria; MongoDB se limpiará al guardar o al conectar.');
   }
