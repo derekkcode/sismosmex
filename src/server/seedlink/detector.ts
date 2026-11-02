@@ -412,6 +412,10 @@ export class SeismicDetectorEngine {
   private historyReady = false;
   private historyLoading = false;
   private persistChain: Promise<void> = Promise.resolve();
+  // Borrados pendientes en MongoDB (cancelados, expirados o fusionados) y limpieza solicitada.
+  // Guardar solo inserta o actualiza: lo que no esté aquí nunca se borra de la base.
+  private pendingHistoryDeletes: Set<string> = new Set();
+  private pendingHistoryClear = false;
 
   // Búfer de disparos activos para coincidencia cinemática (ventana amplia regional de 90s para absorber latencias de red)
   private activeTriggers: Map<string, StationTriggerRecord> = new Map();
@@ -545,7 +549,7 @@ export class SeismicDetectorEngine {
     try {
       const usgsEvents = await USGSEarthquakeService.getInstance().fetchRecentAmericanEarthquakes(5.5);
       if (usgsEvents && usgsEvents.length > 0) {
-        this.earthquakes = this.deduplicateEarthquakes([...this.earthquakes, ...usgsEvents]);
+        this.earthquakes = this.dedupeHistory([...this.earthquakes, ...usgsEvents]);
         this.saveEarthquakesToDisk();
       }
     } catch (e) {
@@ -683,6 +687,7 @@ export class SeismicDetectorEngine {
 
     const ids = new Set(expired.map((e) => e.id));
     this.earthquakes = this.earthquakes.filter((e) => !ids.has(e.id));
+    ids.forEach((id) => this.pendingHistoryDeletes.add(id));
     for (const e of expired) {
       this.activePreliminaryIds.delete(e.id);
       for (const st of e.stations || []) {
@@ -738,6 +743,16 @@ export class SeismicDetectorEngine {
     return result;
   }
 
+  /** Fusiona duplicados y marca para borrar en MongoDB el id de cada registro que la fusión retira. */
+  private dedupeHistory(list: DetectedEarthquake[]): DetectedEarthquake[] {
+    const result = this.deduplicateEarthquakes(list);
+    const kept = new Set(result.map((e) => e.id));
+    for (const e of list) {
+      if (e?.id && !kept.has(e.id)) this.pendingHistoryDeletes.add(e.id);
+    }
+    return result;
+  }
+
   /**
    * Carga el historial del monitor desde MongoDB. Si no hay conexión, deja historyReady en false
    * y la API sirve el historial del SSN hasta que MongoDB responda (se reintenta cada 60 s).
@@ -746,7 +761,13 @@ export class SeismicDetectorEngine {
     this.historyLoading = true;
     try {
       await this.historyStore.connect();
-      const loaded = await this.historyStore.loadAll();
+      if (this.pendingHistoryClear) {
+        await this.historyStore.clear();
+        this.pendingHistoryClear = false;
+      }
+      const stored = await this.historyStore.loadAll();
+      // Si se limpió el historial durante la lectura, no reintroducir lo leído; lo cancelado sin conexión tampoco debe reaparecer
+      const loaded = this.pendingHistoryClear ? [] : stored.filter((eq) => !this.pendingHistoryDeletes.has(eq.id));
       loaded.forEach((eq) => {
         eq.saved = true;
         if (eq.status === 'PRELIMINARY' || (eq as any).active) {
@@ -755,7 +776,7 @@ export class SeismicDetectorEngine {
           (eq as any).isLocked = true;
         }
       });
-      this.earthquakes = this.deduplicateEarthquakes([...loaded, ...this.earthquakes]);
+      this.earthquakes = this.dedupeHistory([...loaded, ...this.earthquakes]);
       this.historyReady = true;
       console.log(`[Detector] Historial cargado desde MongoDB: ${loaded.length} eventos`);
       this.saveEarthquakesToDisk();
@@ -770,14 +791,29 @@ export class SeismicDetectorEngine {
   /**
    * Persiste el historial del monitor en MongoDB (el nombre se conserva por compatibilidad con los llamados existentes).
    * Las escrituras se encolan en orden para no cruzarse. No escribe si MongoDB no está listo, para no pisar el historial guardado.
+   * Guardar solo inserta o actualiza; los documentos se eliminan únicamente si están en pendingHistoryDeletes o hubo una limpieza.
    */
   private saveEarthquakesToDisk(): void {
     if (!this.historyReady) return;
-    this.earthquakes = this.deduplicateEarthquakes(this.earthquakes);
+    this.earthquakes = this.dedupeHistory(this.earthquakes);
     const snapshot = structuredClone(this.earthquakes);
+    const live = new Set(snapshot.map((e) => e.id));
+    const toDelete = [...this.pendingHistoryDeletes].filter((id) => !live.has(id));
+    const clearFirst = this.pendingHistoryClear;
+    this.pendingHistoryDeletes.clear();
+    this.pendingHistoryClear = false;
     this.persistChain = this.persistChain
-      .then(() => this.historyStore.saveAll(snapshot))
-      .catch((err) => console.error('[Detector] Error guardando historial en MongoDB:', (err as Error).message));
+      .then(async () => {
+        if (clearFirst) await this.historyStore.clear();
+        await this.historyStore.saveAll(snapshot);
+        await this.historyStore.deleteIds(toDelete);
+      })
+      .catch((err) => {
+        console.error('[Detector] Error guardando historial en MongoDB:', (err as Error).message);
+        // Los borrados pendientes se reintentan en la siguiente escritura
+        toDelete.forEach((id) => this.pendingHistoryDeletes.add(id));
+        if (clearFirst) this.pendingHistoryClear = true;
+      });
   }
 
 
@@ -2274,6 +2310,7 @@ export class SeismicDetectorEngine {
         return true;
       });
 
+      removed.forEach((e) => this.pendingHistoryDeletes.add(e.id));
       this.saveEarthquakesToDisk();
       return {
         cancelled: true,
@@ -2303,6 +2340,7 @@ export class SeismicDetectorEngine {
       const target = this.earthquakes[idx];
       this.activePreliminaryIds.delete(target.id);
       this.earthquakes.splice(idx, 1);
+      this.pendingHistoryDeletes.add(target.id);
       this.saveEarthquakesToDisk();
       return {
         cancelled: true,
@@ -2332,8 +2370,10 @@ export class SeismicDetectorEngine {
 
   public clearEarthquakeHistory(): void {
     this.earthquakes = [];
+    this.pendingHistoryDeletes.clear();
+    this.pendingHistoryClear = true;
     this.saveEarthquakesToDisk();
-    console.log('[Detector] Historial sísmico eliminado de memoria y de MongoDB');
+    console.log('[Detector] Historial sísmico eliminado de memoria; MongoDB se limpiará al guardar o al conectar.');
   }
 
   /**
@@ -2352,6 +2392,7 @@ export class SeismicDetectorEngine {
 
     if (existingIndex >= 0) {
       const prev = this.earthquakes[existingIndex];
+      if (prev.id !== event.id) this.pendingHistoryDeletes.add(prev.id);
       // Si el evento existente proviene de la red local, conservar las estaciones y detalles locales
       this.earthquakes[existingIndex] = {
         ...prev,

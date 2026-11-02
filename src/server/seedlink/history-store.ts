@@ -9,6 +9,8 @@ import type { DetectedEarthquake } from './detector';
 
 const DEFAULT_DB = 'sismosmex';
 const COLLECTION = 'earthquakes';
+// Mismo tope que la memoria del detector: al cargar se usan los 100 más recientes; el resto permanece en la base.
+const LOAD_LIMIT = 100;
 
 export class EarthquakeHistoryStore {
   private client: MongoClient | null = null;
@@ -44,32 +46,35 @@ export class EarthquakeHistoryStore {
   }
 
   public async loadAll(): Promise<DetectedEarthquake[]> {
-    const docs = await this.requireCollection().find({}).sort({ timeEpoch: -1 }).toArray();
+    const docs = await this.requireCollection().find({}).sort({ timeEpoch: -1 }).limit(LOAD_LIMIT).toArray();
     return docs.map((doc: any) => {
       const { _id, ...rest } = doc;
       return { ...rest, id: rest.id ?? String(_id) } as DetectedEarthquake;
     });
   }
 
-  /** Inserta o reemplaza cada evento (clave `_id` = id del evento) y elimina los que ya no están en la lista. */
+  /** Inserta o reemplaza cada evento (clave `_id` = id del evento). Nunca elimina por ausencia: los borrados son explícitos. */
   public async saveAll(events: DetectedEarthquake[]): Promise<void> {
-    const col = this.requireCollection();
-    const ids = events.map((e) => e.id);
-    if (events.length > 0) {
-      await col.bulkWrite(
-        events.map((e) => ({
-          replaceOne: {
-            filter: { _id: e.id as any },
-            replacement: { ...e, _id: e.id } as any,
-            upsert: true,
-          },
-        })),
-        { ordered: false }
-      );
-    }
-    await col.deleteMany(ids.length > 0 ? { _id: { $nin: ids } as any } : {});
+    if (events.length === 0) return;
+    await this.requireCollection().bulkWrite(
+      events.map((e) => ({
+        replaceOne: {
+          filter: { _id: e.id as any },
+          replacement: { ...e, _id: e.id } as any,
+          upsert: true,
+        },
+      })),
+      { ordered: false }
+    );
   }
 
+  /** Elimina solo los eventos indicados (cancelados, expirados o fusionados). */
+  public async deleteIds(ids: string[]): Promise<void> {
+    if (ids.length === 0) return;
+    await this.requireCollection().deleteMany({ _id: { $in: ids } } as any);
+  }
+
+  /** Borra todo el historial. Solo para limpiezas solicitadas explícitamente. */
   public async clear(): Promise<void> {
     await this.requireCollection().deleteMany({});
   }
