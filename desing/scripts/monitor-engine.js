@@ -764,6 +764,37 @@ export class SeismicMonitorEngine {
     return false;
   }
 
+  static isCostaRica(s) {
+    if (!s) return false;
+    const net = (s.network || '').trim().toUpperCase();
+    if (net === 'TC' || net === 'OV') return true;
+    const fullCode = (s.fullCode || '').trim().toUpperCase();
+    if (fullCode.startsWith('TC.') || fullCode.startsWith('OV.')) return true;
+    return (s.networkName || '').toLowerCase().includes('costa rica');
+  }
+
+  // Solo la confirmación explícita del servidor cuenta; la confirmación automática del front-end no
+  static isServerConfirmedPayload(d) {
+    return Boolean(d) && (d.status === 'CONFIRMED' || d.confirmed === true);
+  }
+
+  /**
+   * Filtro del zoom automático: con sismo activo solo sigue estaciones donde ya llegó la onda.
+   * Costa Rica solo se sigue si la onda pertenece a un sismo confirmado por el servidor.
+   */
+  static isAutoZoomAllowed(st, activeEvents) {
+    const events = activeEvents || [];
+    const keys = [st.code, st.fullCode]
+      .map((k) => (k || '').trim().toUpperCase())
+      .filter(Boolean);
+    const hasWave = (ev) => keys.some((k) => Boolean(ev.recordedStations?.[k]));
+    if (SeismicMonitorEngine.isCostaRica(st)) {
+      return events.some((ev) => ev.serverConfirmed === true && hasWave(ev));
+    }
+    if (events.length === 0) return true;
+    return events.some(hasWave);
+  }
+
   /**
    * Algoritmo de detección sísmica con comparación combinada de PGA y STA/LTA.
    * - Red IG de México: Calibrada con mayor sensibilidad para detectar frentes de onda reales (>= 0.06 gal, ratio >= 3.0).
@@ -969,6 +1000,7 @@ export class SeismicMonitorEngine {
         time: new Date().toISOString(),
         id: `sim-${Date.now()}`,
         status: 'CONFIRMED',
+        synthetic: true,
       };
       initialElapsedMs = elapsedArg;
     }
@@ -1025,6 +1057,11 @@ export class SeismicMonitorEngine {
     if (!this.state.activeEvents) this.state.activeEvents = [];
 
     const targetId = eventData.id || `eq-${Date.now()}`;
+    // La confirmación del servidor de una simulación llega sin marca de simulación: se recuerda por id
+    if (!this.simulatedEventIds) this.simulatedEventIds = new Set();
+    if (isSim) this.simulatedEventIds.add(targetId);
+    const simulated = isSim || this.simulatedEventIds.has(targetId);
+    const trustedServerPayload = !simulated && !eventData.synthetic && SeismicMonitorEngine.isServerConfirmedPayload(eventData);
     let activeEv = this.state.activeEvents.find((e) => e.id === targetId);
 
     const targetLat = Number(lat.toFixed(3));
@@ -1087,6 +1124,8 @@ export class SeismicMonitorEngine {
         finalized: elapsedSec >= 240.0,
         refinementStep: isNewDetection ? 0 : Math.min(4, Math.floor(elapsedSec / 3.0)),
         recordedStations: eventData.recordedStations ? { ...eventData.recordedStations } : {},
+        simulated,
+        serverConfirmed: trustedServerPayload,
       };
 
       this.state.activeEvents.push(activeEv);
@@ -1104,6 +1143,7 @@ export class SeismicMonitorEngine {
         activeEv.status = 'CONFIRMED';
         activeEv.confirmed = true;
       }
+      if (trustedServerPayload) activeEv.serverConfirmed = true;
     }
 
     this.state.activeEvent = this.state.activeEvents[this.state.activeEvents.length - 1];
@@ -1283,6 +1323,9 @@ export class SeismicMonitorEngine {
 
     ev.status = 'CONFIRMED';
     ev.confirmed = true;
+    if (!ev.simulated && SeismicMonitorEngine.isServerConfirmedPayload(confirmedData) && (!targetId || ev.id === targetId)) {
+      ev.serverConfirmed = true;
+    }
     this.state.mode = "CONFIRMED";
 
     if (confirmedData) {
@@ -1532,6 +1575,7 @@ export class SeismicMonitorEngine {
 
   /**
    * Zoom automático: sigue la estación con aceleración anormal más fuerte (zoom parcial).
+   * Con sismo activo solo sigue estaciones donde ya llegó la onda; Costa Rica solo con detección real.
    * Si no hay actividad durante 20 s y no hay sismo activo, regresa a la vista por defecto.
    */
   updateAutoZoom(now) {
@@ -1550,6 +1594,7 @@ export class SeismicMonitorEngine {
     for (const st of this.stations) {
       if (!st.autoZoomActiveAt || now - st.autoZoomActiveAt > 3000) continue;
       if (typeof st.lat !== 'number' || typeof st.lon !== 'number') continue;
+      if (!SeismicMonitorEngine.isAutoZoomAllowed(st, this.state.activeEvents)) continue;
       if (!best || st.pga > best.pga) best = st;
     }
 
