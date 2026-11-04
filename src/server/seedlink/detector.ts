@@ -15,7 +15,7 @@
  *      continuo con la profundidad, y Vs = Vp / 1.732.
  *    - Búsqueda en espiral de Vogel sobre latitud, longitud y profundidad con pérdida Pseudo-Huber;
  *      t0 por mediana robusta. Penaliza epicentros alejados de la estación más temprana. Solo se localiza un grupo
- *      con >= 6 sitios independientes y residuo RMS <= 1.0 s; si lo excede y hay más de 6 sitios, se prueba quitar un solo sitio.
+ *      con >= 6 sitios independientes y residuo RMS ajustado (÷(n−4)) <= 1.0 s; si lo excede y hay más de 6 sitios, se prueba quitar un solo sitio.
  *    - Geocodificación inversa hacia la localidad más cercana de México y Centroamérica.
  * 
  * 3. Estimación de Magnitud ("El Qué tan fuerte"):
@@ -131,7 +131,7 @@ export interface DetectedEarthquake {
   reportNumber?: number;
   // Métricas avanzadas de GlobalQuake (v0.11.0)
   azimuthalGap?: number; // Brecha azimutal máxima en grados (0 - 360)
-  rmsResidualSec?: number; // Residuo medio cuadrático de tiempos de viaje (s)
+  rmsResidualSec?: number; // Residuo RMS de tiempos de viaje, ajustado por grados de libertad ÷(n−4) (s)
   clusterLevel?: number; // Nivel de escalada de cluster sísmico (1, 2, 3)
   sWaveArrivedCount?: number; // Estaciones que ya registraron el paso de la onda S
   isSWaveConfirmed?: boolean; // True si la onda S ya corroboró la magnitud física
@@ -408,8 +408,10 @@ export function calculateClusterLevel(
 const MIN_SITE_SEPARATION_KM = 3.5;
 // Mínimo de sitios independientes calificados para localizar un evento (cualquier red)
 const MIN_INDEPENDENT_SITES = 6;
-// Residuo RMS máximo con pesos ÷n: ~1.7 s con la corrección insesgada ÷(n−4) para n = 6
+// Residuo RMS máximo (s), ajustado por grados de libertad ÷(n−4)
 const RMS_GATE_SEC = 1.0;
+// Tolerancia (ms) entre el tiempo P de un disparo nuevo y el predicho desde el origen del evento
+const ATTACH_P_RESIDUAL_MAX_MS = 3000;
 type EpicenterSolution = NonNullable<ReturnType<SeismicDetectorEngine['estimateEpicenter']>>;
 
 export class SeismicDetectorEngine {
@@ -1229,7 +1231,7 @@ export class SeismicDetectorEngine {
 
   /**
    * Localiza un grupo de disparos con las reglas del detector: >= 6 sitios independientes, apertura <= maxApertureKm,
-   * >= 2 sitios significativos, residuo RMS <= 1.0 s y coherencia de tiempos diferenciales.
+   * >= 2 sitios significativos, residuo RMS ajustado <= 1.0 s y coherencia de tiempos diferenciales.
    * Si el residuo excede el límite, prueba quitar un solo sitio (el que más lo reduce). Devuelve null si no cumple.
    */
   private localizeCluster(
@@ -1256,7 +1258,7 @@ export class SeismicDetectorEngine {
     }
 
     if (!epi || epi.rmsResidualSec > RMS_GATE_SEC || isDegenerateGeometry(epi.azimuthalGap, sites.length)) {
-      this.logClusterRejection(sites, `residuo RMS ${epi ? epi.rmsResidualSec + ' s' : 'sin convergencia'} (límite ${RMS_GATE_SEC} s)`);
+      this.logClusterRejection(sites, `residuo RMS ajustado ${epi ? epi.rmsResidualSec + ' s' : 'sin convergencia'} (límite ${RMS_GATE_SEC} s)`);
       return null;
     }
 
@@ -1711,7 +1713,8 @@ export class SeismicDetectorEngine {
       const resSec = (st.tP - expectedTimeMs) / 1000;
       pureSSR += resSec * resSec;
     }
-    const rmsResidualSec = Math.sqrt(pureSSR / stations.length);
+    // Grados de libertad: lat, lon, profundidad y t0 consumen 4 (mínimo 1 si n <= 5)
+    const rmsResidualSec = Math.sqrt(pureSSR / Math.max(1, stations.length - 4));
 
     // Calcular Azimuthal Gap (GlobalQuake 0.11.0)
     const azimuthalGap = calculateAzimuthalGap(bestLat, bestLon, stations);
@@ -1964,8 +1967,10 @@ export class SeismicDetectorEngine {
 
   /**
    * Incorpora un disparo al preliminar y devuelve la estación que recibe sus picos. Si el sitio ya lo representa otra
-   * estación del evento, devuelve esa. Devuelve undefined, sin incorporarlo, si el disparo está rechazado, sin PGA
-   * suficiente, asignado a otro evento vivo o fuera del alcance físico del evento (P-17).
+   * estación del evento, devuelve esa sin revisar su tiempo P. Devuelve undefined, sin incorporarlo, si el disparo está
+   * rechazado, sin PGA
+   * suficiente, asignado a otro evento vivo, fuera del alcance físico del evento (P-17) o con tiempo P
+   * incompatible con su origen.
    */
   private attachTriggerToEvent(event: DetectedEarthquake, trig: StationTriggerRecord, nowMs: number): StationTriggerRecord | undefined {
     // Un disparo rechazado, sin PGA sobre su requisito o ya asignado a otro evento vivo no se incorpora
@@ -1981,6 +1986,10 @@ export class SeismicDetectorEngine {
     const elapsedSec = Math.max(0, (nowMs - event.timeEpoch) / 1000);
     const maxPhysicalReachKm = (elapsedSec * 6.5) + 60.0; // Vp ~ 6.5 km/s + margen de hipocentro
     if (distKm > maxPhysicalReachKm || distKm > 350.0) return undefined;
+
+    // La negación también rechaza NaN (origen o coordenadas incompletos)
+    const expectedTpMs = event.timeEpoch + calculateTravelTime1D(distKm, event.depth, 'P') * 1000;
+    if (!(Math.abs(trig.tP - expectedTpMs) <= ATTACH_P_RESIDUAL_MAX_MS)) return undefined;
 
     event.stations.push(trig);
     event.stationCount = this.independentSites(event.stations).length;
