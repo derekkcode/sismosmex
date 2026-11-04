@@ -502,7 +502,6 @@
     // =========================================================================
     let currentSidebarTab = 'intensities';
     let hadActivityBefore = false;
-    const narratedHighPgaStations = new Map(); // stCode -> timestamp de última locución por >= 3 gal
 
     function switchSidebarTab(tab) {
       currentSidebarTab = tab;
@@ -552,44 +551,6 @@
       return net === 'AM' || code.startsWith('AM.') || fullCode.startsWith('AM.') || code.startsWith('R') || netName.includes('raspberry shake') || netName.includes('shake') || server.includes('am');
     }
 
-    // Identificar si una estación pertenece a la red de Guatemala (INSIVUMEH o territorio guatemalteco)
-    function isGuatemalaStation(st) {
-      if (!st) return false;
-      const net = (st.network || '').trim().toUpperCase();
-      const fullCode = (st.fullCode || '').trim().toUpperCase();
-      const state = (st.state || '').toLowerCase();
-      const site = (st.site || '').toLowerCase();
-      const netName = (st.networkName || '').toLowerCase();
-      const source = (st.source || '').toLowerCase();
-
-      return net === 'GI' ||
-             fullCode.startsWith('GI.') ||
-             state.includes('guatemala') ||
-             site.includes('guatemala') ||
-             netName.includes('guatemala') ||
-             netName.includes('insivumeh') ||
-             source.includes('insivumeh');
-    }
-
-    // Identificar si una estación pertenece a la red de El Salvador (MARN / SNET o territorio salvadoreño)
-    function isElSalvadorStation(st) {
-      if (!st) return false;
-      const net = (st.network || '').trim().toUpperCase();
-      const fullCode = (st.fullCode || '').trim().toUpperCase();
-      const state = (st.state || '').toLowerCase();
-      const site = (st.site || '').toLowerCase();
-      const netName = (st.networkName || '').toLowerCase();
-      const source = (st.source || '').toLowerCase();
-
-      return net === 'SV' ||
-             fullCode.startsWith('SV.') ||
-             state.includes('salvador') ||
-             site.includes('salvador') ||
-             netName.includes('salvador') ||
-             netName.includes('marn') ||
-             source.includes('salvador') ||
-             source.includes('marn');
-    }
 
     function handleEngineStateChange(snapshot) {
       const telCount = document.getElementById('telemetryStationCount');
@@ -633,31 +594,6 @@
       const hasAbnormal = activeNonAmStations.length > 0;
       const hasActiveEvent = Boolean(snapshot.activeEvent);
       const isCurrentlyActive = hasAbnormal || hasActiveEvent;
-
-      // REGLA SOLICITADA POR EL USUARIO:
-      // "activa el narrador cuando una estacion detecte 3gal o superior en actividad (estacion independiente)"
-      // "haz que el narrador ignore todas las aceleraciones de guatemala y el salvador para que no aviente de que 'alerta del sistema'"
-      if (activeNonAmStations.length > 0 && engine.audioManager) {
-        const nowMs = Date.now();
-        for (const st of activeNonAmStations) {
-          // Ignorar siempre todas las aceleraciones de estaciones de Guatemala y El Salvador en el narrador
-          if (isGuatemalaStation(st) || isElSalvadorStation(st)) {
-            continue;
-          }
-
-          const stPga = Number(st.pga || 0);
-          if (stPga >= 3.0) {
-            const stKey = (st.code || st.id || '').toUpperCase();
-            const lastSpoken = narratedHighPgaStations.get(stKey) || 0;
-            // Cooldown de 30 segundos por estación para no repetir continuamente
-            if (nowMs - lastSpoken > 30000) {
-              narratedHighPgaStations.set(stKey, nowMs);
-              engine.audioManager.narrateTrigger(st);
-              break; // Dar prioridad y secuencialidad a una estación a la vez
-            }
-          }
-        }
-      }
 
       // ACTUALIZAR PUNTITO ROJO (BADGE DOT) EN EL ICONO DE ACTIVIDAD
       const badgeDot = document.getElementById('activityBadgeDot');

@@ -103,7 +103,7 @@ export class SeismicMonitorEngine {
     this.options = options;
 
     // Gestor de Audio JQuake
-    this.audioManager = new SeismicAudioManager();
+    this.audioManager = new SeismicAudioManager(() => Boolean(this.state.activeEvent));
 
     // Recuperar el último evento guardado persistido (o usar el oficial inicial)
     let savedEvent = OFFICIAL_SAVED_EVENT;

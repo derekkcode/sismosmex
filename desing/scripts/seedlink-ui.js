@@ -774,7 +774,7 @@ export class SeedLinkUIManager {
       if (st.triggered && (st.pga || 0) >= 0.70 && !st.code.startsWith('AM.')) {
         const now = Date.now();
         const lastAnnounced = this.announcedTriggerStations.get(st.code) || 0;
-        if (now - lastAnnounced > 35000 && !this.engine.state.activeEvent) {
+        if (now - lastAnnounced > 35000) {
           this.announcedTriggerStations.set(st.code, now);
           if (this.engine.audioManager) {
             this.engine.audioManager.narrateTrigger(st);

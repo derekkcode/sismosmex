@@ -21,6 +21,7 @@ export const UPDATES_CONFIG = {
             "Historial de sismos en MongoDB con respaldo del SSN; el historial ya no se borra por ausencia de datos.",
             "Los sismos de USGS anteriores a la última limpieza del historial se ignoran.",
             "Zoom automático que sigue solo ondas sísmicas; Costa Rica requiere detección confirmada por el servidor.",
+            "El narrador solo habla durante un sismo activo; se eliminó la alerta por aceleración sin sismo declarado.",
             "El narrador ya no se solapa; mejoras de interfaz, ajustes y catálogo de estaciones.",
             "Corrección del build de despliegue en Railway."
           ],
@@ -32,6 +33,7 @@ export const UPDATES_CONFIG = {
               "Earthquake history in MongoDB with SSN backup; history is no longer erased when data is missing.",
               "USGS earthquakes older than the last history cleanup are ignored.",
               "Automatic zoom follows only seismic waves; Costa Rica requires server-confirmed detection.",
+              "The narrator speaks only during an active earthquake; removed the acceleration alert without a declared earthquake.",
               "The narrator no longer overlaps; interface, settings and station catalog improvements.",
               "Fixed the Railway deployment build."
             ],
@@ -42,6 +44,7 @@ export const UPDATES_CONFIG = {
               "MongoDBの地震履歴とSSNのバックアップ。データがない場合に履歴が消去されなくなりました。",
               "履歴の最後の整理より前のUSGS地震は無視されます。",
               "自動ズームは地震波のみに追従します。コスタリカはサーバーで確認された検出が必要です。",
+              "ナレーションは地震の発生中のみ再生されます。宣言されていない加速度による警報を削除しました。",
               "ナレーションの重なりを修正。インターフェース、設定、観測点カタログを改善。",
               "Railwayへのデプロイビルドを修正しました。"
             ]

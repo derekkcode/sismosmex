@@ -12,7 +12,7 @@ export class UpdatesUIManager {
       ? UPDATES_CONFIG.pages 
       : [{ page: 1, title: 'Actualizaciones', versions: [] }];
     this.currentPageIndex = 0;
-    this.storageKey = 'sismosmex_hide_updates_modal_v860';
+    this.storageKey = 'sismosmex_hide_updates_modal_v1_0';
 
     this.initElements();
     this.bindEvents();

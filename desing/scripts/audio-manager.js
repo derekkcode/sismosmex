@@ -6,8 +6,9 @@
 import { SeismicNarratorClient } from './narrator-client.js';
 
 export class SeismicAudioManager {
-  constructor() {
+  constructor(isSeismicEventActive = () => false) {
     this.enabled = true;
+    this.isSeismicEventActive = isSeismicEventActive;
     this.initialized = false;
     this.audioCache = new Map();
     this.lastVoiceIntensity = 0;
@@ -362,8 +363,13 @@ export class SeismicAudioManager {
   // INTEGRACIÓN CON NARRADOR DE VOZ METÓDICO (PLANTILLAS MÉXICO)
   // =========================================================================
 
+  // Las locuciones sísmicas automáticas solo suenan durante un sismo activo
+  canNarrateSeismicEvent() {
+    return this.enabled && Boolean(this.narrator) && this.isSeismicEventActive();
+  }
+
   narrateTrigger(station) {
-    if (!this.enabled || !this.narrator) return;
+    if (!this.canNarrateSeismicEvent()) return;
     this.narrator.announceTrigger(station);
   }
 
@@ -373,17 +379,17 @@ export class SeismicAudioManager {
   }
 
   narrateBulletin(event) {
-    if (!this.enabled || !this.narrator) return;
+    if (!this.canNarrateSeismicEvent()) return;
     this.narrator.announceBulletin(event);
   }
 
   narrateIntensity(intensityName, regions) {
-    if (!this.enabled || !this.narrator) return;
+    if (!this.canNarrateSeismicEvent()) return;
     this.narrator.announceIntensity(intensityName, regions);
   }
 
   narrateTsunamiRisk(hasRisk, region) {
-    if (!this.enabled || !this.narrator) return;
+    if (!this.canNarrateSeismicEvent()) return;
     this.narrator.announceTsunamiRisk(hasRisk, region);
   }
 
