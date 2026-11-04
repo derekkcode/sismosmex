@@ -7,23 +7,23 @@
  *      (noise-calibrator.ts): max(umbral base de la red, cuantil 99.5 % del ruido * margen).
  *    - El ratio y el piso de PGA base dependen de la red (IG, AM, profesionales); el calibrador los eleva
  *      en estaciones ruidosas (p. ej. Guatemala) y pone en cuarentena a los canales que disparan sin corroboración.
- *    - Coincidencia espacial: al menos 2 estaciones IG (3 en el resto, 5 en Guatemala y El Salvador)
+ *    - Coincidencia espacial: al menos 6 sitios independientes (separados >= 3.5 km)
  *      con tiempos P compatibles con su separación, dentro de una ventana de 90 s.
  * 
  * 2. Estimación del Epicentro ("El Dónde"):
  *    - Modelo de tiempos de viaje de dos capas (corteza Vp 6.1 km/s sobre manto Vp 8.04 km/s, Moho a 35 km),
  *      continuo con la profundidad, y Vs = Vp / 1.732.
  *    - Búsqueda en espiral de Vogel sobre latitud, longitud y profundidad con pérdida Pseudo-Huber;
- *      t0 por mediana robusta. Con solo 2 estaciones la solución no es única: se prefiere la más cercana a la
- *      estación más temprana y el evento nunca se confirma solo.
+ *      t0 por mediana robusta. Penaliza epicentros alejados de la estación más temprana. Solo se localiza un grupo
+ *      con >= 6 sitios independientes y residuo RMS <= 1.0 s; si lo excede y hay más de 6 sitios, se prueba quitar un solo sitio.
  *    - Geocodificación inversa hacia la localidad más cercana de México y Centroamérica.
  * 
  * 3. Estimación de Magnitud ("El Qué tan fuerte"):
  *    - Relación PGA-distancia hipocentral invertida por estación; mediana de estaciones como magnitud oficial.
  * 
  * 4. Confirmación y persistencia:
- *    - Un evento se confirma solo con evidencia: >= 3 estaciones coherentes, onda S observada en >= 2
- *      estaciones, o 2 estaciones muy por encima de su piso con PGA >= 0.20 gal. Si no se confirma en 60 s se retira.
+ *    - Un evento se confirma solo con evidencia física, al declararse o después: onda S en >= 2 sitios independientes,
+ *      >= 2 sitios muy por encima de su piso con PGA máxima del evento >= 0.20 gal. Sin evidencia en 60 s se retira el preliminar.
  *    - Guarda automáticamente los sismos en MongoDB (colección sismosmex.earthquakes).
  */
 
@@ -404,6 +404,14 @@ export function calculateClusterLevel(
   return 1;
 }
 
+// Un sitio independiente debe estar a >= 3.5 km de los demás: los disparos co-ubicados cuentan como uno solo
+const MIN_SITE_SEPARATION_KM = 3.5;
+// Mínimo de sitios independientes calificados para localizar un evento (cualquier red)
+const MIN_INDEPENDENT_SITES = 6;
+// Residuo RMS máximo con pesos ÷n: ~1.7 s con la corrección insesgada ÷(n−4) para n = 6
+const RMS_GATE_SEC = 1.0;
+type EpicenterSolution = NonNullable<ReturnType<SeismicDetectorEngine['estimateEpicenter']>>;
+
 export class SeismicDetectorEngine {
   private static instance: SeismicDetectorEngine;
   private earthquakes: DetectedEarthquake[] = [];
@@ -422,7 +430,6 @@ export class SeismicDetectorEngine {
   // Búfer de disparos activos para coincidencia cinemática (ventana amplia regional de 90s para absorber latencias de red)
   private activeTriggers: Map<string, StationTriggerRecord> = new Map();
   private triggerWindowMs: number = 90000; // 90s para acomodar retraso de SeedLink de estaciones con latencia (como MMIG ~56s)
-  private minStationsForEvent: number = 2; // Mínimo 2 estaciones para red IG mexicana fuera de Chiapas
 
   // Ventana de seguimiento de amplitud máxima (60-90s post-disparo) para capturar la onda S (Item 21)
   private amplitudeTrackingMap: Map<string, {
@@ -451,6 +458,7 @@ export class SeismicDetectorEngine {
   private readonly evaluationMinIntervalMs: number = 400;
   private lastEvaluationMs: number = 0;
   private lastDiagSignature: string = '';
+  private rejectLogAt: Map<string, number> = new Map();
   private evaluationTimer: NodeJS.Timeout | null = null;
   private saveTimer: NodeJS.Timeout | null = null;
   // Actividad reciente por canal vertical para que cada estación abra disparos con un solo canal
@@ -659,13 +667,13 @@ export class SeismicDetectorEngine {
   }
 
   /**
-   * Un evento solo se confirma con evidencia física: red coherente de >= 3 estaciones, onda S observada en >= 2
-   * estaciones, o 2 estaciones muy por encima de su propio piso con PGA >= 0.20 gal. El paso del tiempo no confirma nada.
+   * Un evento solo se confirma con evidencia física: onda S observada en >= 2 sitios independientes, o
+   * >= 2 sitios muy por encima de su propio piso con PGA máxima del evento >= 0.20 gal. El paso del tiempo no confirma nada.
    */
   private evaluateConfirmation(stations: StationTriggerRecord[], maxPga: number, sWaveConfirmed: boolean): boolean {
-    if (stations.length >= 3 || sWaveConfirmed) return true;
-    const strong = stations.filter((s) => s.maxPga >= 3 * (s.reqPga ?? 0.1)).length;
-    return stations.length >= 2 && strong >= 2 && maxPga >= 0.20;
+    if (sWaveConfirmed) return true;
+    const strong = this.independentSites(stations).filter((s) => s.maxPga >= 3 * (s.reqPga ?? 0.1)).length;
+    return strong >= 2 && maxPga >= 0.20;
   }
 
   /** Asocia los disparos al evento y, si está confirmado, premia a sus canales en el calibrador de ruido */
@@ -686,7 +694,8 @@ export class SeismicDetectorEngine {
     const expired = this.earthquakes.filter((e) => {
       if (e.status !== 'PRELIMINARY' || (e as any).isLocked) return false;
       const detectedMs = new Date(e.detectedAt).getTime();
-      return Number.isFinite(detectedMs) && now - detectedMs > this.preliminaryExpiryMs;
+      const referenceMs = Number.isFinite(detectedMs) ? detectedMs : e.timeEpoch;
+      return Number.isFinite(referenceMs) && now - referenceMs > this.preliminaryExpiryMs;
     });
     if (expired.length === 0) return;
 
@@ -711,6 +720,13 @@ export class SeismicDetectorEngine {
    * Elimina sismos duplicados por id, displayId o cercanía temporal y espacial.
    */
   public deduplicateEarthquakes(list: DetectedEarthquake[]): DetectedEarthquake[] {
+    // Los registros antiguos pueden no traer isLocked: un CONFIRMED también cuenta como bloqueado
+    const lockedOf = (e: DetectedEarthquake) => (e as any).isLocked === true || e.status === 'CONFIRMED';
+    // Une estaciones por identidad de objeto: ningún registro se pierde y el mismo registro no se repite
+    const unionStations = (base: StationTriggerRecord[] | undefined, extra: StationTriggerRecord[] | undefined): StationTriggerRecord[] => {
+      const kept = base || [];
+      return [...kept, ...(extra || []).filter((s) => !kept.includes(s))];
+    };
     const result: DetectedEarthquake[] = [];
     for (const eq of list) {
       if (!eq) continue;
@@ -730,17 +746,30 @@ export class SeismicDetectorEngine {
 
       if (matchIdx >= 0) {
         const existing = result[matchIdx];
-        result[matchIdx] = {
-          ...existing,
-          ...eq,
-          magnitude: Math.max(existing.magnitude || 0, eq.magnitude || 0),
-          maxPga: Math.max(existing.maxPga || 0, eq.maxPga || 0),
-          maxIntensity: Math.max(existing.maxIntensity || 1, eq.maxIntensity || 1),
-          stationCount: Math.max(existing.stationCount || 0, eq.stationCount || 0, (existing.stations || []).length, (eq.stations || []).length),
-          reportNumber: Math.max((existing as any).reportNumber || 1, (eq as any).reportNumber || 1),
-          status: (existing.status === 'CONFIRMED' || eq.status === 'CONFIRMED') ? 'CONFIRMED' : 'PRELIMINARY',
-          saved: true,
-        };
+        const existingLocked = lockedOf(existing);
+        const eqLocked = lockedOf(eq);
+        if (existingLocked !== eqLocked) {
+          // El evento con candado manda en ubicación, magnitud y estado; el otro aporta sus estaciones sin perder ninguna
+          const anchor = existingLocked ? existing : eq;
+          const other = existingLocked ? eq : existing;
+          const stations = unionStations(anchor.stations, other.stations);
+          result[matchIdx] = { ...anchor, stations, stationCount: Math.max(anchor.stationCount || 0, stations.length), saved: true };
+        } else {
+          const stations = unionStations(existing.stations, eq.stations);
+          result[matchIdx] = {
+            ...existing,
+            ...eq,
+            stations,
+            magnitude: Math.max(existing.magnitude || 0, eq.magnitude || 0),
+            maxPga: Math.max(existing.maxPga || 0, eq.maxPga || 0),
+            maxIntensity: Math.max(existing.maxIntensity || 1, eq.maxIntensity || 1),
+            stationCount: Math.max(existing.stationCount || 0, eq.stationCount || 0, (existing.stations || []).length, (eq.stations || []).length, stations.length),
+            reportNumber: Math.max((existing as any).reportNumber || 1, (eq as any).reportNumber || 1),
+            // Ambos lados comparten el estado de candado (el caso mixto va arriba): el resultado sigue a ese estado
+            status: existingLocked ? 'CONFIRMED' : 'PRELIMINARY',
+            saved: true,
+          };
+        }
       } else {
         result.push(eq);
       }
@@ -782,13 +811,9 @@ export class SeismicDetectorEngine {
       const stored = await this.historyStore.loadAll();
       // Si se limpió el historial durante la lectura, no reintroducir lo leído; lo cancelado sin conexión tampoco debe reaparecer
       const loaded = this.pendingHistoryClear ? [] : stored.filter((eq) => !this.pendingHistoryDeletes.has(eq.id));
+      // Un preliminar guardado sigue preliminar tras reiniciar: si no hay evidencia, el barrido lo retira
       loaded.forEach((eq) => {
         eq.saved = true;
-        if (eq.status === 'PRELIMINARY' || (eq as any).active) {
-          eq.status = 'CONFIRMED';
-          (eq as any).active = false;
-          (eq as any).isLocked = true;
-        }
       });
       this.earthquakes = this.dedupeHistory([...loaded, ...this.earthquakes]);
       this.historyReady = true;
@@ -850,6 +875,10 @@ export class SeismicDetectorEngine {
       if (!trigger.corroborated && !trigger.eventId && !this.hasCoincidentTrigger(trigger, snapshot)) {
         this.noise.reportFalseTrigger(this.streamKeyOf(trigger), now);
       }
+    }
+    // El umbral de onda S avanza con el reloj: se revisa también sin paquetes nuevos, antes de retirar
+    for (const event of this.preliminaryCandidates(now)) {
+      this.confirmPreliminaryIfEvidence(event, now);
     }
     this.expireUnconfirmedEvents(now);
   }
@@ -1056,16 +1085,16 @@ export class SeismicDetectorEngine {
         receivedWallTime: nowWall, // hora de apertura: la ventana de asociación no se renueva con la coda
         lastUpdateWallTime: nowWall,
         staLtaRatio,
-        maxPga: pga,
-        maxAmp: amp,
-        woodAndersonAmpMm: woodAndersonDispMm,
+        maxPga: peakPga,
+        maxAmp: peakAmp,
+        woodAndersonAmpMm: peakWa,
         isPureFrequency: isPureFrequencySeismic,
         freqDominantHz,
         highFreqRatio,
         reqRatio,
         reqPga,
         noiseClass,
-        pPhasePga: pga,
+        pPhasePga: peakPga,
       };
       this.activeTriggers.set(cleanSt, existing);
 
@@ -1073,9 +1102,9 @@ export class SeismicDetectorEngine {
       if (!ampTracker) {
         ampTracker = {
           tP,
-          maxPga: pga,
-          maxAmp: amp,
-          woodAndersonAmpMm: woodAndersonDispMm,
+          maxPga: peakPga,
+          maxAmp: peakAmp,
+          woodAndersonAmpMm: peakWa,
           lastUpdateMs: packetTimeMs,
         };
         this.amplitudeTrackingMap.set(cleanSt, ampTracker);
@@ -1162,9 +1191,96 @@ export class SeismicDetectorEngine {
   }
 
   /**
-   * Coincidencia Cinemática Multiestación y Apertura Espacial:
-   * Aplica clustering espacial estricto (apertura <= 220 km) y validación de tiempos diferenciales.
-   * Elimina completamente falsos positivos y correlaciones erróneas entre estaciones distantes.
+   * Sitios físicamente independientes: entre registros a menos de 3.5 km cuenta solo el primero en disparar.
+   * Devuelve las referencias originales en orden de llegada.
+   */
+  private independentSites(records: StationTriggerRecord[]): StationTriggerRecord[] {
+    const sites: StationTriggerRecord[] = [];
+    for (const r of [...records].sort((a, b) => a.tP - b.tP)) {
+      const coLocated = sites.some(s => this.haversineDistanceKm(r.lat, r.lon, s.lat, s.lon) < MIN_SITE_SEPARATION_KM);
+      if (!coLocated) sites.push(r);
+    }
+    return sites;
+  }
+
+  /** Registros de los sitios aceptados, incluidos los co-ubicados con ellos */
+  private recordsAtSites(records: StationTriggerRecord[], sites: StationTriggerRecord[]): StationTriggerRecord[] {
+    return records.filter(r => sites.some(s => this.haversineDistanceKm(r.lat, r.lon, s.lat, s.lon) < MIN_SITE_SEPARATION_KM));
+  }
+
+  /** Apertura máxima (km) entre los sitios de un grupo */
+  private siteApertureKm(sites: StationTriggerRecord[]): number {
+    let apertureKm = 0;
+    for (let a = 0; a < sites.length; a++) {
+      for (let b = a + 1; b < sites.length; b++) {
+        apertureKm = Math.max(apertureKm, this.haversineDistanceKm(sites[a].lat, sites[a].lon, sites[b].lat, sites[b].lon));
+      }
+    }
+    return apertureKm;
+  }
+
+  /** Sitios con aceleración significativa para su red: IG >= 0.030 gal, red profesional >= 0.10, resto >= 0.20 */
+  private significantSiteCount(sites: StationTriggerRecord[]): number {
+    return sites.filter(t => {
+      const minPga = isMexicanIGNetwork(t.network) ? 0.030 : (isProfessionalNetwork(t.network) ? 0.10 : 0.20);
+      return t.maxPga >= minPga;
+    }).length;
+  }
+
+  /**
+   * Localiza un grupo de disparos con las reglas del detector: >= 6 sitios independientes, apertura <= maxApertureKm,
+   * >= 2 sitios significativos, residuo RMS <= 1.0 s y coherencia de tiempos diferenciales.
+   * Si el residuo excede el límite, prueba quitar un solo sitio (el que más lo reduce). Devuelve null si no cumple.
+   */
+  private localizeCluster(
+    records: StationTriggerRecord[],
+    maxApertureKm: number
+  ): { sites: StationTriggerRecord[]; epi: EpicenterSolution; apertureKm: number } | null {
+    let sites = this.independentSites(records);
+    if (sites.length < MIN_INDEPENDENT_SITES) return null;
+    if (this.siteApertureKm(sites) > maxApertureKm || this.significantSiteCount(sites) < 2) return null;
+
+    let epi = this.estimateEpicenter(sites);
+    if (epi && epi.rmsResidualSec > RMS_GATE_SEC && sites.length > MIN_INDEPENDENT_SITES) {
+      let best: { sites: StationTriggerRecord[]; epi: EpicenterSolution } | null = null;
+      for (let drop = 0; drop < sites.length; drop++) {
+        const subset = sites.filter((_, idx) => idx !== drop);
+        if (this.significantSiteCount(subset) < 2) continue;
+        const subEpi = this.estimateEpicenter(subset);
+        if (subEpi && (!best || subEpi.rmsResidualSec < best.epi.rmsResidualSec)) best = { sites: subset, epi: subEpi };
+      }
+      if (best && best.epi.rmsResidualSec <= RMS_GATE_SEC) {
+        sites = best.sites;
+        epi = best.epi;
+      }
+    }
+
+    if (!epi || epi.rmsResidualSec > RMS_GATE_SEC || isDegenerateGeometry(epi.azimuthalGap, sites.length)) {
+      this.logClusterRejection(sites, `residuo RMS ${epi ? epi.rmsResidualSec + ' s' : 'sin convergencia'} (límite ${RMS_GATE_SEC} s)`);
+      return null;
+    }
+
+    const diffTest = this.testDifferentialTravelTimes(sites);
+    if (!diffTest.passes) {
+      this.logClusterRejection(sites, `inconsistencia cinemática (pares válidos ${diffTest.validPairs}/${diffTest.totalPairs})`);
+      return null;
+    }
+    return { sites, epi, apertureKm: this.siteApertureKm(sites) };
+  }
+
+  private logClusterRejection(sites: StationTriggerRecord[], reason: string): void {
+    // Ventana de 60 s: localizeCluster se evalúa por semilla en cada ciclo (~400 ms); sin ella el mismo rechazo se repetiría.
+    const now = Date.now();
+    for (const [k, t] of this.rejectLogAt) if (now - t >= 60000) this.rejectLogAt.delete(k);
+    const key = `${sites.map(s => s.station).sort().join(',')}|${reason}`;
+    if (this.rejectLogAt.has(key)) return;
+    this.rejectLogAt.set(key, now);
+    console.log(`[Detector] Grupo de ${sites.length} sitios rechazado: ${reason}.`);
+  }
+
+  /**
+   * Declaración multiestación: un grupo de disparos se localiza solo con >= 6 sitios independientes (ver localizeCluster).
+   * Un evento nuevo se declara PRELIMINAR, o CONFIRMADO si su propia evidencia física (ver evaluateConfirmation) ya basta.
    */
   private evaluateSpatialCoincidence(): void {
     const now = Date.now();
@@ -1197,6 +1313,8 @@ export class SeismicDetectorEngine {
       return t.staLtaRatio >= minRatio && t.maxPga >= minPga;
     });
 
+    const qualifiedSites = this.independentSites(qualifiedTriggers).length;
+
     // Diagnóstico visible para depurar estaciones disparadas (solo cuando cambia el conjunto de estaciones)
     if (uniqueTriggers.length >= 2) {
       const rows = uniqueTriggers.map(t => {
@@ -1207,68 +1325,32 @@ export class SeismicDetectorEngine {
       const signature = rows.map(r => r.key).sort().join(',');
       if (signature !== this.lastDiagSignature) {
         this.lastDiagSignature = signature;
-        console.log(`[Detector:Diag] ${uniqueTriggers.length} estación(es) con disparo activo -> ${rows.map(r => r.text).join(' | ')}`);
+        console.log(`[Detector:Diag] ${uniqueTriggers.length} estación(es) con disparo activo, ${qualifiedSites}/${MIN_INDEPENDENT_SITES} sitios independientes calificados -> ${rows.map(r => r.text).join(' | ')}`);
       }
     }
 
-    if (qualifiedTriggers.length < 2) {
+    if (qualifiedSites < MIN_INDEPENDENT_SITES) {
       return;
     }
 
     // =========================================================================
-    // CLUSTERING ESPACIAL: Buscar clusters coherentes de estaciones en radio regional
-    // Regla: 5 estaciones para Guatemala y El Salvador, 3 para Chiapas, 2 para red IG mexicana fuera de Chiapas
+    // CLUSTERING ESPACIAL: buscar grupos coherentes de estaciones en radio regional
+    // Regla: al menos MIN_INDEPENDENT_SITES sitios independientes por grupo (ver localizeCluster), sin reglas por país
     // =========================================================================
     for (let i = 0; i < qualifiedTriggers.length; i++) {
       const seedStation = qualifiedTriggers[i];
-      const isSeedIG = isMexicanIGNetwork(seedStation.network);
       // Las estaciones de banda ancha de México (IG) están más espaciadas geográficamente (hasta 280-300 km)
-      const clusterRadiusKm = isSeedIG ? 285.0 : 220.0;
+      const clusterRadiusKm = isMexicanIGNetwork(seedStation.network) ? 285.0 : 220.0;
       const cluster = qualifiedTriggers.filter(t => 
         this.haversineDistanceKm(seedStation.lat, seedStation.lon, t.lat, t.lon) <= clusterRadiusKm
       );
 
-      // P-10 / P-11: Contar sitios geográficos independientes (separación mínima >= 3.5 km)
-      // Evita duplicar sensores co-ubicados en un mismo predio/edificio (< 3.5 km)
-      // mientras preserva estaciones cercanas independientes (ej. PAVE y PATR en Tacana a 10 km).
-      const independentSites: StationTriggerRecord[] = [];
-      const minSiteSeparationKm = 3.5;
-      for (const st of cluster) {
-        const isCloseToExisting = independentSites.some(
-          site => this.haversineDistanceKm(st.lat, st.lon, site.lat, site.lon) < minSiteSeparationKm
-        );
-        if (!isCloseToExisting) {
-          independentSites.push(st);
-        }
-      }
-
-      // P-15: La condición regional se evalúa por mayoría del cluster o semilla,
-      // no por la simple presencia de una sola estación aislada que contamine las reglas
-      const guatCount = cluster.filter(t => isGuatemalaStation(t)).length;
-      const salCount = cluster.filter(t => isElSalvadorStation(t)).length;
+      // El tope de apertura de Chiapas se mantiene; el resto de la región usa 220 km (295 km para IG fuera de Chiapas)
       const chiapasCount = cluster.filter(t => isChiapasStation(t)).length;
-      const igCount = cluster.filter(t => isMexicanIGNetwork(t.network)).length;
-
-      const isGuatCluster = guatCount >= 3 || (isGuatemalaStation(seedStation) && guatCount >= 2);
-      const isSalCluster = salCount >= 3 || (isElSalvadorStation(seedStation) && salCount >= 2);
       const isChiapasCluster = chiapasCount >= 2 || (isChiapasStation(seedStation) && chiapasCount >= 1);
-      const isFiveStationCluster = isGuatCluster || isSalCluster;
+      const maxApertureKm = (isMexicanIGNetwork(seedStation.network) && !isChiapasCluster) ? 295.0 : 220.0;
 
-      let requiredStations = 3;
-      let requiredIndependentSites = 2;
-      if (isFiveStationCluster) {
-        requiredStations = 5;
-        requiredIndependentSites = 3; // Al menos 3 sitios físicamente separados por >= 15 km
-      } else if (isChiapasCluster) {
-        requiredStations = 3;
-        requiredIndependentSites = 2;
-      } else {
-        const hasIG = igCount >= 2 || (isMexicanIGNetwork(seedStation.network) && igCount >= 1);
-        requiredStations = hasIG ? 2 : 3;
-        requiredIndependentSites = hasIG ? 2 : 2;
-      }
-
-      if (cluster.length >= requiredStations && independentSites.length >= requiredIndependentSites) {
+      if (this.independentSites(cluster).length >= MIN_INDEPENDENT_SITES) {
         // Verificar si este cluster pertenece a un sismo activo / reciente (< 240s) en la misma región (< 350 km) o con estaciones compartidas
         const clusterCodes = new Set(cluster.map(c => (c.station || '').toUpperCase()));
         const recentSameRegion = this.earthquakes.find(e => {
@@ -1292,6 +1374,9 @@ export class SeismicDetectorEngine {
           const mergedStations = [...recentSameRegion.stations];
 
           for (const st of cluster) {
+            // Un disparo ya asignado a otro evento vivo no se mueve a este
+            const ownerEvent = this.findOwnerEvent(st);
+            if (ownerEvent && ownerEvent !== recentSameRegion) continue;
             const codeUpper = st.station.toUpperCase();
             if (!existingStationCodes.has(codeUpper)) {
               existingStationCodes.add(codeUpper);
@@ -1308,9 +1393,11 @@ export class SeismicDetectorEngine {
 
           // Re-estimar el Epicentro exacto, la Profundidad y la Magnitud conforme llegan más estaciones
           if (hasNewStations || (now - (recentSameRegion.timeEpoch || 0) < 60000)) {
-            const refinedEpi = this.estimateEpicenter(mergedStations);
-            if (refinedEpi && refinedEpi.rmsResidualSec <= 2.8 && !isDegenerateGeometry(refinedEpi.azimuthalGap, mergedStations.length)) {
-              const magData = this.estimateMagnitude(mergedStations, refinedEpi.latitude, refinedEpi.longitude, refinedEpi.depth);
+            const mergedLocalized = this.localizeCluster(mergedStations, maxApertureKm);
+            if (mergedLocalized) {
+              const refinedEpi = mergedLocalized.epi;
+              const eventStations = this.recordsAtSites(mergedStations, mergedLocalized.sites);
+              const magData = this.estimateMagnitude(eventStations, refinedEpi.latitude, refinedEpi.longitude, refinedEpi.depth);
               const newMag = Number((magData.magnitude || recentSameRegion.magnitude).toFixed(1));
               const newPga = Number(Math.max(recentSameRegion.maxPga, magData.maxPga).toFixed(2));
               const newInt = Math.max(recentSameRegion.maxIntensity, magData.maxIntensity);
@@ -1328,18 +1415,19 @@ export class SeismicDetectorEngine {
                 recentSameRegion.magnitude = hasNewStations ? newMag : Math.max(recentSameRegion.magnitude, newMag);
                 recentSameRegion.maxPga = newPga;
                 recentSameRegion.maxIntensity = newInt;
-                recentSameRegion.stationCount = mergedStations.length;
-                recentSameRegion.stations = mergedStations;
+                recentSameRegion.stationCount = mergedLocalized.sites.length;
+                recentSameRegion.stations = eventStations;
                 recentSameRegion.reportNumber = (recentSameRegion.reportNumber || 1) + 1;
                 recentSameRegion.azimuthalGap = refinedEpi.azimuthalGap;
                 recentSameRegion.rmsResidualSec = refinedEpi.rmsResidualSec;
                 recentSameRegion.sWaveArrivedCount = magData.sWaveArrivedCount;
                 recentSameRegion.isSWaveConfirmed = magData.isSWaveConfirmed;
 
-                // Confirmar solo con evidencia: >= 3 estaciones coherentes, onda S observada o 2 estaciones muy por encima de su piso
-                const isConfirmedNow = this.evaluateConfirmation(mergedStations, newPga, magData.isSWaveConfirmed);
-                recentSameRegion.clusterLevel = calculateClusterLevel(mergedStations.length, newPga, isConfirmedNow);
+                // Confirmar solo con evidencia física (ver evaluateConfirmation); al confirmarse, el evento queda bloqueado
+                const isConfirmedNow = this.evaluateConfirmation(eventStations, newPga, magData.isSWaveConfirmed);
+                recentSameRegion.clusterLevel = calculateClusterLevel(mergedLocalized.sites.length, newPga, isConfirmedNow);
                 recentSameRegion.status = isConfirmedNow ? 'CONFIRMED' : 'PRELIMINARY';
+                if (isConfirmedNow) { (recentSameRegion as any).isLocked = true; }
                 recentSameRegion.magnitudeType = isConfirmedNow ? 'ML' : 'ML (Preliminar)';
                 recentSameRegion.source = isConfirmedNow
                   ? `Sismo Confirmado por Red (${recentSameRegion.stationCount} estaciones)`
@@ -1354,9 +1442,12 @@ export class SeismicDetectorEngine {
                   this.onEventDetectedCallback(recentSameRegion);
                 }
               }
+              continue; // Evento ya atribuido y procesado; no continuar para evitar duplicados en el mismo tick
             }
+          } else {
+            continue; // Sin estaciones nuevas y evento ya maduro: nada que refinar
           }
-          return; // Evento ya atribuido y procesado; no continuar para evitar duplicados en el mismo tick
+          // Si la fusión no cumple las reglas, el grupo se evalúa como declaración independiente (abajo)
         }
 
         // Un evento ya confirmado (bloqueado) no se vuelve a declarar con los mismos disparos:
@@ -1368,88 +1459,23 @@ export class SeismicDetectorEngine {
         );
         if (lockedSameEvent) continue;
 
-        // Verificar apertura máxima entre cualquier par del cluster
-        let clusterApertureKm = 0;
-        for (let a = 0; a < cluster.length; a++) {
-          for (let b = a + 1; b < cluster.length; b++) {
-            const d = this.haversineDistanceKm(cluster[a].lat, cluster[a].lon, cluster[b].lat, cluster[b].lon);
-            if (d > clusterApertureKm) clusterApertureKm = d;
-          }
-        }
-        const maxAllowedAperture = (isMexicanIGNetwork(seedStation.network) && !isChiapasCluster) ? 295.0 : 220.0;
-        if (clusterApertureKm > maxAllowedAperture) continue;
+        // Localización con las reglas del detector: sitios independientes, apertura, significancia, RMS y coherencia cinemática
+        // Solo los disparos sin dueño forman un evento nuevo: los ya asignados a otro evento vivo no se duplican
+        const unowned = cluster.filter((c) => !this.findOwnerEvent(c));
+        const localized = this.localizeCluster(unowned, maxApertureKm);
+        if (!localized) continue;
 
-        // Debe existir aceleración sísmica sustancial (anti-ruido basal)
-        // Para Guatemala y El Salvador exigir al menos 3 estaciones con aceleración notable; para México 2 estaciones
-        const reqSignificant = isFiveStationCluster ? 3 : 2;
-        const significantStations = cluster.filter(t => {
-          const isIG = isMexicanIGNetwork(t.network);
-          const isProf = isProfessionalNetwork(t.network);
-          return t.maxPga >= (isIG ? 0.030 : (isProf ? 0.10 : 0.20));
-        });
-        if (significantStations.length < reqSignificant) continue;
+        // Un evento confirmado o bloqueado que ya cubre todos los sitios aceptados: no crear un duplicado
+        const acceptedCodes = localized.sites.map(s => s.station.toUpperCase());
+        const coveredByLocked = this.earthquakes.some(e =>
+          (e.status === 'CONFIRMED' || (e as any).isLocked) &&
+          now - (e.timeEpoch || 0) <= 240000 &&
+          acceptedCodes.every(code => (e.stations || []).some((s: any) => (s.station || s.code || '').toUpperCase() === code))
+        );
+        if (coveredByLocked) continue;
 
-        // Validación cinemática diferencial de tiempos de viaje (100% de los pares válidos)
-        const diffTest = this.testDifferentialTravelTimes(cluster);
-        if (!diffTest.passes) {
-          const tag = isGuatCluster ? '[Guatemala]' : isSalCluster ? '[El Salvador]' : isChiapasCluster ? '[Chiapas]' : '';
-          console.log(`[Detector] Cluster ${tag} rechazado por inconsistencia cinemática: pares válidos ${diffTest.validPairs}/${diffTest.totalPairs}.`);
-          continue;
-        }
-
-        // P-13: Estimar hipocentro por inversión de Geiger con rechazo iterativo de outliers
-        let candidateCluster = [...cluster];
-        let epi = this.estimateEpicenter(candidateCluster);
-
-        // Si el residual RMS es alto (> 1.8s) y tenemos más estaciones que el mínimo requerido,
-        // intentar descartar iterativamente la estación con mayor residuo (outlier por glitch de reloj o ruido)
-        if ((!epi || epi.rmsResidualSec > 1.8) && candidateCluster.length > requiredStations) {
-          console.log(`[Detector] RMS inicial elevado (${epi?.rmsResidualSec}s), probando rechazo de outlier...`);
-          let bestFilteredCluster = candidateCluster;
-          let bestEpi = epi;
-
-          for (let dropIdx = 0; dropIdx < candidateCluster.length; dropIdx++) {
-            const subCluster = candidateCluster.filter((_, idx) => idx !== dropIdx);
-            if (subCluster.length < requiredStations) continue;
-
-            const subEpi = this.estimateEpicenter(subCluster);
-            if (subEpi && (!bestEpi || subEpi.rmsResidualSec < bestEpi.rmsResidualSec)) {
-              bestEpi = subEpi;
-              bestFilteredCluster = subCluster;
-            }
-          }
-
-          if (bestEpi && bestEpi.rmsResidualSec <= 1.8) {
-            console.log(`[Detector] Outlier removido con éxito: RMS mejoró a ${bestEpi.rmsResidualSec}s con ${bestFilteredCluster.length} estaciones.`);
-            candidateCluster = bestFilteredCluster;
-            epi = bestEpi;
-          }
-        }
-
-        if (!epi || epi.rmsResidualSec > 2.0 || isDegenerateGeometry(epi.azimuthalGap, candidateCluster.length)) {
-          console.log(`[Detector] Cluster rechazado: Geiger no convergió o residual RMS excesivo (${epi?.rmsResidualSec}s).`);
-          continue;
-        }
-
-        const regionNotice = isGuatCluster
-          ? ' (GUATEMALA: ' + cluster.length + ' >= 5)'
-          : isSalCluster
-            ? ' (EL SALVADOR: ' + cluster.length + ' >= 5)'
-            : isChiapasCluster
-              ? ' (CHIAPAS: ' + cluster.length + ' >= 3)'
-              : ' (IG MÉXICO: ' + cluster.length + ' >= 2)';
-        console.log(`[Detector] Coincidencia multiestación validada${regionNotice}: ${candidateCluster.length} estaciones, apertura ${clusterApertureKm.toFixed(1)} km, RMS ${epi.rmsResidualSec}s.`);
-        const declared = this.declareSeismicEvent(candidateCluster, epi);
-        if (declared) return;
-      } else if (isGuatCluster && cluster.length >= 2) {
-        // Log informativo de progreso de corroboración para estaciones de Guatemala
-        console.log(`[Detector:Guatemala] 🇬🇹 Estaciones de Guatemala en disparo: ${cluster.length}/5 estaciones requeridas para confirmación oficial.`);
-      } else if (isSalCluster && cluster.length >= 2) {
-        // Log informativo de progreso de corroboración para estaciones de El Salvador
-        console.log(`[Detector:ElSalvador] 🇸🇻 Estaciones de El Salvador en disparo: ${cluster.length}/5 estaciones requeridas para confirmación oficial.`);
-      } else if (cluster.length >= 2) {
-        // [FIX] Antes este caso (cluster mexicano/estándar que no llega al mínimo) no dejaba ningún rastro
-        console.log(`[Detector] Cluster insuficiente cerca de ${seedStation.station}: ${cluster.length}/${requiredStations} estaciones dentro de 200km. Estaciones: ${cluster.map(c => c.station).join(', ')}.`);
+        console.log(`[Detector] Coincidencia multiestación validada: ${localized.sites.length} sitios independientes, apertura ${localized.apertureKm.toFixed(1)} km, RMS ${localized.epi.rmsResidualSec}s.`);
+        this.declareSeismicEvent(this.recordsAtSites(unowned, localized.sites), localized.epi);
       }
     }
   }
@@ -1726,33 +1752,13 @@ export class SeismicDetectorEngine {
   } {
     let maxOverallPga = 0;
     let validStationCount = 0;
-    let sWaveArrivedCount = 0;
     const mlEstimates: number[] = [];
     const nowMs = Date.now();
+    const sWaveArrivedCount = this.markSWaveArrivals(stations, epiLat, epiLon, depthKm, nowMs);
 
     stations.forEach((st) => {
       const distKm = Math.max(5.0, this.haversineDistanceKm(epiLat, epiLon, st.lat, st.lon));
-      st.distanceKm = Number(distKm.toFixed(1));
       const hypDistKm = Math.hypot(distKm, depthKm);
-
-      // Llegada esperada de la onda S (cuenta regresiva para la UI). Solo cuenta como llegada real si, pasada esa hora,
-      // el pico supera claramente la fase P y el piso de la estación: el reloj por sí solo no demuestra nada.
-      const ttP = calculateTravelTime1D(distKm, depthKm, 'P');
-      const ttS = calculateTravelTime1D(distKm, depthKm, 'S');
-      const sDelayMs = Math.round((ttS - ttP) * 1000);
-      st.sWaveExpectedMs = st.tP + sDelayMs;
-      st.sWaveCountdownSec = Math.max(0, Math.round((st.sWaveExpectedMs - nowMs) / 1000));
-      const pPhasePga = st.pPhasePga ?? st.maxPga;
-      const sPhasePga = st.sPhasePga ?? 0;
-      st.sWaveArrived = nowMs >= st.sWaveExpectedMs &&
-        sPhasePga >= Math.max(1.6 * pPhasePga, 2.5 * (st.reqPga ?? 0.05));
-      if (st.sWaveArrived) {
-        sWaveArrivedCount++;
-        if (!st.tS) {
-          st.tS = st.sWaveExpectedMs;
-          st.tS_iso = new Date(st.tS).toISOString();
-        }
-      }
 
       // Descartar estaciones excesivamente lejanas (> 320 km) para el cálculo de magnitud
       // a fin de evitar que el ruido ambiental a gran distancia distorsione la magnitud
@@ -1833,8 +1839,91 @@ export class SeismicDetectorEngine {
   }
 
   /**
-   * Actualiza dinámicamente las amplitudes pico de la onda S (ventana de 60-90s)
-   * en el evento sísmico recién declarado (Item 21).
+   * Marca las estaciones donde la onda S ya llegó (hora esperada cumplida y PGA de fase S claramente mayor que la P)
+   * y devuelve cuántos sitios independientes dentro de 320 km la registraron.
+   */
+  private markSWaveArrivals(
+    stations: StationTriggerRecord[],
+    epiLat: number,
+    epiLon: number,
+    depthKm: number,
+    nowMs: number
+  ): number {
+    const arrivedInRange: StationTriggerRecord[] = [];
+    for (const st of stations) {
+      const distKm = Math.max(5.0, this.haversineDistanceKm(epiLat, epiLon, st.lat, st.lon));
+      st.distanceKm = Number(distKm.toFixed(1));
+
+      // Llegada esperada de la onda S (cuenta regresiva para la UI). Solo cuenta como llegada real si, pasada esa hora,
+      // el pico supera claramente la fase P y el piso de la estación: el reloj por sí solo no demuestra nada.
+      const ttP = calculateTravelTime1D(distKm, depthKm, 'P');
+      const ttS = calculateTravelTime1D(distKm, depthKm, 'S');
+      const sDelayMs = Math.round((ttS - ttP) * 1000);
+      st.sWaveExpectedMs = st.tP + sDelayMs;
+      st.sWaveCountdownSec = Math.max(0, Math.round((st.sWaveExpectedMs - nowMs) / 1000));
+      const pPhasePga = st.pPhasePga ?? st.maxPga;
+      const sPhasePga = st.sPhasePga ?? 0;
+      st.sWaveArrived = nowMs >= st.sWaveExpectedMs &&
+        sPhasePga >= Math.max(1.6 * pPhasePga, 2.5 * (st.reqPga ?? 0.05));
+      if (!st.sWaveArrived) continue;
+
+      if (!st.tS) {
+        st.tS = st.sWaveExpectedMs;
+        st.tS_iso = new Date(st.tS).toISOString();
+      }
+      // Igual que en la magnitud, las estaciones de más de 320 km no cuentan
+      if (distKm <= 320.0) arrivedInRange.push(st);
+    }
+    return this.independentSites(arrivedInRange).length;
+  }
+
+  /**
+   * Revisa la llegada de onda S de los miembros y promueve el preliminar a confirmado solo con evidencia física
+   * y con al menos MIN_INDEPENDENT_SITES sitios independientes. Los eventos bloqueados no cambian.
+   */
+  private confirmPreliminaryIfEvidence(event: DetectedEarthquake, nowMs: number): void {
+    if (event.status !== 'PRELIMINARY' || (event as any).isLocked) return;
+    const sWaveSiteCount = this.markSWaveArrivals(event.stations, event.latitude, event.longitude, event.depth, nowMs);
+    const sites = this.independentSites(event.stations).length;
+    if (sites < MIN_INDEPENDENT_SITES) return;
+    if (!this.evaluateConfirmation(event.stations, event.maxPga, sWaveSiteCount >= 2)) return;
+    event.status = 'CONFIRMED';
+    (event as any).isLocked = true;
+    event.stationCount = sites;
+    event.sWaveArrivedCount = sWaveSiteCount;
+    event.isSWaveConfirmed = sWaveSiteCount >= 2;
+    event.clusterLevel = calculateClusterLevel(sites, event.maxPga, true);
+    event.magnitudeType = 'ML';
+    event.source = `Confirmado por Red (Nivel ${event.clusterLevel}, ${sites} estaciones)`;
+    this.activePreliminaryIds.delete(event.id);
+    this.markEventStations(event);
+    this.saveEarthquakesToDisk();
+    console.log(`[Detector] ✅ EVENTO CONFIRMADO POR EVIDENCIA FÍSICA: ${event.id}, ${event.location}, M ${event.magnitude}, PGA=${event.maxPga} gal, ${sites} sitios, onda S en ${sWaveSiteCount}.`);
+    if (this.onEventDetectedCallback) {
+      this.onEventDetectedCallback(event);
+    }
+  }
+
+  /** Evento vivo que posee el disparo: se compara la identidad del objeto, no el código de la estación */
+  private findOwnerEvent(trig: StationTriggerRecord): DetectedEarthquake | undefined {
+    return this.earthquakes.find((e) => (e.stations || []).includes(trig));
+  }
+
+  /** Preliminares sin bloquear dentro de su ventana de evidencia (hasta preliminaryExpiryMs desde la detección) */
+  private preliminaryCandidates(nowMs: number): DetectedEarthquake[] {
+    return this.earthquakes.filter((event) => {
+      const ageFromOriginMs = nowMs - event.timeEpoch;
+      const ageFromDetectionMs = nowMs - new Date(event.detectedAt).getTime();
+      return event.status === 'PRELIMINARY' &&
+        !(event as any).isLocked &&
+        ageFromOriginMs >= 0 &&
+        ageFromDetectionMs >= 0 && ageFromDetectionMs <= this.preliminaryExpiryMs;
+    });
+  }
+
+  /**
+   * Alimenta los picos de PGA y amplitud de los preliminares vigentes y revisa en cada uno la evidencia de onda S.
+   * Cada disparo va al preliminar que lo posee; si no lo posee, al que ya tiene una estación de ese código o, si ninguno, al más cercano.
    */
   private updateActiveEarthquakeAmplitudes(
     station: string,
@@ -1842,42 +1931,70 @@ export class SeismicDetectorEngine {
     amp: number,
     woodAndersonAmpMm: number
   ): void {
-    if (this.earthquakes.length === 0) return;
     const nowMs = Date.now();
-    const recentEvent = this.earthquakes.find((event) => {
-      const ageFromOriginMs = nowMs - event.timeEpoch;
-      const ageFromDetectionMs = nowMs - new Date(event.detectedAt).getTime();
-      return event.status === 'PRELIMINARY' &&
-        !(event as any).isLocked &&
-        ageFromOriginMs >= 0 && ageFromOriginMs <= 45000 &&
-        ageFromDetectionMs >= 0 && ageFromDetectionMs <= 45000;
-    });
-    if (!recentEvent) return;
+    const candidates = this.preliminaryCandidates(nowMs);
+    if (candidates.length === 0) return;
 
-    let stIndex = recentEvent.stations.findIndex((s) => s.station === station);
-    if (stIndex < 0) {
-      const trig = this.activeTriggers.get(station);
-      if (trig) {
-        // P-17: Comprobar físicamente que la estación disparada esté en el rango de propagación del evento
-        // Evita que un pico de ruido en GT/SV contamine un sismo en Oaxaca o Michoacán inflando su PGA y ML
-        const distKm = this.haversineDistanceKm(recentEvent.latitude, recentEvent.longitude, trig.lat, trig.lon);
-        const elapsedSec = Math.max(0, (nowMs - recentEvent.timeEpoch) / 1000);
-        const maxPhysicalReachKm = (elapsedSec * 6.5) + 60.0; // Vp ~ 6.5 km/s + margen de hipocentro
-
-        if (distKm > maxPhysicalReachKm || distKm > 350.0) {
-          // Estación fuera del frente de onda físico del evento activo: ignorar para no contaminar
-          return;
+    const trig = this.activeTriggers.get(station);
+    // Un disparo rechazado no alimenta ningún evento. Si tiene dueño vivo, solo ese evento recibe sus picos.
+    if (trig?.rejected) return;
+    const owner = trig ? this.findOwnerEvent(trig) : undefined;
+    if (owner && !candidates.includes(owner)) return;
+    let recentEvent = owner ?? candidates.find((event) => event.stations.some((s) => s.station === station));
+    if (!recentEvent && trig) {
+      let nearestKm = Infinity;
+      for (const event of candidates) {
+        const d = this.haversineDistanceKm(event.latitude, event.longitude, trig.lat, trig.lon);
+        if (d < nearestKm) {
+          nearestKm = d;
+          recentEvent = event;
         }
-
-        recentEvent.stations.push(trig);
-        recentEvent.stationCount = recentEvent.stations.length;
-        stIndex = recentEvent.stations.length - 1;
-      } else {
-        return;
       }
     }
+    if (!recentEvent) return;
 
-    const st = recentEvent.stations[stIndex];
+    // Primero el registro del propio disparo: tras una fusión puede haber dos registros con el mismo código de estación
+    const own = trig ? recentEvent.stations.find((s) => s === trig) : undefined;
+    const st = own ?? recentEvent.stations.find((s) => s.station === station) ?? (trig ? this.attachTriggerToEvent(recentEvent, trig, nowMs) : undefined);
+    if (st) this.updateEventPeaks(recentEvent, st, pga, amp, woodAndersonAmpMm);
+
+    // Se evalúa en cada paquete: la llegada de onda S depende del tiempo, no solo de subidas de PGA
+    this.confirmPreliminaryIfEvidence(recentEvent, nowMs);
+  }
+
+  /**
+   * Incorpora un disparo al preliminar y devuelve la estación que recibe sus picos. Si el sitio ya lo representa otra
+   * estación del evento, devuelve esa. Devuelve undefined, sin incorporarlo, si el disparo está rechazado, sin PGA
+   * suficiente, asignado a otro evento vivo o fuera del alcance físico del evento (P-17).
+   */
+  private attachTriggerToEvent(event: DetectedEarthquake, trig: StationTriggerRecord, nowMs: number): StationTriggerRecord | undefined {
+    // Un disparo rechazado, sin PGA sobre su requisito o ya asignado a otro evento vivo no se incorpora
+    if (trig.rejected || trig.maxPga < this.triggerRequirements(trig).minPga) return undefined;
+    const owner = this.findOwnerEvent(trig);
+    if (owner && owner !== event) return undefined;
+    const sameSite = event.stations.find((s) => this.haversineDistanceKm(s.lat, s.lon, trig.lat, trig.lon) < MIN_SITE_SEPARATION_KM);
+    if (sameSite) return sameSite;
+
+    // P-17: Comprobar físicamente que la estación disparada esté en el rango de propagación del evento
+    // Evita que un pico de ruido en GT/SV contamine un sismo en Oaxaca o Michoacán inflando su PGA y ML
+    const distKm = this.haversineDistanceKm(event.latitude, event.longitude, trig.lat, trig.lon);
+    const elapsedSec = Math.max(0, (nowMs - event.timeEpoch) / 1000);
+    const maxPhysicalReachKm = (elapsedSec * 6.5) + 60.0; // Vp ~ 6.5 km/s + margen de hipocentro
+    if (distKm > maxPhysicalReachKm || distKm > 350.0) return undefined;
+
+    event.stations.push(trig);
+    event.stationCount = this.independentSites(event.stations).length;
+    return trig;
+  }
+
+  /** Acumula los picos de PGA y amplitud en la estación y en el evento; si la magnitud re-estimada sube, la actualiza. */
+  private updateEventPeaks(
+    event: DetectedEarthquake,
+    st: StationTriggerRecord,
+    pga: number,
+    amp: number,
+    woodAndersonAmpMm: number
+  ): void {
     let changed = false;
 
     if (pga > st.maxPga) {
@@ -1893,25 +2010,25 @@ export class SeismicDetectorEngine {
       changed = true;
     }
 
-    if (pga > recentEvent.maxPga) {
-      recentEvent.maxPga = pga;
-      recentEvent.maxIntensity = SeismicDspEngine.pgaToMercalli(pga);
+    if (pga > event.maxPga) {
+      event.maxPga = pga;
+      event.maxIntensity = SeismicDspEngine.pgaToMercalli(pga);
       changed = true;
     }
 
-    if (changed) {
-      // Re-estimar magnitud con el pico real de la onda S
-      const updatedMag = this.estimateMagnitude(recentEvent.stations, recentEvent.latitude, recentEvent.longitude, recentEvent.depth);
-        if (updatedMag.validStationCount > 0 &&
-          (updatedMag.magnitude > recentEvent.magnitude || updatedMag.maxPga > recentEvent.maxPga)) {
-        console.log(`[Detector:S-Wave] Actualización de pico de onda S para evento ${recentEvent.id}: M ${recentEvent.magnitude} -> ${updatedMag.magnitude}, PGA ${recentEvent.maxPga} -> ${updatedMag.maxPga} gal`);
-        recentEvent.magnitude = updatedMag.magnitude;
-        recentEvent.maxPga = updatedMag.maxPga;
-        recentEvent.maxIntensity = updatedMag.maxIntensity;
-        this.scheduleSave();
-        if (this.onEventDetectedCallback) {
-          this.onEventDetectedCallback(recentEvent);
-        }
+    if (!changed) return;
+
+    // Re-estimar magnitud con el pico real de la onda S
+    const updatedMag = this.estimateMagnitude(event.stations, event.latitude, event.longitude, event.depth);
+    if (updatedMag.validStationCount > 0 &&
+      (updatedMag.magnitude > event.magnitude || updatedMag.maxPga > event.maxPga)) {
+      console.log(`[Detector:S-Wave] Actualización de pico de onda S para evento ${event.id}: M ${event.magnitude} -> ${updatedMag.magnitude}, PGA ${event.maxPga} -> ${updatedMag.maxPga} gal`);
+      event.magnitude = updatedMag.magnitude;
+      event.maxPga = updatedMag.maxPga;
+      event.maxIntensity = updatedMag.maxIntensity;
+      this.scheduleSave();
+      if (this.onEventDetectedCallback) {
+        this.onEventDetectedCallback(event);
       }
     }
   }
@@ -2013,43 +2130,31 @@ export class SeismicDetectorEngine {
     // ARMAR COOLDOWN SOLO CUANDO EL EVENTO HA SIDO VERIFICADO Y DECLARADO
     this.lastDeclaredEventTime = Date.now();
 
-    // Verificar si estamos actualizando un evento PRELIMINAR / ACTIVO existente (ventana de 4 minutos y coincidencia espacial / estaciones)
+    // Verificar si estamos actualizando un evento PRELIMINAR / ACTIVO existente (ventana de 4 minutos y coincidencia espacial)
     let event: DetectedEarthquake;
     let existingIndex = -1;
     const nowMs = Date.now();
-    const triggerCodes = new Set(triggers.map(t => (t.station || '').toUpperCase()));
 
-    // Buscar si coincide con algún evento activo en la misma región espacial o con estaciones compartidas
+    // Buscar si coincide con algún evento activo en la misma región espacial y ventana de tiempo
     existingIndex = this.earthquakes.findIndex((e) => {
+      if ((e.stations || []).length > 0) return false; // Un preliminar con estaciones propias no se reubica: el grupo parcial nace como evento aparte
+      if (e.status !== 'PRELIMINARY' || (e as any).isLocked) return false;
       const timeDiffMs = Math.abs((e.timeEpoch || 0) - epi.t0_ms);
       const elapsedMs = nowMs - (e.timeEpoch || 0);
       const distKm = this.haversineDistanceKm(e.latitude, e.longitude, epi.latitude, epi.longitude);
 
-      // 1. Coincidencia espacial y temporal regional (< 320 km y < 4 minutos de origen)
-      const isSpaceTimeMatch = (elapsedMs < 240000 || timeDiffMs < 120000) && distKm < 320.0;
-
-      // 2. Coincidencia por estaciones compartidas (si comparten estaciones en disparo activo en los últimos 4 minutos)
-      const existingStationCodes = new Set((e.stations || []).map((s: any) => (s.station || s.code || '').toUpperCase()));
-      let sharedCount = 0;
-      triggerCodes.forEach(code => {
-        if (existingStationCodes.has(code)) sharedCount++;
-      });
-      const isStationOverlapMatch = (elapsedMs < 240000 || timeDiffMs < 120000) && sharedCount >= 1 && distKm < 450.0;
-
-      return isSpaceTimeMatch || isStationOverlapMatch;
+      // Coincidencia espacial y temporal regional (< 320 km y < 4 minutos de origen)
+      return (elapsedMs < 240000 || timeDiffMs < 120000) && distKm < 320.0;
     });
 
-    const azimuthalGap = epi.azimuthalGap || 180;
-    const rmsResidualSec = epi.rmsResidualSec || 0.8;
+    const azimuthalGap = epi.azimuthalGap ?? 180;
+    const rmsResidualSec = epi.rmsResidualSec;
+    const siteCount = this.independentSites(triggers).length;
 
-    // Un sismo se confirma solo con evidencia física (ver evaluateConfirmation): >= 3 estaciones coherentes,
-    // onda S observada en >= 2 estaciones, o 2 estaciones muy por encima de su piso con PGA >= 0.20 gal.
-    // Ni el paso del tiempo ni el número de reportes confirman un evento; uno ya confirmado nunca se degrada.
-    const prevEvent = existingIndex >= 0 ? this.earthquakes[existingIndex] : null;
-    const isOfficiallyConfirmed = prevEvent?.status === 'CONFIRMED' ||
-      this.evaluateConfirmation(triggers, finalPga, magData.isSWaveConfirmed);
+    // Un sismo se confirma solo con evidencia física (ver evaluateConfirmation); el paso del tiempo no confirma nada
+    const isOfficiallyConfirmed = this.evaluateConfirmation(triggers, finalPga, magData.isSWaveConfirmed);
 
-    const clusterLevel = calculateClusterLevel(triggers.length, finalPga, isOfficiallyConfirmed);
+    const clusterLevel = calculateClusterLevel(siteCount, finalPga, isOfficiallyConfirmed);
 
     if (existingIndex >= 0) {
       const prev = this.earthquakes[existingIndex];
@@ -2065,11 +2170,11 @@ export class SeismicDetectorEngine {
         location: epi.locationName,
         maxPga: Math.max(prev.maxPga, finalPga),
         maxIntensity: Math.max(prev.maxIntensity, finalInt),
-        stationCount: Math.max(prev.stationCount || 0, triggers.length),
+        stationCount: siteCount,
         stations: triggers,
         status: isOfficiallyConfirmed ? 'CONFIRMED' : 'PRELIMINARY',
         source: isOfficiallyConfirmed
-          ? `Confirmado por Red (Nivel ${clusterLevel}, ${triggers.length} estaciones)`
+          ? `Confirmado por Red (Nivel ${clusterLevel}, ${siteCount} estaciones)`
           : `Sismo en Progreso (Reporte #${((prev as any).reportNumber || 1) + 1}, Nivel ${clusterLevel})`,
         azimuthalGap,
         rmsResidualSec,
@@ -2101,12 +2206,12 @@ export class SeismicDetectorEngine {
         location: epi.locationName,
         maxPga: finalPga,
         maxIntensity: finalInt,
-        stationCount: triggers.length,
+        stationCount: siteCount,
         stations: triggers,
         status: isOfficiallyConfirmed ? 'CONFIRMED' : 'PRELIMINARY',
         source: isOfficiallyConfirmed
-          ? `Confirmado por Red (Nivel ${clusterLevel}, ${triggers.length} estaciones)`
-          : `Alerta Rápida Inicial (Nivel ${clusterLevel}, ${triggers.length} est)`,
+          ? `Confirmado por Red (Nivel ${clusterLevel}, ${siteCount} estaciones)`
+          : `Alerta Rápida Inicial (Nivel ${clusterLevel}, ${siteCount} est)`,
         azimuthalGap,
         rmsResidualSec,
         clusterLevel,
