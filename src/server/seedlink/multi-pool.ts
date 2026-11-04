@@ -13,13 +13,17 @@ import { parseMiniSeedRecord, MiniSeedRecord } from './miniseed';
 const SL_MAGIC = Buffer.from('SL');
 
 /**
- * Estaciones expresamente excluidas de conexión SeedLink (Isla Socorro H06E y SV.TECD)
+ * Estaciones expresamente excluidas de conexión SeedLink (Isla Socorro H06E, SV.TECD, Quepos y Upala)
  */
 export const EXCLUDED_SEEDLINK_STATIONS = new Set<string>([
   'H06E',
   'TECD',
   'IG.H06E',
-  'SV.TECD'
+  'SV.TECD',
+  'QUEP',
+  'UPAL',
+  'TC.QUEP',
+  'TC.UPAL'
 ]);
 
 export interface PacketEventPayload {

@@ -70,13 +70,17 @@ export interface WaveformPoint {
 }
 
 /**
- * Estaciones expresamente excluidas de conexión y procesamiento sísmico (Isla Socorro y SV.TECD)
+ * Estaciones expresamente excluidas de conexión y procesamiento sísmico (Isla Socorro, SV.TECD, Quepos y Upala)
  */
 export const EXCLUDED_STATIONS = new Set<string>([
   'H06E',
   'TECD',
   'IG.H06E',
-  'SV.TECD'
+  'SV.TECD',
+  'QUEP',
+  'UPAL',
+  'TC.QUEP',
+  'TC.UPAL'
 ]);
 
 export class SeedLinkService {

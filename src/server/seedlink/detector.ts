@@ -951,7 +951,7 @@ export class SeismicDetectorEngine {
     } = params;
 
     const cleanSt = (station || '').trim().toUpperCase();
-    if (cleanSt === 'H06E' || cleanSt === 'TECD' || cleanSt === 'IG.H06E' || cleanSt === 'SV.TECD') {
+    if (['H06E', 'TECD', 'IG.H06E', 'SV.TECD', 'QUEP', 'UPAL', 'TC.QUEP', 'TC.UPAL'].includes(cleanSt)) {
       if (this.activeTriggers.has(cleanSt)) this.activeTriggers.delete(cleanSt);
       return;
     }

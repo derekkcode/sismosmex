@@ -251,8 +251,8 @@ export class SeismicMonitorEngine {
             rawStations.forEach((st) => {
               const codeUpper = (st.code || '').trim().toUpperCase();
               const fullUpper = (st.fullCode || '').trim().toUpperCase();
-              // Descartar estaciones expresamente excluidas (Isla Socorro H06E y SV.TECD) o inactivas
-              if (codeUpper === 'H06E' || codeUpper === 'TECD' || fullUpper === 'IG.H06E' || fullUpper === 'SV.TECD' || st.work === false) {
+              // Descartar estaciones expresamente excluidas (Isla Socorro H06E, SV.TECD, Quepos y Upala) o inactivas
+              if (['H06E', 'TECD', 'QUEP', 'UPAL'].includes(codeUpper) || ['IG.H06E', 'SV.TECD', 'TC.QUEP', 'TC.UPAL'].includes(fullUpper) || st.work === false) {
                 return;
               }
               if (existingMap.has(codeUpper)) {
