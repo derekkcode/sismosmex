@@ -2,7 +2,7 @@
  * ============================================================================
  * CONFIGURACIÓN DE ACTUALIZACIONES (ESTILO SIMPLE JQUAKE / KYOSHIN)
  * ============================================================================
- * Página con la versión oficial del monitor v8.6.0
+ * Página con la versión oficial del monitor v1.0
  */
 
 export const UPDATES_CONFIG = {
@@ -12,6 +12,41 @@ export const UPDATES_CONFIG = {
       page: 1,
       title: "ⓘ Información",
       versions: [
+        {
+          version: "v1.0",
+          changes: [
+            "Detección: un sismo solo se declara con al menos 6 sitios independientes y RMS de residuos de 1 s.",
+            "Corrección del RMS de epicentro por grados de libertad (n-4), para evitar falsos epicentros con pocos sitios.",
+            "Al adjuntar disparos a un evento preliminar se verifica el tiempo de llegada P (tolerancia de 3 s).",
+            "Historial de sismos en MongoDB con respaldo del SSN; el historial ya no se borra por ausencia de datos.",
+            "Los sismos de USGS anteriores a la última limpieza del historial se ignoran.",
+            "Zoom automático que sigue solo ondas sísmicas; Costa Rica requiere detección confirmada por el servidor.",
+            "El narrador ya no se solapa; mejoras de interfaz, ajustes y catálogo de estaciones.",
+            "Corrección del build de despliegue en Railway."
+          ],
+          translations: {
+            en: [
+              "Detection: an earthquake is declared only with at least 6 independent stations and a residual RMS of 1 s.",
+              "Epicenter RMS corrected for degrees of freedom (n-4), to avoid false epicenters with few stations.",
+              "When attaching triggers to a preliminary event, the P arrival time is verified (3 s tolerance).",
+              "Earthquake history in MongoDB with SSN backup; history is no longer erased when data is missing.",
+              "USGS earthquakes older than the last history cleanup are ignored.",
+              "Automatic zoom follows only seismic waves; Costa Rica requires server-confirmed detection.",
+              "The narrator no longer overlaps; interface, settings and station catalog improvements.",
+              "Fixed the Railway deployment build."
+            ],
+            ja: [
+              "検出：少なくとも6つの独立した観測点があり、残差RMSが1秒の場合にのみ地震を発表します。",
+              "観測点が少ない場合の誤った震央を防ぐため、震央RMSを自由度（n-4）で補正。",
+              "予備の震源に検出をつなぐ際、P波の到達時刻を検証します（許容差3秒）。",
+              "MongoDBの地震履歴とSSNのバックアップ。データがない場合に履歴が消去されなくなりました。",
+              "履歴の最後の整理より前のUSGS地震は無視されます。",
+              "自動ズームは地震波のみに追従します。コスタリカはサーバーで確認された検出が必要です。",
+              "ナレーションの重なりを修正。インターフェース、設定、観測点カタログを改善。",
+              "Railwayへのデプロイビルドを修正しました。"
+            ]
+          }
+        },
         {
           version: "v8.6.0",
           changes: [
