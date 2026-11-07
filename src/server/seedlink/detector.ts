@@ -1237,10 +1237,39 @@ export class SeismicDetectorEngine {
     }).length;
   }
 
+  private sitesWithinAperture(sites: StationTriggerRecord[], maxApertureKm: number): StationTriggerRecord[] {
+    if (this.siteApertureKm(sites) <= maxApertureKm) return sites;
+    const distances = sites.map(() => new Float64Array(sites.length));
+    const conflicts = sites.map(() => 0);
+    const excess = sites.map(() => 0);
+    for (let i = 0; i < sites.length; i++) {
+      for (let j = i + 1; j < sites.length; j++) {
+        const distance = this.haversineDistanceKm(sites[i].lat, sites[i].lon, sites[j].lat, sites[j].lon);
+        distances[i][j] = distances[j][i] = distance;
+        if (distance > maxApertureKm) {
+          conflicts[i]++;
+          conflicts[j]++;
+          excess[i] += distance - maxApertureKm;
+          excess[j] += distance - maxApertureKm;
+        }
+      }
+    }
+    // Priorizar los sitios con menos conflictos conserva la apertura máxima sin omitir las pruebas físicas.
+    const ranked = sites.map((_, index) => index).sort((a, b) =>
+      conflicts[a] - conflicts[b] || excess[a] - excess[b] || a - b
+    );
+    const accepted: number[] = [];
+    for (const index of ranked) {
+      if (accepted.every((other) => distances[index][other] <= maxApertureKm)) accepted.push(index);
+    }
+    return accepted.sort((a, b) => a - b).map((index) => sites[index]);
+  }
+
   /**
    * Localiza un grupo de disparos con las reglas del detector: >= 6 sitios independientes, apertura <= maxApertureKm,
    * >= 2 sitios significativos, residuo RMS ajustado <= 1.0 s y coherencia de tiempos diferenciales.
-   * Si el residuo excede el límite, prueba quitar un solo sitio (el que más lo reduce). Devuelve null si no cumple.
+   * Si la apertura es excesiva, prueba un subconjunto compatible; si el residuo excede el límite,
+   * prueba quitar un solo sitio (el que más lo reduce). Devuelve null si no cumple.
    */
   private localizeCluster(
     records: StationTriggerRecord[],
@@ -1248,7 +1277,8 @@ export class SeismicDetectorEngine {
   ): { sites: StationTriggerRecord[]; epi: EpicenterSolution; apertureKm: number } | null {
     let sites = this.independentSites(records);
     if (sites.length < MIN_INDEPENDENT_SITES) return null;
-    if (this.siteApertureKm(sites) > maxApertureKm || this.significantSiteCount(sites) < 2) return null;
+    sites = this.sitesWithinAperture(sites, maxApertureKm);
+    if (sites.length < MIN_INDEPENDENT_SITES || this.significantSiteCount(sites) < 2) return null;
 
     let epi = this.estimateEpicenter(sites);
     if (epi && epi.rmsResidualSec > RMS_GATE_SEC && sites.length > MIN_INDEPENDENT_SITES) {

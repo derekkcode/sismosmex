@@ -59,6 +59,7 @@ export interface ProcessedPacketResult {
     minPgaGal: number; // Piso de PGA efectivo para abrir un disparo (calibrado)
     triggered: boolean;
     triggeredInPacket: boolean; // Se abrió un disparo aunque se liberara antes de terminar el paquete
+    triggerPgaGal: number | null; // Pico observado en la ventana STA al abrir el disparo
     triggerSampleIndex?: number | null;
     triggerTimeIso?: string | null;
   };
@@ -336,9 +337,49 @@ function removeIsolatedSpikes(samples: Int32Array | Float32Array): { data: Int32
   return { data: cleaned ?? samples, removed };
 }
 
+class TriggerWindow {
+  private readonly peakValues: Float64Array;
+  private readonly peakIndices: Float64Array;
+  private readonly rawFlags: Uint8Array;
+  private readonly capacity: number;
+  private head = 0;
+  private tail = 0;
+  private index = 0;
+  public peakPga = 0;
+  public rawCount = 0;
+
+  constructor(public readonly size: number) {
+    this.capacity = size + 1;
+    this.peakValues = new Float64Array(this.capacity);
+    this.peakIndices = new Float64Array(this.capacity);
+    this.rawFlags = new Uint8Array(size);
+  }
+
+  public push(pga: number, rawFlag: number): void {
+    const index = this.index++;
+    while (this.head !== this.tail && this.peakIndices[this.head] <= index - this.size) {
+      this.head = (this.head + 1) % this.capacity;
+    }
+    while (this.head !== this.tail) {
+      const previous = (this.tail + this.capacity - 1) % this.capacity;
+      if (this.peakValues[previous] > pga) break;
+      this.tail = previous;
+    }
+    this.peakValues[this.tail] = pga;
+    this.peakIndices[this.tail] = index;
+    this.tail = (this.tail + 1) % this.capacity;
+
+    const slot = index % this.size;
+    this.rawCount += rawFlag - this.rawFlags[slot];
+    this.rawFlags[slot] = rawFlag;
+    this.peakPga = this.peakValues[this.head];
+  }
+}
+
 export class SeismicDspEngine {
   private staLtaStates: Map<string, StaLtaState> = new Map();
   private streamStates: Map<string, StreamDspState> = new Map();
+  private triggerWindows: Map<string, TriggerWindow> = new Map();
 
   // Parámetros STA/LTA unificados canónicos (Item 51)
   private staSec: number = DEFAULT_STA_LTA_CONFIG.staSec;
@@ -507,6 +548,7 @@ export class SeismicDspEngine {
     const hasGap = streamState.lastEndTimeMs > 0 && Math.abs(packetStartMs - streamState.lastEndTimeMs) > maxAcceptableGapMs;
     if (hasGap) {
       const gapMs = Math.abs(packetStartMs - streamState.lastEndTimeMs);
+      this.triggerWindows.delete(streamKey);
       // Reiniciar estado cinemático para no derivar a través del hueco temporal
       streamState.dc = packetMean;
       streamState.prevRaw = initialRaw;
@@ -976,7 +1018,8 @@ export class SeismicDspEngine {
       const dev = Math.abs(data[i] - packetMean);
       if (dev > packetPeakRaw) packetPeakRaw = dev;
     }
-    const rawSignalThreshold = Math.max(100, packetPeakRaw * 0.05);
+    // Las cuentas dependen de la sensibilidad del canal; el piso físico se exige en gal más abajo.
+    const rawSignalThreshold = packetPeakRaw * 0.05;
 
     let currentRatio = staState.lastRatio;
     let isTriggered = staState.triggered;
@@ -985,31 +1028,24 @@ export class SeismicDspEngine {
     const cooldownSamples = Math.round(POST_TRIGGER_COOLDOWN_SEC * sampleRate);
     let triggerSampleIndex: number | null = null;
     let triggerTimeIso: string | null = null;
+    let triggerPgaGal: number | null = null;
     let triggeredInPacket = false;
     let packetPeakRatio = 0;
     let stuckReleased = false;
 
-    // Ventana deslizante del PGA reciente (cola monótona, O(1) amortizado) y conteo de muestras con señal cruda apreciable
-    const absAcc = new Float64Array(count);
-    const peakQueue = new Int32Array(count);
-    let qHead = 0;
-    let qTail = 0;
-    const rawFlags = new Uint8Array(count);
-    let rawSignalCount = 0;
+    // La ventana STA debe ser continua aunque los paquetes tengan menos muestras que la ventana.
+    let triggerWindow = this.triggerWindows.get(streamKey);
+    if (!triggerWindow || triggerWindow.size !== nSta) {
+      triggerWindow = new TriggerWindow(nSta);
+      this.triggerWindows.set(streamKey, triggerWindow);
+    }
 
     for (let i = 0; i < count; i++) {
       const aGalAbs = Math.abs(accelArray[i]);
-      // Item 12: usar solo la energía reciente de la ventana STA; no conservar un pico aislado durante todo el paquete.
-      absAcc[i] = aGalAbs;
-      while (qTail > qHead && absAcc[peakQueue[qTail - 1]] <= aGalAbs) qTail--;
-      peakQueue[qTail++] = i;
-      if (peakQueue[qHead] <= i - nSta) qHead++;
-      const recentPeakPga = absAcc[peakQueue[qHead]];
-
-      const rawFlag = Math.abs(data[i] - packetMean) >= rawSignalThreshold ? 1 : 0;
-      rawFlags[i] = rawFlag;
-      rawSignalCount += rawFlag;
-      if (i >= nSta) rawSignalCount -= rawFlags[i - nSta];
+      const rawFlag = rawSignalThreshold > 0 && Math.abs(data[i] - packetMean) >= rawSignalThreshold ? 1 : 0;
+      triggerWindow.push(aGalAbs, rawFlag);
+      const recentPeakPga = triggerWindow.peakPga;
+      const rawSignalCount = triggerWindow.rawCount;
 
       // Durante el calentamiento de los filtros no hay señal válida: no alimenta STA ni LTA
       const cfVal = cfArray[i];
@@ -1068,6 +1104,7 @@ export class SeismicDspEngine {
             if (!triggeredInPacket) {
               triggerSampleIndex = Math.max(0, Math.round((candidateTimeMs - packetStartMs) / (dt * 1000)));
               triggerTimeIso = detectedTimeIso;
+              triggerPgaGal = recentPeakPga;
             }
             triggeredInPacket = true;
             staState.triggerTime = detectedTimeIso;
@@ -1156,6 +1193,7 @@ export class SeismicDspEngine {
         minPgaGal: Number(thr.minPgaGal.toFixed(4)),
         triggered: isTriggered,
         triggeredInPacket,
+        triggerPgaGal,
         triggerSampleIndex,
         triggerTimeIso: triggerTimeIso ?? (isTriggered ? staState.triggerTime || null : null),
       },

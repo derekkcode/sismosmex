@@ -473,12 +473,14 @@ export class SeedLinkService {
       console.warn(`[SeedLinkService] Paquete descartado: timestamp futuro para ${streamKey}`);
       return;
     }
+    const sampleRate = record.sampleRate || 20;
     const lastPacketEndMs = this.streamLastPacketTime.get(streamKey) || 0;
-    if (lastPacketEndMs > 0 && packetTimeMs < lastPacketEndMs) {
+    // MiniSEED conserva fracciones de milisegundo, pero isoTime se trunca a milisegundos.
+    const timestampToleranceMs = Math.min(1, 500 / sampleRate);
+    if (lastPacketEndMs > 0 && packetTimeMs < lastPacketEndMs - timestampToleranceMs) {
       // Ignorar paquetes atrasados o solapados para evitar duplicar energía en el DSP
       return;
     }
-    const sampleRate = record.sampleRate || 20;
     const packetEndMs = packetTimeMs + (record.samples.length / sampleRate) * 1000;
     this.streamLastPacketTime.set(streamKey, packetEndMs);
 
@@ -636,7 +638,7 @@ export class SeedLinkService {
         lon: state.lon,
         site: state.site,
         stateName: state.state,
-        pga: processed.pga,
+        pga: Math.max(processed.pga, processed.staLta.triggerPgaGal ?? 0),
         amp: processed.amplitudePhysical,
         staLtaRatio: processed.staLta.peakRatio || processed.staLta.ratio,
         sampleRate,
