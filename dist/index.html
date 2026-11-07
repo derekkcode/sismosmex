@@ -9,8 +9,8 @@
   <meta property="og:description" content="Sistema de monitoreo e intensidad sísmica SismosMex">
 
   <!-- Estilos del Sistema de Diseño -->
-  <script type="module" crossorigin src="/assets/main-DWqddgPg.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-DI_6z4eI.css">
+  <script type="module" crossorigin src="/assets/main-CTfId_GY.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-CF6jFWyo.css">
 </head>
 <body>
   <div class="monitor-app-layout" id="appRoot">
@@ -355,6 +355,12 @@
     <main class="monitor-map-stage">
       <div class="map-canvas-container">
         <canvas id="mapCanvas"></canvas>
+      </div>
+
+      <div class="seismic-candidate-banner" id="seismicCandidate" role="status" aria-live="polite" hidden>
+        <strong data-i18n="candidate.title">Coincidencia de estaciones (experimental)</strong>
+        <span id="seismicCandidateCount"></span>
+        <span data-i18n="candidate.disclaimer">No confirma un sismo. Sin epicentro ni magnitud; puede ser ruido.</span>
       </div>
 
       <!-- Leyenda flotante (siempre visible): colores de estaciones por intensidad MMI y símbolo de epicentro -->

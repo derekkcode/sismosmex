@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateTravelTime1D, SeismicDetectorEngine } from '../src/server/seedlink/detector.ts';
+import { calculateTravelTime1D, isDegenerateGeometry, SeismicDetectorEngine } from '../src/server/seedlink/detector.ts';
 import { SeismicDspEngine } from '../src/server/seedlink/seismic-dsp.ts';
 import { SeedLinkService } from '../src/server/seedlink/service.ts';
 
@@ -176,27 +176,103 @@ test('an oversized group retains a physically consistent six-site subset', (t) =
   assert.equal(detector.localizeCluster(colocated, 295), null);
 });
 
-test('weak local and regional arrivals can reach preliminary event declaration', (t) => {
+test('a weak local arrival can reach preliminary event declaration', (t) => {
   t.mock.method(console, 'log', () => {});
-  for (const source of [{ lat: 19, lon: -100 }, { lat: 17.2, lon: -99.4 }]) {
-    const detector = Object.create(SeismicDetectorEngine.prototype);
-    detector.rejectLogAt = new Map();
-    detector.earthquakes = [];
-    detector.activePreliminaryIds = new Set();
-    detector.historyReady = false;
-    detector.lastDiagSignature = '';
-    const notifications = [];
-    detector.onEventDetectedCallback = (event) => notifications.push(event);
-    const stations = syntheticStations(detector, source, Date.now() - 40000);
-    detector.activeTriggers = new Map(stations.map((station) => [station.station, station]));
+  const detector = Object.create(SeismicDetectorEngine.prototype);
+  detector.rejectLogAt = new Map();
+  detector.earthquakes = [];
+  detector.activePreliminaryIds = new Set();
+  detector.historyReady = false;
+  detector.lastDiagSignature = '';
+  const notifications = [];
+  detector.onEventDetectedCallback = (event) => notifications.push(event);
+  const stations = syntheticStations(detector, { lat: 19, lon: -100 }, Date.now() - 40000);
+  detector.activeTriggers = new Map(stations.map((station) => [station.station, station]));
 
-    detector.evaluateSpatialCoincidence();
+  detector.evaluateSpatialCoincidence();
 
-    assert.equal(detector.earthquakes.length, 1);
-    assert.equal(detector.earthquakes[0].status, 'PRELIMINARY');
-    assert.ok(detector.earthquakes[0].stationCount >= 6);
-    assert.ok(notifications.length > 0);
-  }
+  assert.equal(detector.earthquakes.length, 1);
+  assert.equal(detector.earthquakes[0].status, 'PRELIMINARY');
+  assert.ok(detector.earthquakes[0].stationCount >= 6);
+  assert.ok(notifications.length > 0);
+  assert.equal(detector.getSeismicCandidate(), null);
+});
+
+test('a poorly constrained regional event remains an unlocated candidate', (t) => {
+  t.mock.method(console, 'log', () => {});
+  const detector = Object.create(SeismicDetectorEngine.prototype);
+  detector.rejectLogAt = new Map();
+  detector.earthquakes = [];
+  detector.activePreliminaryIds = new Set();
+  detector.historyReady = false;
+  detector.lastDiagSignature = '';
+  const events = [];
+  const candidates = [];
+  detector.onEventDetectedCallback = (event) => events.push(event);
+  detector.onCandidateChangedCallback = (candidate) => candidates.push(candidate);
+  const stations = syntheticStations(detector, { lat: 17.2, lon: -99.4 }, Date.now() - 40000);
+  detector.activeTriggers = new Map(stations.map((station) => [station.station, station]));
+
+  detector.evaluateSpatialCoincidence();
+
+  assert.equal(isDegenerateGeometry(270), false);
+  assert.equal(isDegenerateGeometry(271), true);
+  assert.equal(isDegenerateGeometry(undefined), true);
+  assert.equal(isDegenerateGeometry(NaN), true);
+  assert.equal(events.length, 0);
+  assert.equal(detector.earthquakes.length, 0);
+  assert.ok(candidates.at(-1)?.stationCount >= 3);
+  assert.equal('latitude' in candidates.at(-1), false);
+  assert.equal('magnitude' in candidates.at(-1), false);
+});
+
+test('a candidate requires three distinct, time-compatible sites and clears when a site disappears', (t) => {
+  t.mock.method(console, 'log', () => {});
+  const detector = Object.create(SeismicDetectorEngine.prototype);
+  detector.rejectLogAt = new Map();
+  detector.earthquakes = [];
+  detector.lastDiagSignature = '';
+  detector.currentCandidate = null;
+  const candidates = [];
+  const events = [];
+  detector.onCandidateChangedCallback = (candidate) => candidates.push(candidate);
+  detector.onEventDetectedCallback = (event) => events.push(event);
+  detector.requestEvaluation = () => detector.evaluateSpatialCoincidence();
+  const stations = syntheticStations(detector, { lat: 19, lon: -100 }, Date.now() - 40000);
+  detector.activeTriggers = new Map(stations.slice(0, 2).map((station) => [station.station, station]));
+
+  detector.evaluateSpatialCoincidence();
+  assert.equal(detector.getSeismicCandidate(), null);
+  detector.activeTriggers.set(stations[2].station, stations[2]);
+  detector.evaluateSpatialCoincidence();
+  const candidate = detector.getSeismicCandidate();
+  assert.equal(candidate.stationCount, 3);
+  assert.equal(events.length, 0);
+  assert.equal(detector.earthquakes.length, 0);
+  candidate.stations.length = 0;
+  assert.equal(detector.getSeismicCandidate().stations.length, 3);
+
+  detector.clearStationTrigger(stations[2].station, 'IG', 'HHZ');
+  assert.equal(detector.getSeismicCandidate(), null);
+  assert.equal(candidates.at(-1), null);
+
+  const incompatible = { ...stations[2], tP: stations[2].tP + 60000 };
+  detector.activeTriggers.set(incompatible.station, incompatible);
+  detector.evaluateSpatialCoincidence();
+  assert.equal(detector.getSeismicCandidate(), null);
+
+  detector.activeTriggers.set(stations[2].station, stations[2]);
+  detector.activeTriggers.set(stations[3].station, { ...stations[3], tP: stations[3].tP + 60000 });
+  detector.evaluateSpatialCoincidence();
+  assert.equal(detector.getSeismicCandidate().stationCount, 3);
+
+  detector.triggerWindowMs = 90000;
+  detector.noise = { reportFalseTrigger: () => {} };
+  detector.preliminaryCandidates = () => [];
+  detector.expireUnconfirmedEvents = () => {};
+  for (const trigger of detector.activeTriggers.values()) trigger.receivedWallTime = Date.now() - 91000;
+  detector.pruneStaleTriggers();
+  assert.equal(detector.getSeismicCandidate(), null);
 });
 
 test('millisecond rounding does not discard a contiguous packet or admit a real overlap', () => {

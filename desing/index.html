@@ -248,6 +248,12 @@
         <canvas id="mapCanvas"></canvas>
       </div>
 
+      <div class="seismic-candidate-banner" id="seismicCandidate" role="status" aria-live="polite" hidden>
+        <strong data-i18n="candidate.title">Coincidencia de estaciones (experimental)</strong>
+        <span id="seismicCandidateCount"></span>
+        <span data-i18n="candidate.disclaimer">No confirma un sismo. Sin epicentro ni magnitud; puede ser ruido.</span>
+      </div>
+
       <!-- Leyenda Flotante en la Esquina Inferior Derecha (Solo visible en detección sísmica) -->
       <div class="mercalli-legend-card" id="mercalliLegend" style="display: none;">
         <div class="mercalli-legend-title">

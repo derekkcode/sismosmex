@@ -359,6 +359,12 @@
         <canvas id="mapCanvas"></canvas>
       </div>
 
+      <div class="seismic-candidate-banner" id="seismicCandidate" role="status" aria-live="polite" hidden>
+        <strong data-i18n="candidate.title">Coincidencia de estaciones (experimental)</strong>
+        <span id="seismicCandidateCount"></span>
+        <span data-i18n="candidate.disclaimer">No confirma un sismo. Sin epicentro ni magnitud; puede ser ruido.</span>
+      </div>
+
       <!-- Leyenda flotante (siempre visible): colores de estaciones por intensidad MMI y símbolo de epicentro -->
       <div class="mercalli-legend-card" id="mercalliLegend">
         <div class="mercalli-legend-title">

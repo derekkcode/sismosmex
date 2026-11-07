@@ -43,6 +43,8 @@ export class SeedLinkUIManager {
     this.servers = [];
     this.earthquakes = [];
     this.historyRequestSequence = 0;
+    this.seismicCandidate = null;
+    window.addEventListener('sismosmex:languagechange', () => this.renderSeismicCandidate());
 
     // Al cambiar la fuente del historial en ajustes, recargar la lista desde el endpoint elegido
     window.addEventListener(DISPLAY_SETTINGS_EVENT, (e) => {
@@ -252,6 +254,7 @@ export class SeedLinkUIManager {
     this.ws.onclose = () => {
       console.log('[SeedLinkUI] WebSocket cerrado. Reintentando en 3s...');
       this.setConnectionState('disconnected');
+      this.setSeismicCandidate(null);
       setTimeout(() => this.initWebSocket(), 3000);
     };
 
@@ -267,6 +270,25 @@ export class SeedLinkUIManager {
         this.onConnectionStatusChange(state);
       }
     }
+  }
+
+  setSeismicCandidate(candidate) {
+    if (candidate !== null && (!candidate || !Number.isInteger(candidate.stationCount) || candidate.stationCount < 3)) {
+      console.warn('[SeedLinkUI] Candidato sísmico inválido:', candidate);
+      candidate = null;
+    }
+    this.seismicCandidate = candidate;
+    this.renderSeismicCandidate();
+  }
+
+  renderSeismicCandidate() {
+    const banner = document.getElementById('seismicCandidate');
+    const count = document.getElementById('seismicCandidateCount');
+    if (!banner || !count) return;
+    banner.hidden = !this.seismicCandidate;
+    count.textContent = this.seismicCandidate
+      ? t('candidate.count', { count: this.seismicCandidate.stationCount })
+      : '';
   }
 
   fetchInitialData() {
@@ -414,7 +436,8 @@ export class SeedLinkUIManager {
         if (requestSequence !== this.historyRequestSequence) return;
         if (!Array.isArray(events)) throw new Error('Respuesta de historial inválida');
         this.earthquakes = events;
-        this.engine.setLastSavedEvent(events[0] || null);
+        const latestConfirmed = events.find((event) => event.status === 'CONFIRMED' || event.confirmed === true);
+        this.engine.setLastSavedEvent(latestConfirmed || null);
         this.renderEarthquakeHistory();
       })
       .catch((err) => console.error('[SeedLinkUI] No se pudo cargar el historial:', err));
@@ -523,6 +546,7 @@ export class SeedLinkUIManager {
     }
 
     if (msg.type === 'initial_state') {
+      this.setSeismicCandidate(msg.seismicCandidate ?? null);
       if (Array.isArray(msg.stations)) {
         for (const st of msg.stations) {
           this.stations.set(st.code, st);
@@ -560,6 +584,8 @@ export class SeedLinkUIManager {
         this.historyRequestSequence++;
         this.handleEarthquakeDetected(msg.event);
       }
+    } else if (msg.type === 'seismic_candidate') {
+      this.setSeismicCandidate(msg.candidate ?? null);
     } else if (msg.type === 'earthquake_cancelled') {
       this.handleEarthquakeCancelled(msg);
     } else if (msg.type === 'earthquake_history_cleared') {
@@ -1506,7 +1532,8 @@ export class SeedLinkUIManager {
       this.renderEarthquakeHistory();
 
       // Si el evento ya está activo en el motor, actualizar su estimación dinámica en tiempo real
-      if (this.engine && this.engine.state?.activeEvent) {
+      const targetIsActive = this.engine?.state?.activeEvents?.some((active) => active.id === event.id);
+      if (targetIsActive) {
         this.engine.updateEventEstimation(event);
         if (event.status === 'CONFIRMED' || event.confirmed) {
           this.engine.confirmCurrentEvent(event);
@@ -1531,7 +1558,7 @@ export class SeedLinkUIManager {
     const isConfirmed = event.status === 'CONFIRMED' || Boolean(event.confirmed);
 
     // Si el evento recibido es una confirmación de un evento post-propagación:
-    if (isConfirmed && this.engine.state.activeEvent) {
+    if (isConfirmed && this.engine.state.activeEvents?.some((active) => active.id === event.id)) {
       this.engine.confirmCurrentEvent(event);
       this.engine.checkAndPlayModerateExceededMeow?.(event);
       this.engine.focusOnCoordinates(event.latitude, event.longitude, 1.4);

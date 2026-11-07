@@ -981,11 +981,12 @@ export class SeismicMonitorEngine {
     const mag = Number(eventData.magnitude ?? eventData.mag);
     const lat = Number(eventData.latitude ?? eventData.lat);
     const lon = Number(eventData.longitude ?? eventData.lon);
-    if (isNaN(mag) || isNaN(lat) || isNaN(lon) || !isFinite(lat) || !isFinite(lon)) {
+    const depth = Number(eventData.depth ?? 15);
+    if (!Number.isFinite(mag) || !Number.isFinite(lat) || !Number.isFinite(lon) ||
+        !Number.isFinite(depth) || depth < 0 || Math.abs(lat) > 90 || Math.abs(lon) > 180) {
       console.warn("[MonitorEngine] Evento rechazado: payload sísmico malformado o sin coordenadas válidas:", eventData);
       return;
     }
-    const depth = Number(eventData.depth ?? 15);
     const location = eventData.location || this.resolveMexicanLocation(lat, lon);
     const timeStr = eventData.timeStr || (eventData.time ? new Date(eventData.time).toLocaleTimeString(getLocale()) : "Reciente");
     const intVal = eventData.maxIntensity || (mag >= 7.5 ? 9 : mag >= 6.8 ? 8 : mag >= 6.0 ? 7 : mag >= 5.2 ? 5 : mag >= 4.2 ? 4 : mag >= 3.0 ? 2 : 1);
@@ -1022,7 +1023,7 @@ export class SeismicMonitorEngine {
     this.state.realtimeMaxPga = 0.000;
     this.state.topRegions = [];
 
-    const initialStatus = eventData.status || (elapsedSec >= 10.0 ? 'CONFIRMED' : 'PRELIMINARY');
+    const initialStatus = eventData.status || 'PRELIMINARY';
     const isConfirmed = initialStatus === 'CONFIRMED' || Boolean(eventData.confirmed);
 
     if (!this.state.activeEvents) this.state.activeEvents = [];
@@ -1038,12 +1039,12 @@ export class SeismicMonitorEngine {
     const targetLat = Number(lat.toFixed(3));
     const targetLon = Number(lon.toFixed(3));
     const targetMag = Number(mag.toFixed(1));
-    const targetDepth = Math.max(5, Math.round(depth));
+    const targetDepth = Math.max(simulated ? 5 : 0, Math.round(depth));
 
     // Determinar si es una nueva detección que debe iniciar con estimación preliminar
     // (apenas se detecta el sismo se inicia la detección con el hipocentro / primera estación,
     // y el monitor busca el epicentro exacto, ajusta la profundidad y la magnitud progresivamente)
-    const isNewDetection = elapsedSec < 4.0 && !eventData.isLocked && (!eventData.reportNumber || eventData.reportNumber <= 1);
+    const isNewDetection = simulated && elapsedSec < 4.0 && !eventData.isLocked && (!eventData.reportNumber || eventData.reportNumber <= 1);
 
     let initialLat = targetLat;
     let initialLon = targetLon;
@@ -1119,10 +1120,10 @@ export class SeismicMonitorEngine {
 
     this.state.activeEvent = this.state.activeEvents[this.state.activeEvents.length - 1];
 
-    // Si inició como preliminar, auto-confirmar después de 14 segundos si continúa activo
-    if (!isConfirmed) {
+    // Solo las simulaciones pueden confirmarse automáticamente; los eventos reales requieren confirmación del servidor.
+    if (simulated && !isConfirmed) {
       setTimeout(() => {
-        if (this.state.activeEvents?.some(e => e.id === targetId && e.status === 'PRELIMINARY')) {
+        if (this.state.activeEvents?.some(e => e.id === targetId && !e.confirmed && (e.status === 'PRELIMINARY' || e.status === 'IN_PROGRESS'))) {
           this.confirmCurrentEvent({ id: targetId });
         }
       }, Math.max(1000, 8000 - initialOffset));
@@ -1206,7 +1207,10 @@ export class SeismicMonitorEngine {
     let ev = targetId
       ? this.state.activeEvents.find(e => e.id === targetId)
       : this.state.activeEvents[this.state.activeEvents.length - 1];
-    if (!ev) ev = this.state.activeEvents[this.state.activeEvents.length - 1];
+    if (!ev) {
+      console.warn('[MonitorEngine] Actualización ignorada: el evento indicado no está activo.', targetId);
+      return;
+    }
 
     let changed = false;
 
@@ -1290,7 +1294,14 @@ export class SeismicMonitorEngine {
       ? this.state.activeEvents.find(e => e.id === targetId)
       : this.state.activeEvents[this.state.activeEvents.length - 1];
 
-    if (!ev) ev = this.state.activeEvents[this.state.activeEvents.length - 1];
+    if (!ev) {
+      console.warn('[MonitorEngine] Confirmación ignorada: el evento indicado no está activo.', targetId);
+      return;
+    }
+    if (!ev.simulated && !SeismicMonitorEngine.isServerConfirmedPayload(confirmedData)) {
+      console.warn('[MonitorEngine] Confirmación ignorada: falta confirmación explícita del servidor.', targetId);
+      return;
+    }
 
     ev.status = 'CONFIRMED';
     ev.confirmed = true;
@@ -1456,6 +1467,10 @@ export class SeismicMonitorEngine {
 
   archiveEventToSaved(ev) {
     if (!ev) return;
+    if (!ev.simulated && !ev.serverConfirmed) {
+      console.warn('[MonitorEngine] Evento no archivado: falta confirmación del servidor.', ev.id);
+      return;
+    }
     const rec = { ...(ev.recordedStations || {}) };
     let finalRecorded = rec;
     if (Object.keys(finalRecorded).length === 0) {
@@ -1630,14 +1645,9 @@ export class SeismicMonitorEngine {
       ev.sRadiusKm = elapsedS * ev.sSpeedKm;
 
       // =====================================================================
-      // ALGORITMO DE CÁLCULO Y REFINAMIENTO CONTINUO EN PROGRESO (NO CONFIRMAR):
-      // "NO CONFIRMES el sismo, osea manten cualculando y ccambiando el epicentro del sismo cuando este en progreso"
-      // "la magnitud e intensidad puede cambiar mediante se calcula el sismo"
-      // Durante el progreso (< 150s), el monitor NO se congela ni confirma prematuramente:
-      // recalcula progresivamente el epicentro (variaciones realistas de triangulación),
-      // ajusta la profundidad, la magnitud y la intensidad, avanzando el Reporte #1 -> #2 -> #3...
+      // Solo las simulaciones generan variaciones; los eventos reales usan las estimaciones del servidor.
       // =====================================================================
-      if (!ev.finalized && elapsedS < 150.0) {
+      if (ev.simulated && !ev.confirmed && !ev.finalized && elapsedS < 150.0) {
         if (!ev.lastRefineElapsedS) ev.lastRefineElapsedS = 0;
         const timeSinceLastRefine = elapsedS - ev.lastRefineElapsedS;
         // Intervalos dinámicos progresivos entre reportes sucesivos (~3 a 5 segundos)
@@ -1690,8 +1700,9 @@ export class SeismicMonitorEngine {
         }
       }
 
-      // Estado de evaluación continua
-      this.state.mode = "EVALUATION";
+      if (!ev.finalized) {
+        this.state.mode = ev.confirmed || ev.status === 'CONFIRMED' ? "CONFIRMED" : "EVALUATION";
+      }
 
       let maxPga = 0;
       let maxInt = 1;
@@ -2418,6 +2429,10 @@ export class SeismicMonitorEngine {
     if (!ev) {
       this.state.lastSavedEvent = null;
       this.onStateChange(this.getStateSnapshot());
+      return;
+    }
+    if (ev.status === 'PRELIMINARY' && ev.confirmed !== true) {
+      console.warn('[MonitorEngine] Evento preliminar no mostrado como registro confirmado.', ev.id);
       return;
     }
     const lat = Number(ev.latitude !== undefined ? ev.latitude : ev.lat);

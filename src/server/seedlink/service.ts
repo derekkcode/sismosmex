@@ -146,6 +146,9 @@ export class SeedLinkService {
         cancelledAt: new Date().toISOString(),
       });
     });
+    this.detector.setOnCandidateChanged((candidate) => {
+      this.broadcastWebSocket({ type: 'seismic_candidate', candidate });
+    });
 
     this.loadStationsCatalog();
 
@@ -813,6 +816,7 @@ export class SeedLinkService {
         servers: this.pool.getAllStatuses(),
         stations: Array.from(this.liveStates.values()),
         events: this.detector.getEarthquakeHistory(),
+        seismicCandidate: this.detector.getSeismicCandidate(),
         tsunamiAlert: this.activeTsunamiAlert,
       }));
 

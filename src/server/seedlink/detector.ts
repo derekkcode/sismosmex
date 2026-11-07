@@ -94,6 +94,12 @@ export interface StationTriggerRecord {
   sPhasePga?: number; // Pico de PGA a partir de la llegada esperada de la onda S
 }
 
+export interface SeismicCandidate {
+  stationCount: number;
+  stations: string[];
+  firstTriggerTime: string;
+}
+
 export function generateDisplayId(id?: string): string {
   if (!id) return '';
   const parts = id.split('-');
@@ -230,11 +236,10 @@ export function computeMedian(arr: number[]): number {
 }
 
 /**
- * Geometría degenerada: con pocas estaciones concentradas en un solo lado del epicentro
- * (brecha azimutal > 270°) el hipocentro queda mal restringido y la localización no es confiable.
+ * Una brecha azimutal > 270° deja el hipocentro mal restringido incluso con seis o más estaciones.
  */
-export function isDegenerateGeometry(azimuthalGap: number | undefined, stationCount: number): boolean {
-  return azimuthalGap !== undefined && azimuthalGap > 270 && stationCount < 5;
+export function isDegenerateGeometry(azimuthalGap: number | undefined): boolean {
+  return azimuthalGap === undefined || !Number.isFinite(azimuthalGap) || azimuthalGap < 0 || azimuthalGap > 270;
 }
 
 /** Simplex de Nelder-Mead: minimiza f sin derivadas; se usa para pulir el hipocentro fuera de la rejilla */
@@ -406,6 +411,7 @@ export function calculateClusterLevel(
 
 // Un sitio independiente debe estar a >= 3.5 km de los demás: los disparos co-ubicados cuentan como uno solo
 const MIN_SITE_SEPARATION_KM = 3.5;
+const MIN_CANDIDATE_SITES = 3;
 // Mínimo de sitios independientes calificados para localizar un evento (cualquier red)
 const MIN_INDEPENDENT_SITES = 6;
 // Residuo RMS máximo (s), ajustado por grados de libertad ÷(n−4)
@@ -453,6 +459,8 @@ export class SeismicDetectorEngine {
   private onEventDetectedCallback: ((event: DetectedEarthquake) => void) | null = null;
   // Callback cuando un evento preliminar se retira por falta de evidencia
   private onEventCancelledCallback: ((event: DetectedEarthquake, reason: string) => void) | null = null;
+  private onCandidateChangedCallback: ((candidate: SeismicCandidate | null) => void) | null = null;
+  private currentCandidate: SeismicCandidate | null = null;
 
   // Calibrador de ruido por canal: recibe la retroalimentación de disparos corroborados y falsos
   private readonly noise: NoiseCalibrator = NoiseCalibrator.getInstance();
@@ -586,6 +594,14 @@ export class SeismicDetectorEngine {
 
   public setOnEventCancelled(cb: (event: DetectedEarthquake, reason: string) => void): void {
     this.onEventCancelledCallback = cb;
+  }
+
+  public setOnCandidateChanged(cb: (candidate: SeismicCandidate | null) => void): void {
+    this.onCandidateChangedCallback = cb;
+  }
+
+  public getSeismicCandidate(): SeismicCandidate | null {
+    return this.currentCandidate ? structuredClone(this.currentCandidate) : null;
   }
 
   private streamKeyOf(t: { network: string; station: string; channel: string }): string {
@@ -875,11 +891,13 @@ export class SeismicDetectorEngine {
   private pruneStaleTriggers(): void {
     const now = Date.now();
     const snapshot = Array.from(this.activeTriggers.values());
+    let removed = false;
     for (const trigger of snapshot) {
       const wallAgeMs = now - (trigger.receivedWallTime || now);
       if (wallAgeMs <= this.triggerWindowMs) continue;
 
       this.activeTriggers.delete(trigger.station);
+      removed = true;
       if (!trigger.corroborated && !trigger.eventId && !this.hasCoincidentTrigger(trigger, snapshot)) {
         this.noise.reportFalseTrigger(this.streamKeyOf(trigger), now);
       }
@@ -889,6 +907,7 @@ export class SeismicDetectorEngine {
       this.confirmPreliminaryIfEvidence(event, now);
     }
     this.expireUnconfirmedEvents(now);
+    if (removed && this.currentCandidate) this.requestEvaluation();
   }
 
   /** Otra estación cercana disparó casi a la vez: la sacudida es real aunque la red no alcance para declarar */
@@ -1144,6 +1163,7 @@ export class SeismicDetectorEngine {
     if (network !== undefined && trigger.network.toUpperCase() !== network.toUpperCase()) return;
     if (channel !== undefined && trigger.channel.toUpperCase() !== channel.toUpperCase()) return;
     this.activeTriggers.delete(cleanSt);
+    if (this.currentCandidate) this.requestEvaluation();
   }
 
   /**
@@ -1162,8 +1182,6 @@ export class SeismicDetectorEngine {
   } {
     if (triggers.length < 2) return { passes: false, validPairRatio: 0, totalPairs: 0, validPairs: 0 };
 
-    const vTravel = 5.5; // km/s (velocidad de propagación aparente de onda P en corteza)
-    const deltaTolSec = 1.8; // Tolerancia estricta anti-ruido (P-12)
     let totalPairs = 0;
     let validPairs = 0;
 
@@ -1178,10 +1196,7 @@ export class SeismicDetectorEngine {
         }
 
         totalPairs++;
-        const maxTravelTimeSec = (interDistKm / vTravel) + deltaTolSec;
-        const dtObsSec = Math.abs(st1.tP - st2.tP) / 1000;
-
-        if (dtObsSec <= maxTravelTimeSec) {
+        if (this.areDifferentialTimesCompatible(st1, st2, interDistKm)) {
           validPairs++;
         }
       }
@@ -1198,6 +1213,10 @@ export class SeismicDetectorEngine {
       totalPairs,
       validPairs,
     };
+  }
+
+  private areDifferentialTimesCompatible(a: StationTriggerRecord, b: StationTriggerRecord, distanceKm: number): boolean {
+    return Math.abs(a.tP - b.tP) / 1000 <= distanceKm / 5.5 + 1.8;
   }
 
   /**
@@ -1295,8 +1314,12 @@ export class SeismicDetectorEngine {
       }
     }
 
-    if (!epi || epi.rmsResidualSec > RMS_GATE_SEC || isDegenerateGeometry(epi.azimuthalGap, sites.length)) {
+    if (!epi || !Number.isFinite(epi.rmsResidualSec) || epi.rmsResidualSec > RMS_GATE_SEC) {
       this.logClusterRejection(sites, `residuo RMS ajustado ${epi ? epi.rmsResidualSec + ' s' : 'sin convergencia'} (límite ${RMS_GATE_SEC} s)`);
+      return null;
+    }
+    if (isDegenerateGeometry(epi.azimuthalGap)) {
+      this.logClusterRejection(sites, `geometría no confiable (brecha azimutal ${epi.azimuthalGap}°)`);
       return null;
     }
 
@@ -1316,6 +1339,43 @@ export class SeismicDetectorEngine {
     if (this.rejectLogAt.has(key)) return;
     this.rejectLogAt.set(key, now);
     console.log(`[Detector] Grupo de ${sites.length} sitios rechazado: ${reason}.`);
+  }
+
+  private updateCandidate(triggers: StationTriggerRecord[]): void {
+    const unowned = triggers.filter((trigger) => !trigger.eventId && !this.findOwnerEvent(trigger));
+    const sites = this.independentSites(unowned);
+    const compatible = sites.map(() => new Uint8Array(sites.length));
+    for (let i = 0; i < sites.length; i++) {
+      for (let j = i + 1; j < sites.length; j++) {
+        const distance = this.haversineDistanceKm(sites[i].lat, sites[i].lon, sites[j].lat, sites[j].lon);
+        if (distance <= 220 && this.areDifferentialTimesCompatible(sites[i], sites[j], distance)) {
+          compatible[i][j] = compatible[j][i] = 1;
+        }
+      }
+    }
+
+    let best: StationTriggerRecord[] = [];
+    for (let seed = 0; seed < sites.length; seed++) {
+      const neighbors = sites.map((_, index) => index).filter((index) => compatible[seed][index] === 1);
+      if (neighbors.length + 1 <= best.length) continue;
+      const group = [seed];
+      for (const index of neighbors) {
+        if (group.every((other) => compatible[index][other] === 1)) group.push(index);
+      }
+      if (group.length > best.length) best = group.map((index) => sites[index]);
+      if (best.length === sites.length) break;
+    }
+
+    const candidate: SeismicCandidate | null = best.length >= MIN_CANDIDATE_SITES
+      ? {
+          stationCount: best.length,
+          stations: best.map((trigger) => `${trigger.network}.${trigger.station}`).sort(),
+          firstTriggerTime: new Date(Math.min(...best.map((trigger) => trigger.tP))).toISOString(),
+        }
+      : null;
+    if (JSON.stringify(this.currentCandidate ?? null) === JSON.stringify(candidate)) return;
+    this.currentCandidate = candidate;
+    if (this.onCandidateChangedCallback) this.onCandidateChangedCallback(this.getSeismicCandidate());
   }
 
   /**
@@ -1338,7 +1398,10 @@ export class SeismicDetectorEngine {
       }
       return wallAge <= 90000;
     });
-    if (triggers.length === 0) return;
+    if (triggers.length === 0) {
+      this.updateCandidate([]);
+      return;
+    }
 
     // Filtrar estaciones únicas por código
     const uniqueMap = new Map<string, StationTriggerRecord>();
@@ -1354,6 +1417,7 @@ export class SeismicDetectorEngine {
     });
 
     const qualifiedSites = this.independentSites(qualifiedTriggers).length;
+    this.updateCandidate(qualifiedTriggers);
 
     // Diagnóstico visible para depurar estaciones disparadas (solo cuando cambia el conjunto de estaciones)
     if (uniqueTriggers.length >= 2) {
@@ -1515,7 +1579,9 @@ export class SeismicDetectorEngine {
         if (coveredByLocked) continue;
 
         console.log(`[Detector] Coincidencia multiestación validada: ${localized.sites.length} sitios independientes, apertura ${localized.apertureKm.toFixed(1)} km, RMS ${localized.epi.rmsResidualSec}s.`);
-        this.declareSeismicEvent(this.recordsAtSites(unowned, localized.sites), localized.epi);
+        if (this.declareSeismicEvent(this.recordsAtSites(unowned, localized.sites), localized.epi)) {
+          this.updateCandidate(qualifiedTriggers);
+        }
       }
     }
   }

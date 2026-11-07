@@ -827,6 +827,30 @@ body {
   left: 0;
 }
 
+.seismic-candidate-banner {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: min(440px, calc(100% - 24px));
+  box-sizing: border-box;
+  padding: 9px 12px;
+  border: 1px solid #6b7280;
+  border-radius: 8px;
+  background: #182332;
+  color: #e2e8f0;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+  pointer-events: none;
+}
+
+.seismic-candidate-banner strong,
+.seismic-candidate-banner span {
+  display: block;
+}
+
 canvas#mapCanvas {
   display: block;
   width: 100%;
