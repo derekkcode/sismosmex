@@ -8,6 +8,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "vite build",
+    "test": "node --import tsx --test",
     "start": "tsx server.ts",
     "alert": "node alert.js",
     "reload": "node reload.js"

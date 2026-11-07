@@ -422,6 +422,7 @@ export class SeismicDetectorEngine {
   private historyReady = false;
   private historyLoading = false;
   private persistChain: Promise<void> = Promise.resolve();
+  private persistRetryTimer: NodeJS.Timeout | null = null;
   // Borrados pendientes en MongoDB (cancelados, expirados o fusionados) y limpieza solicitada.
   // Guardar solo inserta o actualiza: lo que no esté aquí nunca se borra de la base.
   private pendingHistoryDeletes: Set<string> = new Set();
@@ -854,9 +855,14 @@ export class SeismicDetectorEngine {
       })
       .catch((err) => {
         console.error('[Detector] Error guardando historial en MongoDB:', (err as Error).message);
-        // Los borrados pendientes se reintentan en la siguiente escritura
         toDelete.forEach((id) => this.pendingHistoryDeletes.add(id));
         if (clearFirst) this.pendingHistoryClear = true;
+        if (!this.persistRetryTimer) {
+          this.persistRetryTimer = setTimeout(() => {
+            this.persistRetryTimer = null;
+            this.saveEarthquakesToDisk();
+          }, 10000);
+        }
       });
   }
 
@@ -1036,12 +1042,12 @@ export class SeismicDetectorEngine {
     const existingTrigger = this.activeTriggers.get(cleanSt);
     if (!canOpenTrigger) {
       if (existingTrigger) {
+        this.trackPhasePeaks(existingTrigger, peakPga, packetTimeMs);
+        this.updateActiveEarthquakeAmplitudes(cleanSt, peakPga, peakAmp, peakWa);
         if (peakPga > existingTrigger.maxPga) existingTrigger.maxPga = peakPga;
         if (peakAmp > existingTrigger.maxAmp) existingTrigger.maxAmp = peakAmp;
         if (peakWa > (existingTrigger.woodAndersonAmpMm || 0)) existingTrigger.woodAndersonAmpMm = peakWa;
         existingTrigger.lastUpdateWallTime = nowWall;
-        this.trackPhasePeaks(existingTrigger, peakPga, packetTimeMs);
-        this.updateActiveEarthquakeAmplitudes(cleanSt, peakPga, peakAmp, peakWa);
         this.requestEvaluation();
       }
       return;
@@ -1131,11 +1137,13 @@ export class SeismicDetectorEngine {
   /**
    * Limpia manualmente el estado de disparo de una estación cuando pasa a reposo o queda inactiva (Item 18)
    */
-  public clearStationTrigger(station: string): void {
+  public clearStationTrigger(station: string, network?: string, channel?: string): void {
     const cleanSt = (station || '').trim().toUpperCase();
-    if (this.activeTriggers.has(cleanSt)) {
-      this.activeTriggers.delete(cleanSt);
-    }
+    const trigger = this.activeTriggers.get(cleanSt);
+    if (!trigger) return;
+    if (network !== undefined && trigger.network.toUpperCase() !== network.toUpperCase()) return;
+    if (channel !== undefined && trigger.channel.toUpperCase() !== channel.toUpperCase()) return;
+    this.activeTriggers.delete(cleanSt);
   }
 
   /**
@@ -2029,16 +2037,14 @@ export class SeismicDetectorEngine {
 
     // Re-estimar magnitud con el pico real de la onda S
     const updatedMag = this.estimateMagnitude(event.stations, event.latitude, event.longitude, event.depth);
-    if (updatedMag.validStationCount > 0 &&
-      (updatedMag.magnitude > event.magnitude || updatedMag.maxPga > event.maxPga)) {
+    if (updatedMag.validStationCount > 0 && updatedMag.magnitude > event.magnitude) {
       console.log(`[Detector:S-Wave] Actualización de pico de onda S para evento ${event.id}: M ${event.magnitude} -> ${updatedMag.magnitude}, PGA ${event.maxPga} -> ${updatedMag.maxPga} gal`);
       event.magnitude = updatedMag.magnitude;
-      event.maxPga = updatedMag.maxPga;
       event.maxIntensity = updatedMag.maxIntensity;
-      this.scheduleSave();
-      if (this.onEventDetectedCallback) {
-        this.onEventDetectedCallback(event);
-      }
+    }
+    this.scheduleSave();
+    if (this.onEventDetectedCallback) {
+      this.onEventDetectedCallback(event);
     }
   }
 

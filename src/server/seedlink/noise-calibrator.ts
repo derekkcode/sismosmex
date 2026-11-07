@@ -3,7 +3,7 @@
  *
  * Aprende el ruido de fondo real de cada canal y deriva umbrales de disparo propios:
  *  - Histogramas logarítmicos con olvido exponencial (vida media 12 h) del pico de PGA y del pico de
- *    STA/LTA por paquete. Solo se aprende de paquetes que no inician con la estación ya disparada.
+ *    STA/LTA por paquete. No se aprende de paquetes que contienen un disparo o su enfriamiento.
  *  - Umbral final = max(umbral base de la red, cuantil 99.5 % del ruido * margen).
  *  - Retroalimentación: un disparo que la red no corrobora sube una penalización; si se repite, el canal
  *    entra en cuarentena temporal. Un disparo corroborado por varias estaciones la reduce.
@@ -32,7 +32,7 @@ export interface NoiseObservation {
   peakPga: number; // gal, pico del paquete con filtros ya asentados
   peakRatio: number; // pico de STA/LTA dentro del paquete
   durationSec: number;
-  duringTrigger: boolean; // el paquete inició con la estación ya disparada (evento o tremor, no ruido)
+  duringTrigger: boolean; // el paquete contiene un disparo o su enfriamiento (no es ruido de fondo)
 }
 
 export interface NoiseThresholds {
@@ -254,8 +254,8 @@ export class NoiseCalibrator {
   }
 
   /**
-   * Registra el ruido observado en un paquete. Los paquetes que inician con la estación disparada
-   * no se aprenden; los picos extremos tampoco una vez que el canal está calibrado.
+   * Registra el ruido observado en un paquete. Los paquetes con disparos o enfriamiento no se aprenden;
+   * los picos extremos tampoco una vez que el canal está calibrado.
    */
   public observe(key: string, ctx: NoiseStreamContext, obs: NoiseObservation): void {
     if (!(obs.durationSec > 0)) return;

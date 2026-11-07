@@ -47,24 +47,23 @@
               <!-- Banner redondeado interior con Intensidad Máxima y Número -->
               <div class="jma-intensity-banner" id="jquakeBigIntBox">
                 <span class="jma-intensity-label" id="jquakeIntensityLabel">Intensidad Máxima</span>
-                <span class="jma-intensity-num" id="jquakeIntensityNum">4</span>
+                <span class="jma-intensity-num" id="jquakeIntensityNum">—</span>
               </div>
 
-              <!-- Fecha y hora: 9月27日 17:37ごろ -> 26 de Sep 01:22 hrs -->
-              <div class="jma-time-text" id="jquakeTimeInfo">26 de Sep 01:22 hrs</div>
+              <div class="jma-time-text" id="jquakeTimeInfo">—</div>
 
               <!-- Epicentro en letras grandes: 沖縄本島近海 -->
-              <div class="jma-location-text" id="jquakeLocationTitle">86 km al Suroeste de Mapastepec, Chis</div>
+              <div class="jma-location-text" id="jquakeLocationTitle">Sin eventos sísmicos registrados</div>
 
               <!-- Subtítulo: で地震がありました -> Ocurrió un sismo -->
-              <div class="jma-event-subtitle" id="jquakeEventSubtitle">Ocurrió un sismo</div>
+              <div class="jma-event-subtitle" id="jquakeEventSubtitle">Sin información de intensidad</div>
 
               <!-- Métricas en orden exacto: 1. Magnitud con barra cian, 2. Profundidad con barra ámbar -->
               <div class="jma-metrics-stack">
                 <div class="jma-metric-row">
                   <span class="jma-metric-label">Magnitud</span>
                   <div class="jma-metric-val-group">
-                    <span class="jma-metric-number" id="jquakeMagVal">4.0</span>
+                    <span class="jma-metric-number" id="jquakeMagVal">—</span>
                     <span class="jma-accent-bar bar-cyan" id="jquakeMagBar"></span>
                   </div>
                 </div>
@@ -72,7 +71,7 @@
                 <div class="jma-metric-row">
                   <span class="jma-metric-label">Profundidad</span>
                   <div class="jma-metric-val-group">
-                    <span class="jma-metric-number jma-metric-depth" id="jquakeDepthVal">106km</span>
+                    <span class="jma-metric-number jma-metric-depth" id="jquakeDepthVal">—</span>
                     <span class="jma-accent-bar bar-amber" id="jquakeDepthBar"></span>
                   </div>
                 </div>
@@ -812,20 +811,12 @@
       const jMagVal = document.getElementById('jquakeMagVal');
       const jEventSubtitle = document.getElementById('jquakeEventSubtitle');
 
-      const savedEv = snapshot.lastSavedEvent || {
-        location: '86 km al Suroeste de Mapastepec, Chis',
-        lat: 14.81,
-        lon: -93.39,
-        depth: 106,
-        time: '2026-09-26T01:22:00-06:00',
-        mag: 4.0,
-        maxIntensity: 4,
-      };
+      const savedEv = snapshot.lastSavedEvent;
 
-      if (jLocationTitle) jLocationTitle.innerText = savedEv.location || '86 km al Suroeste de Mapastepec, Chis';
+      if (jLocationTitle) jLocationTitle.innerText = savedEv?.location || 'Sin eventos sísmicos registrados';
       
-      let dateStr = '26 de Sep 01:22 hrs';
-      if (savedEv.time) {
+      let dateStr = '—';
+      if (savedEv?.time) {
         try {
           const d = new Date(savedEv.time);
           if (!isNaN(d.getTime())) {
@@ -837,20 +828,25 @@
       }
       if (jTimeInfo) jTimeInfo.innerText = dateStr;
 
-      const depthKm = Math.round(Number(savedEv.depth !== undefined ? savedEv.depth : 106));
-      if (jDepthVal) jDepthVal.innerText = `${depthKm}km`;
-      if (jMagVal) jMagVal.innerText = `${Number(savedEv.mag || savedEv.magnitude || 4.0).toFixed(1)}`;
+      if (jDepthVal) jDepthVal.innerText = savedEv ? `${Math.round(Number(savedEv.depth))}km` : '—';
+      if (jMagVal) jMagVal.innerText = savedEv ? `${Number(savedEv.mag ?? savedEv.magnitude).toFixed(1)}` : '—';
       
       if (jEventSubtitle) {
-        jEventSubtitle.innerText = 'Ocurrió un sismo';
+        jEventSubtitle.innerText = savedEv ? 'Ocurrió un sismo' : 'Sin información de intensidad';
       }
 
       if (jBigIntBox && jIntensityNum) {
-        const intVal = Math.max(1, Math.min(10, Math.round(Number(savedEv.maxIntensity || 4))));
-        const theme = getIntensityTheme(intVal);
-        jBigIntBox.style.background = theme.bg;
-        jBigIntBox.style.color = theme.text;
-        jIntensityNum.innerText = String(intVal);
+        if (savedEv && savedEv.intensityKnown !== false) {
+          const intVal = Math.max(1, Math.min(10, Math.round(Number(savedEv.maxIntensity || 1))));
+          const theme = getIntensityTheme(intVal);
+          jBigIntBox.style.background = theme.bg;
+          jBigIntBox.style.color = theme.text;
+          jIntensityNum.innerText = String(intVal);
+        } else {
+          jBigIntBox.style.removeProperty('background');
+          jBigIntBox.style.removeProperty('color');
+          jIntensityNum.innerText = '—';
+        }
       }
     }
 

@@ -33,133 +33,6 @@ function serverStatusLabel(status) {
   return status || t('seedlink.statusWaiting');
 }
 
-export const DEFAULT_GUANACASTE_INTER_EVENT = {
-  id: 'eq-usgs-us6000tymj',
-  displayId: 'TYMJ',
-  time: '2026-09-30T21:55:26.169Z',
-  timeEpoch: 1790805326169,
-  detectedAt: '2026-09-30T21:55:36.169Z',
-  latitude: 9.7526,
-  longitude: -86.5063,
-  lat: 9.7526,
-  lon: -86.5063,
-  depth: 8,
-  magnitude: 5.6,
-  mag: 5.6,
-  magnitudeType: 'MWW',
-  location: '94 km SW de Tamarindo, Costa Rica',
-  maxPga: 6.5,
-  maxIntensity: 5,
-  stationCount: 0,
-  stations: [],
-  isInter: true,
-  category: 'inter',
-  status: 'CONFIRMED',
-  source: 'USGS (Sismo Internacional)',
-  saved: true,
-  isLocked: true,
-};
-
-export const DEFAULT_LAST_EVENT = {
-  id: 'eq-20260926012200-mapastepec',
-  time: '2026-09-26T01:22:00-06:00',
-  timeEpoch: 1790407320000,
-  detectedAt: '2026-09-26T01:22:08-06:00',
-  latitude: 14.81,
-  longitude: -93.39,
-  lat: 14.81,
-  lon: -93.39,
-  depth: 106,
-  magnitude: 4.0,
-  mag: 4.0,
-  magnitudeType: 'ML',
-  location: '86 km al Suroeste de Mapastepec, Chis',
-  maxPga: 2.85,
-  maxIntensity: 4,
-  stationCount: 6,
-  stations: ['PCIG', 'THIG', 'TGIG', 'CCIG'],
-  recordedStations: {
-    'PCIG': { code: 'PCIG', int: 4, pga: 2.85, site: 'Pijijiapan, Chis.', state: 'Chiapas', lat: 15.70462, lon: -93.21895 },
-    'THIG': { code: 'THIG', int: 3, pga: 1.45, site: 'Tapachula, Chis.', state: 'Chiapas', lat: 14.8823, lon: -92.2958 },
-    'TGIG': { code: 'TGIG', int: 2, pga: 0.58, site: 'Tuxtla Gutiérrez, Chis.', state: 'Chiapas', lat: 16.77821, lon: -93.12228 },
-    'CCIG': { code: 'CCIG', int: 2, pga: 0.42, site: 'Comitán, Chis.', state: 'Chiapas', lat: 16.28188, lon: -92.13692 }
-  },
-  regionalIntensities: [
-    { name: 'Chiapas', lat: 15.43, lon: -92.90, maxInt: 4, maxPga: 2.85 }
-  ],
-  status: 'CONFIRMED',
-  source: 'Red Sísmica Nacional (Confirmado)',
-  saved: true,
-  isLocked: true,
-};
-
-export const INITIAL_EARTHQUAKES = [
-  DEFAULT_GUANACASTE_INTER_EVENT,
-  DEFAULT_LAST_EVENT,
-  {
-    id: 'eq-20260926012200-copan',
-    time: '2026-09-26T01:22:00-06:00',
-    timeEpoch: 1790407320000,
-    detectedAt: '2026-09-26T01:22:08-06:00',
-    latitude: 14.74,
-    longitude: -89.54,
-    lat: 14.74,
-    lon: -89.54,
-    depth: 3,
-    magnitude: 3.7,
-    mag: 3.7,
-    magnitudeType: 'ML',
-    location: '42 km al Oeste de Copán Ruinas, Copán, HN',
-    maxPga: 0.15,
-    maxIntensity: 1,
-    stationCount: 4,
-    stations: [],
-    recordedStations: {
-      'COPAN': { code: 'COPAN', int: 1, pga: 0.15, site: 'Copán Ruinas, Copán, HN', state: 'Copán', lat: 14.83, lon: -89.15 },
-      'CHIAP': { code: 'CHIAP', int: 1, pga: 0.12, site: 'Frontera Chiapas / Guatemala', state: 'Chiapas', lat: 15.05, lon: -91.80 },
-      'CCIG': { code: 'CCIG', int: 1, pga: 0.10, site: 'Comitán, Chis. MX', state: 'Chiapas', lat: 16.28188, lon: -92.13692 },
-    },
-    regionalIntensities: [
-      { name: 'Copán', lat: 14.74, lon: -89.54, maxInt: 1, maxPga: 0.15 }
-    ],
-    status: 'CONFIRMED',
-    source: 'Red Sísmica Regional (Confirmado)',
-    saved: true,
-    isLocked: true,
-  },
-  {
-    id: 'eq-20260921050700-comitan',
-    time: '2026-09-21T05:07:00-06:00',
-    timeEpoch: 1790075220000,
-    detectedAt: '2026-09-21T05:07:08-06:00',
-    latitude: 16.251,
-    longitude: -92.134,
-    lat: 16.251,
-    lon: -92.134,
-    depth: 15,
-    magnitude: 4.5,
-    mag: 4.5,
-    magnitudeType: 'ML',
-    location: 'Cercas de comitan, Chiapas',
-    maxPga: 3.42,
-    maxIntensity: 3,
-    stationCount: 5,
-    stations: [],
-    recordedStations: {
-      'CCIG': { code: 'CCIG', int: 3, pga: 3.42, site: 'Comitan, Chis. MX', state: 'Chiapas', lat: 16.28188, lon: -92.13692 },
-      'TGIG': { code: 'TGIG', int: 1, pga: 0.15, site: 'TUXTLA GUTIERREZ', state: 'Chiapas', lat: 16.77821, lon: -93.12228 },
-      'PCIG': { code: 'PCIG', int: 1, pga: 0.12, site: 'PIJIJIAPAN', state: 'Chiapas', lat: 15.70462, lon: -93.21895 },
-      'PAVE': { code: 'PAVE', int: 1, pga: 0.14, site: 'Pavencul, Tacana', state: 'Chiapas', lat: 15.1926, lon: -92.1772 },
-      'PATR': { code: 'PATR', int: 1, pga: 0.13, site: 'Patria, Tacana', state: 'Chiapas', lat: 15.1185, lon: -92.2364 },
-      'CHIQ': { code: 'CHIQ', int: 1, pga: 0.12, site: 'Chiquihuite, Tacana', state: 'Chiapas', lat: 15.0896, lon: -92.1049 },
-    },
-    status: 'CONFIRMED',
-    source: 'Red Sísmica Nacional (Confirmado)',
-    saved: true,
-    isLocked: true,
-  },
-];
-
 export class SeedLinkUIManager {
   constructor(engine) {
     this.engine = engine;
@@ -168,7 +41,8 @@ export class SeedLinkUIManager {
     // Catálogos locales
     this.stations = new Map();
     this.servers = [];
-    this.earthquakes = [...INITIAL_EARTHQUAKES];
+    this.earthquakes = [];
+    this.historyRequestSequence = 0;
 
     // Al cambiar la fuente del historial en ajustes, recargar la lista desde el endpoint elegido
     window.addEventListener(DISPLAY_SETTINGS_EVENT, (e) => {
@@ -530,13 +404,20 @@ export class SeedLinkUIManager {
   /** Carga el historial desde el endpoint elegido en ajustes (monitor con respaldo SSN, o solo SSN). */
   loadEarthquakeHistory() {
     const endpoint = getHistorySource() === 'ssn' ? '/api/seedlink/events/ssn' : '/api/seedlink/events';
+    const requestSequence = ++this.historyRequestSequence;
     return fetch(endpoint)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((events) => {
-        this.earthquakes = Array.isArray(events) && events.length > 0 ? events : [...INITIAL_EARTHQUAKES];
+        if (requestSequence !== this.historyRequestSequence) return;
+        if (!Array.isArray(events)) throw new Error('Respuesta de historial inválida');
+        this.earthquakes = events;
+        this.engine.setLastSavedEvent(events[0] || null);
         this.renderEarthquakeHistory();
       })
-      .catch(() => {});
+      .catch((err) => console.error('[SeedLinkUI] No se pudo cargar el historial:', err));
   }
 
   updateAllStationRowsLive() {
@@ -652,18 +533,10 @@ export class SeedLinkUIManager {
         this.servers = msg.servers;
       }
       if (Array.isArray(msg.events)) {
-        // Con fuente SSN el historial lo define el endpoint elegido, no la lista del WebSocket
-        if (getHistorySource() !== 'ssn') {
-          this.earthquakes = msg.events.length > 0 ? msg.events : [...INITIAL_EARTHQUAKES];
-          this.renderEarthquakeHistory();
-        }
-
         // Regla: al reiniciar el servidor o reconectar, reiniciar los eventos activos (no cargarlos en propagación activa)
         this.engine.clearActiveEvent();
-        const latest = msg.events[0];
-        if (latest) {
-          this.engine.setLastSavedEvent(latest);
-        }
+        // El endpoint también informa el respaldo SSN cuando MongoDB no está disponible.
+        if (getHistorySource() !== 'ssn') this.loadEarthquakeHistory();
       }
       this.renderSummaryCounters();
       this.renderStationsTable();
@@ -684,13 +557,18 @@ export class SeedLinkUIManager {
       }
     } else if (msg.type === 'earthquake_detected') {
       if (msg.event) {
+        this.historyRequestSequence++;
         this.handleEarthquakeDetected(msg.event);
       }
     } else if (msg.type === 'earthquake_cancelled') {
       this.handleEarthquakeCancelled(msg);
     } else if (msg.type === 'earthquake_history_cleared') {
-      this.earthquakes = [];
-      this.renderEarthquakeHistory();
+      if (getHistorySource() !== 'ssn') {
+        this.historyRequestSequence++;
+        this.earthquakes = [];
+        this.engine.setLastSavedEvent(null);
+        this.renderEarthquakeHistory();
+      }
     } else if (msg.type === 'station_batch_update') {
       if (Array.isArray(msg.stations)) {
         for (const st of msg.stations) {

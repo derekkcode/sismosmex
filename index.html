@@ -48,24 +48,23 @@
               <!-- Banner redondeado interior con Intensidad Máxima y Número -->
               <div class="jma-intensity-banner" id="jquakeBigIntBox">
                 <span class="jma-intensity-label" id="jquakeIntensityLabel" data-i18n="sidebar.maxIntensity">Intensidad Máxima</span>
-                <span class="jma-intensity-num" id="jquakeIntensityNum">4</span>
+                <span class="jma-intensity-num" id="jquakeIntensityNum">—</span>
               </div>
 
-              <!-- Fecha y hora: 9月27日 17:37ごろ -> 26 de Sep 01:22 hrs -->
-              <div class="jma-time-text" id="jquakeTimeInfo">26 de Sep 01:22 hrs</div>
+              <div class="jma-time-text" id="jquakeTimeInfo">—</div>
 
               <!-- Epicentro en letras grandes: 沖縄本島近海 -->
-              <div class="jma-location-text" id="jquakeLocationTitle">86 km al Suroeste de Mapastepec, Chis</div>
+              <div class="jma-location-text" id="jquakeLocationTitle" data-i18n="sidebar.noEvents">Sin eventos sísmicos registrados</div>
 
               <!-- Subtítulo: で地震がありました -> Ocurrió un sismo -->
-              <div class="jma-event-subtitle" id="jquakeEventSubtitle" data-i18n="sidebar.occurred">Ocurrió un sismo</div>
+              <div class="jma-event-subtitle" id="jquakeEventSubtitle"></div>
 
               <!-- Métricas en orden exacto: 1. Magnitud con barra cian, 2. Profundidad con barra ámbar -->
               <div class="jma-metrics-stack">
                 <div class="jma-metric-row">
                   <span class="jma-metric-label" data-i18n="sidebar.magnitude">Magnitud</span>
                   <div class="jma-metric-val-group">
-                    <span class="jma-metric-number" id="jquakeMagVal">4.0</span>
+                    <span class="jma-metric-number" id="jquakeMagVal">—</span>
                     <span class="jma-accent-bar bar-cyan" id="jquakeMagBar"></span>
                   </div>
                 </div>
@@ -73,7 +72,7 @@
                 <div class="jma-metric-row">
                   <span class="jma-metric-label" data-i18n="sidebar.depth">Profundidad</span>
                   <div class="jma-metric-val-group">
-                    <span class="jma-metric-number jma-metric-depth" id="jquakeDepthVal">106km</span>
+                    <span class="jma-metric-number jma-metric-depth" id="jquakeDepthVal">—</span>
                     <span class="jma-accent-bar bar-amber" id="jquakeDepthBar"></span>
                   </div>
                 </div>
@@ -403,26 +402,26 @@
                 <!-- Banner de Intensidad Máxima estilo Kyoshin / JMA -->
                 <div class="mobile-big-int-box" id="mobileBigIntBox">
                   <span class="mobile-big-int-label" id="mobileIntensityLabel" data-i18n-html="mobile.intensityLabel">INTENSIDAD<br>MÁXIMA</span>
-                  <span class="mobile-big-int-num" id="mobileIntensityNum">4</span>
+                  <span class="mobile-big-int-num" id="mobileIntensityNum">—</span>
                 </div>
                 <!-- Fecha y hora -->
-                <div class="mobile-time-text" id="mobileTimeInfo">26 de Sep 01:22 hrs</div>
+                <div class="mobile-time-text" id="mobileTimeInfo">—</div>
                 <!-- Ubicación -->
-                <div class="mobile-location-title" id="mobileLocationTitle">86 km al Suroeste de Mapastepec, Chis</div>
+                <div class="mobile-location-title" id="mobileLocationTitle" data-i18n="sidebar.noEvents">Sin eventos sísmicos registrados</div>
                 <!-- Subtítulo -->
-                <div class="mobile-event-subtitle" id="mobileEventSubtitle" data-i18n="sidebar.occurred">Ocurrió un sismo</div>
+                <div class="mobile-event-subtitle" id="mobileEventSubtitle"></div>
                 <!-- Métricas -->
                 <div class="mobile-metric-row">
                   <span class="mobile-metric-lbl" data-i18n="sidebar.magnitude">Magnitud</span>
                   <div class="mobile-metric-val-wrap">
-                    <span class="mobile-metric-val" id="mobileMagVal">4.0</span>
+                    <span class="mobile-metric-val" id="mobileMagVal">—</span>
                     <span class="mobile-metric-bar bar-green" id="mobileMagBar"></span>
                   </div>
                 </div>
                 <div class="mobile-metric-row">
                   <span class="mobile-metric-lbl" data-i18n="sidebar.depth">Profundidad</span>
                   <div class="mobile-metric-val-wrap">
-                    <span class="mobile-metric-val" id="mobileDepthVal">106km</span>
+                    <span class="mobile-metric-val" id="mobileDepthVal">—</span>
                     <span class="mobile-metric-bar bar-cyan" id="mobileDepthBar"></span>
                   </div>
                 </div>
@@ -1218,20 +1217,16 @@
       const jMagVal = document.getElementById('jquakeMagVal');
       const jEventSubtitle = document.getElementById('jquakeEventSubtitle');
 
-      const savedEv = snapshot.lastSavedEvent || {
-        location: '86 km al Suroeste de Mapastepec, Chis',
-        lat: 14.81,
-        lon: -93.39,
-        depth: 106,
-        time: '2026-09-26T01:22:00-06:00',
-        mag: 4.0,
-        maxIntensity: 4,
-      };
-
-      if (jLocationTitle) jLocationTitle.innerText = savedEv.location || '86 km al Suroeste de Mapastepec, Chis';
+      const savedEv = snapshot.lastSavedEvent;
+      const locationText = savedEv?.location || t('sidebar.noEvents');
+      if (jLocationTitle) {
+        jLocationTitle.innerText = locationText;
+        if (savedEv) jLocationTitle.removeAttribute('data-i18n');
+        else jLocationTitle.setAttribute('data-i18n', 'sidebar.noEvents');
+      }
       
-      let dateStr = t('sidebar.eventDateFallback');
-      if (savedEv.time) {
+      let dateStr = '—';
+      if (savedEv?.time) {
         try {
           const d = new Date(savedEv.time);
           if (!isNaN(d.getTime())) {
@@ -1241,29 +1236,36 @@
       }
       if (jTimeInfo) jTimeInfo.innerText = dateStr;
 
-      const depthKm = Math.round(Number(savedEv.depth !== undefined ? savedEv.depth : 106));
-      if (jDepthVal) jDepthVal.innerText = `${depthKm}km`;
-      if (jMagVal) jMagVal.innerText = `${Number(savedEv.mag || savedEv.magnitude || 4.0).toFixed(1)}`;
+      const depthKm = savedEv ? Math.round(Number(savedEv.depth)) : null;
+      const magNum = savedEv ? Number(savedEv.mag ?? savedEv.magnitude) : null;
+      if (jDepthVal) jDepthVal.innerText = depthKm !== null ? `${depthKm}km` : '—';
+      if (jMagVal) jMagVal.innerText = magNum !== null ? magNum.toFixed(1) : '—';
       
       if (jEventSubtitle) {
-        const isInter = Boolean(
+        const isInter = Boolean(savedEv && (
           savedEv.isInter ||
           savedEv.category === 'inter' ||
           (savedEv.source && (savedEv.source.toLowerCase().includes('inter') || savedEv.source.toLowerCase().includes('usgs')))
-        );
+        ));
         if (isInter) {
           jEventSubtitle.innerHTML = `<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); padding: 2px 7px; border-radius: 4px; font-weight: 700; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;"><span>🌐</span> ${t('sidebar.international')}</span>`;
         } else {
-          jEventSubtitle.innerText = t('sidebar.occurred');
+          jEventSubtitle.innerText = savedEv ? t('sidebar.occurred') : '';
         }
       }
 
       if (jBigIntBox && jIntensityNum) {
-        const intVal = Math.max(1, Math.min(10, Math.round(Number(savedEv.maxIntensity || 4))));
-        const theme = getIntensityTheme(intVal);
-        jBigIntBox.style.background = theme.bg;
-        jBigIntBox.style.color = theme.text;
-        jIntensityNum.innerText = formatIntensity(intVal);
+        if (savedEv && savedEv.intensityKnown !== false) {
+          const intVal = Math.max(1, Math.min(10, Math.round(Number(savedEv.maxIntensity || 1))));
+          const theme = getIntensityTheme(intVal);
+          jBigIntBox.style.background = theme.bg;
+          jBigIntBox.style.color = theme.text;
+          jIntensityNum.innerText = formatIntensity(intVal);
+        } else {
+          jBigIntBox.style.removeProperty('background');
+          jBigIntBox.style.removeProperty('color');
+          jIntensityNum.innerText = '—';
+        }
       }
 
       // -----------------------------------------------------------------------
@@ -1279,11 +1281,14 @@
       const mobMagBar = document.getElementById('mobileMagBar');
       const mobDepthBar = document.getElementById('mobileDepthBar');
 
-      if (mobLocationTitle) mobLocationTitle.innerText = savedEv.location || '86 km al Suroeste de Mapastepec, Chis';
+      if (mobLocationTitle) {
+        mobLocationTitle.innerText = locationText;
+        if (savedEv) mobLocationTitle.removeAttribute('data-i18n');
+        else mobLocationTitle.setAttribute('data-i18n', 'sidebar.noEvents');
+      }
       if (mobTimeInfo) mobTimeInfo.innerText = dateStr;
-      if (mobDepthVal) mobDepthVal.innerText = `${depthKm}km`;
-      const magNum = Number(savedEv.mag || savedEv.magnitude || 4.0);
-      if (mobMagVal) mobMagVal.innerText = magNum.toFixed(1);
+      if (mobDepthVal) mobDepthVal.innerText = depthKm !== null ? `${depthKm}km` : '—';
+      if (mobMagVal) mobMagVal.innerText = magNum !== null ? magNum.toFixed(1) : '—';
 
       if (mobMagBar) {
         mobMagBar.className = 'mobile-metric-bar ' + (magNum >= 6.5 ? 'bar-amber' : (magNum >= 5.0 ? 'bar-cyan' : 'bar-green'));
@@ -1292,26 +1297,32 @@
         mobDepthBar.className = 'mobile-metric-bar ' + (depthKm > 70 ? 'bar-red' : (depthKm > 30 ? 'bar-amber' : 'bar-cyan'));
       }
 
-      const isInterEvent = Boolean(
+      const isInterEvent = Boolean(savedEv && (
         savedEv.isInter ||
         savedEv.category === 'inter' ||
         (savedEv.source && (savedEv.source.toLowerCase().includes('inter') || savedEv.source.toLowerCase().includes('usgs')))
-      );
+      ));
 
       if (mobEventSubtitle) {
         if (isInterEvent) {
           mobEventSubtitle.innerHTML = `<span style="background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.5); padding: 1px 5px; border-radius: 3px; font-weight: 700; font-size: 9px; display: inline-flex; align-items: center; gap: 3px;"><span>🌐</span> ${t('sidebar.international')}</span>`;
         } else {
-          mobEventSubtitle.innerText = t('sidebar.occurred');
+          mobEventSubtitle.innerText = savedEv ? t('sidebar.occurred') : '';
         }
       }
 
       if (mobBigIntBox && mobIntensityNum) {
-        const intVal = Math.max(1, Math.min(10, Math.round(Number(savedEv.maxIntensity || 4))));
-        const theme = getIntensityTheme(intVal);
-        mobBigIntBox.style.background = theme.bg;
-        mobBigIntBox.style.color = theme.text;
-        mobIntensityNum.innerText = formatIntensity(intVal);
+        if (savedEv && savedEv.intensityKnown !== false) {
+          const intVal = Math.max(1, Math.min(10, Math.round(Number(savedEv.maxIntensity || 1))));
+          const theme = getIntensityTheme(intVal);
+          mobBigIntBox.style.background = theme.bg;
+          mobBigIntBox.style.color = theme.text;
+          mobIntensityNum.innerText = formatIntensity(intVal);
+        } else {
+          mobBigIntBox.style.removeProperty('background');
+          mobBigIntBox.style.removeProperty('color');
+          mobIntensityNum.innerText = '—';
+        }
       }
 
       // Sincronizar telemetría de Tiempo Real en móvil

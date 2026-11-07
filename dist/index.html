@@ -9,7 +9,7 @@
   <meta property="og:description" content="Sistema de monitoreo e intensidad sísmica SismosMex">
 
   <!-- Estilos del Sistema de Diseño -->
-  <script type="module" crossorigin src="/assets/main-CziYNQvG.js"></script>
+  <script type="module" crossorigin src="/assets/main-DWqddgPg.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/main-DI_6z4eI.css">
 </head>
 <body>
@@ -46,24 +46,23 @@
               <!-- Banner redondeado interior con Intensidad Máxima y Número -->
               <div class="jma-intensity-banner" id="jquakeBigIntBox">
                 <span class="jma-intensity-label" id="jquakeIntensityLabel" data-i18n="sidebar.maxIntensity">Intensidad Máxima</span>
-                <span class="jma-intensity-num" id="jquakeIntensityNum">4</span>
+                <span class="jma-intensity-num" id="jquakeIntensityNum">—</span>
               </div>
 
-              <!-- Fecha y hora: 9月27日 17:37ごろ -> 26 de Sep 01:22 hrs -->
-              <div class="jma-time-text" id="jquakeTimeInfo">26 de Sep 01:22 hrs</div>
+              <div class="jma-time-text" id="jquakeTimeInfo">—</div>
 
               <!-- Epicentro en letras grandes: 沖縄本島近海 -->
-              <div class="jma-location-text" id="jquakeLocationTitle">86 km al Suroeste de Mapastepec, Chis</div>
+              <div class="jma-location-text" id="jquakeLocationTitle" data-i18n="sidebar.noEvents">Sin eventos sísmicos registrados</div>
 
               <!-- Subtítulo: で地震がありました -> Ocurrió un sismo -->
-              <div class="jma-event-subtitle" id="jquakeEventSubtitle" data-i18n="sidebar.occurred">Ocurrió un sismo</div>
+              <div class="jma-event-subtitle" id="jquakeEventSubtitle"></div>
 
               <!-- Métricas en orden exacto: 1. Magnitud con barra cian, 2. Profundidad con barra ámbar -->
               <div class="jma-metrics-stack">
                 <div class="jma-metric-row">
                   <span class="jma-metric-label" data-i18n="sidebar.magnitude">Magnitud</span>
                   <div class="jma-metric-val-group">
-                    <span class="jma-metric-number" id="jquakeMagVal">4.0</span>
+                    <span class="jma-metric-number" id="jquakeMagVal">—</span>
                     <span class="jma-accent-bar bar-cyan" id="jquakeMagBar"></span>
                   </div>
                 </div>
@@ -71,7 +70,7 @@
                 <div class="jma-metric-row">
                   <span class="jma-metric-label" data-i18n="sidebar.depth">Profundidad</span>
                   <div class="jma-metric-val-group">
-                    <span class="jma-metric-number jma-metric-depth" id="jquakeDepthVal">106km</span>
+                    <span class="jma-metric-number jma-metric-depth" id="jquakeDepthVal">—</span>
                     <span class="jma-accent-bar bar-amber" id="jquakeDepthBar"></span>
                   </div>
                 </div>
@@ -401,26 +400,26 @@
                 <!-- Banner de Intensidad Máxima estilo Kyoshin / JMA -->
                 <div class="mobile-big-int-box" id="mobileBigIntBox">
                   <span class="mobile-big-int-label" id="mobileIntensityLabel" data-i18n-html="mobile.intensityLabel">INTENSIDAD<br>MÁXIMA</span>
-                  <span class="mobile-big-int-num" id="mobileIntensityNum">4</span>
+                  <span class="mobile-big-int-num" id="mobileIntensityNum">—</span>
                 </div>
                 <!-- Fecha y hora -->
-                <div class="mobile-time-text" id="mobileTimeInfo">26 de Sep 01:22 hrs</div>
+                <div class="mobile-time-text" id="mobileTimeInfo">—</div>
                 <!-- Ubicación -->
-                <div class="mobile-location-title" id="mobileLocationTitle">86 km al Suroeste de Mapastepec, Chis</div>
+                <div class="mobile-location-title" id="mobileLocationTitle" data-i18n="sidebar.noEvents">Sin eventos sísmicos registrados</div>
                 <!-- Subtítulo -->
-                <div class="mobile-event-subtitle" id="mobileEventSubtitle" data-i18n="sidebar.occurred">Ocurrió un sismo</div>
+                <div class="mobile-event-subtitle" id="mobileEventSubtitle"></div>
                 <!-- Métricas -->
                 <div class="mobile-metric-row">
                   <span class="mobile-metric-lbl" data-i18n="sidebar.magnitude">Magnitud</span>
                   <div class="mobile-metric-val-wrap">
-                    <span class="mobile-metric-val" id="mobileMagVal">4.0</span>
+                    <span class="mobile-metric-val" id="mobileMagVal">—</span>
                     <span class="mobile-metric-bar bar-green" id="mobileMagBar"></span>
                   </div>
                 </div>
                 <div class="mobile-metric-row">
                   <span class="mobile-metric-lbl" data-i18n="sidebar.depth">Profundidad</span>
                   <div class="mobile-metric-val-wrap">
-                    <span class="mobile-metric-val" id="mobileDepthVal">106km</span>
+                    <span class="mobile-metric-val" id="mobileDepthVal">—</span>
                     <span class="mobile-metric-bar bar-cyan" id="mobileDepthBar"></span>
                   </div>
                 </div>

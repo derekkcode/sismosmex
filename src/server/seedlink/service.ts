@@ -534,6 +534,8 @@ export class SeedLinkService {
     }
     const receptionBlocked = reception.gate === 'BLOCKED';
     const effectiveTriggered = isBackfill || receptionBlocked ? false : processed.staLta.triggered;
+    const packetTriggered = !isBackfill && !receptionBlocked &&
+      (processed.staLta.triggered || processed.staLta.triggeredInPacket);
 
     // Refinar la llegada P con AIC sobre la traza vertical; si el AIC no es confiable se usa el cruce STA/LTA
     let refinedPickIso: string | null = null;
@@ -545,7 +547,7 @@ export class SeedLinkService {
       }
       onsetBuffer.append(packetTimeMs, sampleRate, record.samples);
       const crossingMs = processed.staLta.triggerTimeIso ? new Date(processed.staLta.triggerTimeIso).getTime() : NaN;
-      if (processed.staLta.triggered && !isBackfill && !receptionBlocked && Number.isFinite(crossingMs)) {
+      if (packetTriggered && Number.isFinite(crossingMs)) {
         const pickMs = onsetBuffer.refineOnset(crossingMs);
         if (pickMs !== null) refinedPickIso = new Date(pickMs).toISOString();
       }
@@ -643,7 +645,7 @@ export class SeedLinkService {
         freqDominantHz: processed.freqDominantHz,
         highFreqRatio: processed.highFreqRatio,
         woodAndersonDispMm: processed.woodAndersonDispMm,
-        triggered: processed.staLta.triggered,
+        triggered: packetTriggered,
         triggerSampleIndex: processed.staLta.triggerSampleIndex,
         triggerTimeIso: processed.staLta.triggerTimeIso,
         refinedPickIso,
@@ -651,8 +653,8 @@ export class SeedLinkService {
         noiseClass: processed.noise.noiseClass,
       });
     } else {
-      // Backfill histórico (> 180s de retraso) o flujo con recepción bloqueada: limpiar cualquier disparo retenido
-      this.detector.clearStationTrigger(cleanStation);
+      // Solo el canal que abrió el disparo puede retirarlo por backfill o recepción bloqueada.
+      this.detector.clearStationTrigger(cleanStation, resolvedNetwork, record.channel);
     }
 
     // Agregar puntos al buffer de oscilograma (Swarm Waveform Buffer)

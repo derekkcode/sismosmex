@@ -72,30 +72,6 @@ export const STATION_COLOR_STOPS = [
   { val: 10.0, r: 168, g: 85, b: 247, hex: "#a855f7" }, // 10: MM X+ (Violeta / Púrpura extremo)
 ];
 
-// Evento oficial permanente fijado para Vista de Intensidades
-export const OFFICIAL_SAVED_EVENT = {
-  id: 'eq-20260926012200-mapastepec',
-  lat: 14.81,
-  lon: -93.39,
-  depth: 106,
-  mag: 4.0,
-  magnitude: 4.0,
-  location: '86 km al Suroeste de Mapastepec, Chis',
-  time: '2026-09-26T01:22:00-06:00',
-  maxIntensity: 4,
-  maxPga: 2.85,
-  status: 'CONFIRMED',
-  recordedStations: {
-    'PCIG': { code: 'PCIG', int: 4, pga: 2.85, site: 'Pijijiapan, Chis.', state: 'Chiapas', lat: 15.70462, lon: -93.21895 },
-    'THIG': { code: 'THIG', int: 3, pga: 1.45, site: 'Tapachula, Chis.', state: 'Chiapas', lat: 14.8823, lon: -92.2958 },
-    'TGIG': { code: 'TGIG', int: 2, pga: 0.58, site: 'Tuxtla Gutiérrez, Chis.', state: 'Chiapas', lat: 16.77821, lon: -93.12228 },
-    'CCIG': { code: 'CCIG', int: 2, pga: 0.42, site: 'Comitán, Chis.', state: 'Chiapas', lat: 16.28188, lon: -92.13692 }
-  },
-  regionalIntensities: [
-    { name: 'Chiapas', lat: 15.43, lon: -92.90, maxInt: 4, maxPga: 2.85 }
-  ],
-};
-
 export class SeismicMonitorEngine {
   constructor(canvasElement, options = {}) {
     this.canvas = canvasElement;
@@ -105,19 +81,14 @@ export class SeismicMonitorEngine {
     // Gestor de Audio JQuake
     this.audioManager = new SeismicAudioManager(() => Boolean(this.state.activeEvent));
 
-    // Recuperar el último evento guardado persistido (o usar el oficial inicial)
-    let savedEvent = OFFICIAL_SAVED_EVENT;
+    // El historial del servidor es la fuente de verdad; retirar la caché de versiones anteriores.
     try {
       if (typeof localStorage !== 'undefined') {
-        const raw = localStorage.getItem('sismosmex_last_saved_event');
-        if (raw) {
-          const parsed = JSON.parse(raw);
-          if (parsed && (parsed.lat !== undefined || parsed.latitude !== undefined)) {
-            savedEvent = parsed;
-          }
-        }
+        localStorage.removeItem('sismosmex_last_saved_event');
       }
-    } catch (_) {}
+    } catch (err) {
+      console.warn('[MonitorEngine] No se pudo limpiar la caché del último sismo:', err);
+    }
 
     // Estado del monitor (Máquina de Estados de 5 Fases)
     this.state = {
@@ -126,7 +97,7 @@ export class SeismicMonitorEngine {
       simTime: 0,
       activeEvent: null,
       activeEvents: [], // Soporte para procesar múltiples (hasta 2) sismos simultáneos a la vez
-      lastSavedEvent: savedEvent,
+      lastSavedEvent: null,
       activeAlert: null,
       alertBoxes: [], // Cajas delimitadoras de alerta (Bounding Boxes) afectadas
       maxPga: 0.000,
@@ -1409,10 +1380,6 @@ export class SeismicMonitorEngine {
       this.state.realtimeMaxPga = 0.000;
       this.state.topRegions = [];
 
-      if (!this.state.lastSavedEvent) {
-        this.state.lastSavedEvent = OFFICIAL_SAVED_EVENT;
-      }
-
       this.stationPulses = [];
       this.highestPulsedTier = 0;
       if (this.stationPulsedTiers) this.stationPulsedTiers.clear();
@@ -1521,12 +1488,6 @@ export class SeismicMonitorEngine {
     };
 
     this.state.lastSavedEvent = newSavedEvent;
-
-    try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('sismosmex_last_saved_event', JSON.stringify(newSavedEvent));
-      }
-    } catch (_) {}
 
     if (typeof window !== 'undefined' && window.SeedLinkUIInstance) {
       if (typeof window.SeedLinkUIInstance.saveEventToHistory === 'function') {
@@ -2455,7 +2416,7 @@ export class SeismicMonitorEngine {
    */
   setLastSavedEvent(ev) {
     if (!ev) {
-      this.state.lastSavedEvent = OFFICIAL_SAVED_EVENT;
+      this.state.lastSavedEvent = null;
       this.onStateChange(this.getStateSnapshot());
       return;
     }
@@ -2507,12 +2468,6 @@ export class SeismicMonitorEngine {
     };
 
     this.state.lastSavedEvent = saved;
-    try {
-      if (typeof localStorage !== 'undefined') {
-        localStorage.setItem('sismosmex_last_saved_event', JSON.stringify(saved));
-      }
-    } catch (_) {}
-
     this.onStateChange(this.getStateSnapshot());
   }
 
@@ -4129,4 +4084,3 @@ export class SeismicMonitorEngine {
     };
   }
 }
-

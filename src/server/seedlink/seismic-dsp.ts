@@ -58,6 +58,7 @@ export interface ProcessedPacketResult {
     thresholdRatio: number; // Umbral STA/LTA efectivo (calibrado por el ruido del canal)
     minPgaGal: number; // Piso de PGA efectivo para abrir un disparo (calibrado)
     triggered: boolean;
+    triggeredInPacket: boolean; // Se abrió un disparo aunque se liberara antes de terminar el paquete
     triggerSampleIndex?: number | null;
     triggerTimeIso?: string | null;
   };
@@ -984,6 +985,7 @@ export class SeismicDspEngine {
     const cooldownSamples = Math.round(POST_TRIGGER_COOLDOWN_SEC * sampleRate);
     let triggerSampleIndex: number | null = null;
     let triggerTimeIso: string | null = null;
+    let triggeredInPacket = false;
     let packetPeakRatio = 0;
     let stuckReleased = false;
 
@@ -1062,9 +1064,13 @@ export class SeismicDspEngine {
           if (staState.triggerCandidateSamples >= minTriggerSamples) {
             isTriggered = true;
             const candidateTimeMs = staState.triggerCandidateTimeMs || packetStartMs + Math.round(i * dt * 1000);
-            triggerSampleIndex = Math.max(0, Math.round((candidateTimeMs - packetStartMs) / (dt * 1000)));
-            triggerTimeIso = new Date(candidateTimeMs).toISOString();
-            staState.triggerTime = triggerTimeIso;
+            const detectedTimeIso = new Date(candidateTimeMs).toISOString();
+            if (!triggeredInPacket) {
+              triggerSampleIndex = Math.max(0, Math.round((candidateTimeMs - packetStartMs) / (dt * 1000)));
+              triggerTimeIso = detectedTimeIso;
+            }
+            triggeredInPacket = true;
+            staState.triggerTime = detectedTimeIso;
           }
         } else if ((staState.frozenSamples || 0) > maxTriggerSamples) {
           // Disparo sostenido (tremor, ruido continuo): se libera y se penaliza al canal
@@ -1107,7 +1113,7 @@ export class SeismicDspEngine {
         peakPga: pga,
         peakRatio: packetPeakRatio,
         durationSec,
-        duringTrigger: triggeredAtStart || inCooldownAtStart,
+        duringTrigger: triggeredAtStart || triggeredInPacket || inCooldownAtStart,
       });
     }
 
@@ -1149,8 +1155,9 @@ export class SeismicDspEngine {
         thresholdRatio: Number(thr.ratioThreshold.toFixed(2)),
         minPgaGal: Number(thr.minPgaGal.toFixed(4)),
         triggered: isTriggered,
+        triggeredInPacket,
         triggerSampleIndex,
-        triggerTimeIso: isTriggered ? staState.triggerTime || triggerTimeIso : null,
+        triggerTimeIso: triggerTimeIso ?? (isTriggered ? staState.triggerTime || null : null),
       },
       noise: {
         noiseClass: thr.noiseClass,
