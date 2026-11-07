@@ -15,7 +15,6 @@ import { MiniSeedRecord } from './miniseed';
 import { SeismicDetectorEngine, generateDisplayId } from './detector';
 import { NoiseCalibrator } from './noise-calibrator';
 import { StationReceptionQc } from './station-qc';
-import { OnsetBuffer } from './pick-refiner';
 
 export interface StationMetadata {
   network: string;
@@ -92,7 +91,6 @@ export class SeedLinkService {
   private liveStates: Map<string, LiveStationState> = new Map();
   private streamLastPacketTime: Map<string, number> = new Map();
   private readonly receptionQc = new StationReceptionQc();
-  private readonly onsetBuffers: Map<string, OnsetBuffer> = new Map();
 
   // Identificador único de inicio de sesión del servidor y fecha de arranque
   public readonly serverBootId: string = `boot_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
@@ -214,6 +212,7 @@ export class SeedLinkService {
                 acceleration: 0,
                 accelerationStr: '—',
                 amp: 0,
+                ampUnit: '',
                 ampStr: '—',
                 status: 'Sin datos',
                 delay: '—',
@@ -539,24 +538,6 @@ export class SeedLinkService {
     }
     const receptionBlocked = reception.gate === 'BLOCKED';
     const effectiveTriggered = isBackfill || receptionBlocked ? false : processed.staLta.triggered;
-    const packetTriggered = !isBackfill && !receptionBlocked &&
-      (processed.staLta.triggered || processed.staLta.triggeredInPacket);
-
-    // Refinar la llegada P con AIC sobre la traza vertical; si el AIC no es confiable se usa el cruce STA/LTA
-    let refinedPickIso: string | null = null;
-    if (record.channel.toUpperCase().endsWith('Z')) {
-      let onsetBuffer = this.onsetBuffers.get(streamKey);
-      if (!onsetBuffer) {
-        onsetBuffer = new OnsetBuffer();
-        this.onsetBuffers.set(streamKey, onsetBuffer);
-      }
-      onsetBuffer.append(packetTimeMs, sampleRate, record.samples);
-      const crossingMs = processed.staLta.triggerTimeIso ? new Date(processed.staLta.triggerTimeIso).getTime() : NaN;
-      if (packetTriggered && Number.isFinite(crossingMs)) {
-        const pickMs = onsetBuffer.refineOnset(crossingMs);
-        if (pickMs !== null) refinedPickIso = new Date(pickMs).toISOString();
-      }
-    }
 
     // Amplitud máxima en esta trama
     let maxAmp = 0;
@@ -631,7 +612,7 @@ export class SeedLinkService {
     }
 
     // Solo alimentar el detector sismológico con datos en tiempo real (< 180s de delay)
-    // Se procesan todos los componentes reales; los canales verticales fijan tP y los horizontales aportan PGA máximo
+    // Los canales verticales alimentan el análisis de eventos y los de todos los componentes aportan el PGA máximo
     if (!isBackfill && !receptionBlocked) {
       this.detector.processStationTelemetry({
         station: cleanStation,
@@ -639,26 +620,23 @@ export class SeedLinkService {
         channel: record.channel,
         lat: state.lat,
         lon: state.lon,
+        alt: stMeta?.alt,
         site: state.site,
         stateName: state.state,
-        pga: Math.max(processed.pga, processed.staLta.triggerPgaGal ?? 0),
+        pga: processed.pga,
         amp: processed.amplitudePhysical,
-        staLtaRatio: processed.staLta.peakRatio || processed.staLta.ratio,
         sampleRate,
         packetStartTime: processed.startTime,
+        samples: record.samples,
         isPureFrequencySeismic: processed.isPureFrequencySeismic,
         freqDominantHz: processed.freqDominantHz,
         highFreqRatio: processed.highFreqRatio,
         woodAndersonDispMm: processed.woodAndersonDispMm,
-        triggered: packetTriggered,
-        triggerSampleIndex: processed.staLta.triggerSampleIndex,
-        triggerTimeIso: processed.staLta.triggerTimeIso,
-        refinedPickIso,
         minPgaThreshold: processed.staLta.minPgaGal,
         noiseClass: processed.noise.noiseClass,
       });
     } else {
-      // Solo el canal que abrió el disparo puede retirarlo por backfill o recepción bloqueada.
+      // Un flujo en retransmisión o con recepción bloqueada no puede sostener eventos abiertos
       this.detector.clearStationTrigger(cleanStation, resolvedNetwork, record.channel);
     }
 

@@ -1,6 +1,5 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { calculateTravelTime1D, isDegenerateGeometry, SeismicDetectorEngine } from '../src/server/seedlink/detector.ts';
 import { SeismicDspEngine } from '../src/server/seedlink/seismic-dsp.ts';
 import { SeedLinkService } from '../src/server/seedlink/service.ts';
 
@@ -38,24 +37,6 @@ function createSignalStream(packetSamples) {
       samples, { sensitivity: 100000, inputType: 'ACCELERATION' }
     );
   };
-}
-
-function syntheticStations(detector, source, origin) {
-  const coords = [
-    [19, -100], [19.25, -99.7], [18.8, -99.65],
-    [18.75, -100.3], [19.3, -100.35], [19.05, -100.5],
-    [19, -101.7], [19, -98.3],
-  ];
-  return coords.map(([lat, lon], i) => {
-    const distance = detector.haversineDistanceKm(source.lat, source.lon, lat, lon);
-    const tP = origin + Math.round(calculateTravelTime1D(distance, 15, 'P') * 1000);
-    return {
-      station: `S${i}`, network: 'IG', channel: 'HHZ', lat, lon,
-      site: '', stateName: '', tP, tP_iso: new Date(tP).toISOString(),
-      receivedWallTime: Date.now(), staLtaRatio: 5, maxPga: 0.08, maxAmp: 1,
-      reqRatio: 2.1, reqPga: 0.03,
-    };
-  });
 }
 
 test('a calibrated weak signal is not rejected because it has fewer than 100 raw counts', () => {
@@ -99,16 +80,9 @@ test('short consecutive packets retain the STA window and eventually release aft
   assert.equal(quiet.at(-1).staLta.triggered, false);
 });
 
-test('a trigger retains its earlier physical peak when it opens in a quieter packet', (t) => {
-  t.mock.method(console, 'log', () => {});
+test('a packet peak reaches the detector even when the next packet is quieter', () => {
   const startMs = Date.now() - 40000;
   const received = [];
-  const detector = Object.create(SeismicDetectorEngine.prototype);
-  detector.earthquakes = [];
-  detector.activeTriggers = new Map();
-  detector.amplitudeTrackingMap = new Map();
-  detector.channelActivity = new Map();
-  detector.requestEvaluation = () => {};
   const service = Object.create(SeedLinkService.prototype);
   service.stationsCatalog = new Map([['TEST', {
     lat: 16, lon: -99, network: 'IG',
@@ -116,15 +90,11 @@ test('a trigger retains its earlier physical peak when it opens in a quieter pac
   }]]);
   service.liveStates = new Map();
   service.streamLastPacketTime = new Map();
-  service.onsetBuffers = new Map();
   service.activeSwarmStations = new Set();
   service.receptionQc = { observe: () => ({ gate: 'OK', transition: false }) };
   service.dsp = new SeismicDspEngine({ noiseCalibrator: createNoise() });
   service.detector = {
-    processStationTelemetry: (telemetry) => {
-      received.push(telemetry);
-      detector.processStationTelemetry(telemetry);
-    },
+    processStationTelemetry: (telemetry) => received.push(telemetry),
     clearStationTrigger: () => {},
   };
   service.appendWaveformPoints = () => {};
@@ -142,137 +112,11 @@ test('a trigger retains its earlier physical peak when it opens in a quieter pac
     });
   }
 
-  const trigger = received.find((telemetry) => telemetry.triggered);
-  assert.ok(trigger);
-  assert.ok(service.liveStates.get('TEST').pga < 0.03);
-  assert.ok(trigger.pga >= 0.03);
-  assert.ok(detector.activeTriggers.get('TEST')?.maxPga >= 0.03);
-});
-
-test('an oversized group retains a physically consistent six-site subset', (t) => {
-  t.mock.method(console, 'log', () => {});
-  const detector = Object.create(SeismicDetectorEngine.prototype);
-  detector.rejectLogAt = new Map();
-  const origin = Date.now() - 40000;
-  const stations = syntheticStations(detector, { lat: 19, lon: -100 }, origin);
-  assert.ok(detector.localizeCluster(stations.slice(0, 6), 295));
-  const result = detector.localizeCluster(stations, 295);
-  assert.ok(result);
-  assert.ok(result.sites.length >= 6);
-  assert.ok(result.apertureKm <= 295);
-  assert.ok(result.epi.rmsResidualSec <= 1);
-  assert.ok(Math.abs(result.epi.latitude - 19) < 0.1);
-  assert.ok(Math.abs(result.epi.longitude + 100) < 0.1);
-
-  const inconsistent = stations.slice(0, 6).map((station, i) => ({
-    ...station,
-    tP: station.tP + i * 20000,
-  }));
-  assert.equal(detector.localizeCluster(inconsistent, 295), null);
-
-  const colocated = stations.slice(0, 6).map((station, i) =>
-    i === 5 ? { ...station, lat: stations[4].lat, lon: stations[4].lon } : station
-  );
-  assert.equal(detector.localizeCluster(colocated, 295), null);
-});
-
-test('a weak local arrival can reach preliminary event declaration', (t) => {
-  t.mock.method(console, 'log', () => {});
-  const detector = Object.create(SeismicDetectorEngine.prototype);
-  detector.rejectLogAt = new Map();
-  detector.earthquakes = [];
-  detector.activePreliminaryIds = new Set();
-  detector.historyReady = false;
-  detector.lastDiagSignature = '';
-  const notifications = [];
-  detector.onEventDetectedCallback = (event) => notifications.push(event);
-  const stations = syntheticStations(detector, { lat: 19, lon: -100 }, Date.now() - 40000);
-  detector.activeTriggers = new Map(stations.map((station) => [station.station, station]));
-
-  detector.evaluateSpatialCoincidence();
-
-  assert.equal(detector.earthquakes.length, 1);
-  assert.equal(detector.earthquakes[0].status, 'PRELIMINARY');
-  assert.ok(detector.earthquakes[0].stationCount >= 6);
-  assert.ok(notifications.length > 0);
-  assert.equal(detector.getSeismicCandidate(), null);
-});
-
-test('a poorly constrained regional event remains an unlocated candidate', (t) => {
-  t.mock.method(console, 'log', () => {});
-  const detector = Object.create(SeismicDetectorEngine.prototype);
-  detector.rejectLogAt = new Map();
-  detector.earthquakes = [];
-  detector.activePreliminaryIds = new Set();
-  detector.historyReady = false;
-  detector.lastDiagSignature = '';
-  const events = [];
-  const candidates = [];
-  detector.onEventDetectedCallback = (event) => events.push(event);
-  detector.onCandidateChangedCallback = (candidate) => candidates.push(candidate);
-  const stations = syntheticStations(detector, { lat: 17.2, lon: -99.4 }, Date.now() - 40000);
-  detector.activeTriggers = new Map(stations.map((station) => [station.station, station]));
-
-  detector.evaluateSpatialCoincidence();
-
-  assert.equal(isDegenerateGeometry(270), false);
-  assert.equal(isDegenerateGeometry(271), true);
-  assert.equal(isDegenerateGeometry(undefined), true);
-  assert.equal(isDegenerateGeometry(NaN), true);
-  assert.equal(events.length, 0);
-  assert.equal(detector.earthquakes.length, 0);
-  assert.ok(candidates.at(-1)?.stationCount >= 3);
-  assert.equal('latitude' in candidates.at(-1), false);
-  assert.equal('magnitude' in candidates.at(-1), false);
-});
-
-test('a candidate requires three distinct, time-compatible sites and clears when a site disappears', (t) => {
-  t.mock.method(console, 'log', () => {});
-  const detector = Object.create(SeismicDetectorEngine.prototype);
-  detector.rejectLogAt = new Map();
-  detector.earthquakes = [];
-  detector.lastDiagSignature = '';
-  detector.currentCandidate = null;
-  const candidates = [];
-  const events = [];
-  detector.onCandidateChangedCallback = (candidate) => candidates.push(candidate);
-  detector.onEventDetectedCallback = (event) => events.push(event);
-  detector.requestEvaluation = () => detector.evaluateSpatialCoincidence();
-  const stations = syntheticStations(detector, { lat: 19, lon: -100 }, Date.now() - 40000);
-  detector.activeTriggers = new Map(stations.slice(0, 2).map((station) => [station.station, station]));
-
-  detector.evaluateSpatialCoincidence();
-  assert.equal(detector.getSeismicCandidate(), null);
-  detector.activeTriggers.set(stations[2].station, stations[2]);
-  detector.evaluateSpatialCoincidence();
-  const candidate = detector.getSeismicCandidate();
-  assert.equal(candidate.stationCount, 3);
-  assert.equal(events.length, 0);
-  assert.equal(detector.earthquakes.length, 0);
-  candidate.stations.length = 0;
-  assert.equal(detector.getSeismicCandidate().stations.length, 3);
-
-  detector.clearStationTrigger(stations[2].station, 'IG', 'HHZ');
-  assert.equal(detector.getSeismicCandidate(), null);
-  assert.equal(candidates.at(-1), null);
-
-  const incompatible = { ...stations[2], tP: stations[2].tP + 60000 };
-  detector.activeTriggers.set(incompatible.station, incompatible);
-  detector.evaluateSpatialCoincidence();
-  assert.equal(detector.getSeismicCandidate(), null);
-
-  detector.activeTriggers.set(stations[2].station, stations[2]);
-  detector.activeTriggers.set(stations[3].station, { ...stations[3], tP: stations[3].tP + 60000 });
-  detector.evaluateSpatialCoincidence();
-  assert.equal(detector.getSeismicCandidate().stationCount, 3);
-
-  detector.triggerWindowMs = 90000;
-  detector.noise = { reportFalseTrigger: () => {} };
-  detector.preliminaryCandidates = () => [];
-  detector.expireUnconfirmedEvents = () => {};
-  for (const trigger of detector.activeTriggers.values()) trigger.receivedWallTime = Date.now() - 91000;
-  detector.pruneStaleTriggers();
-  assert.equal(detector.getSeismicCandidate(), null);
+  assert.equal(received.length, 322);
+  assert.ok(received.every((telemetry) => telemetry.samples.length === 10));
+  const peak = received.find((telemetry) => telemetry.pga >= 0.03);
+  assert.ok(peak, 'the packet with the pulse carries its own PGA');
+  assert.ok(service.liveStates.get('TEST').pga < 0.03, 'the live state shows the quieter packet');
 });
 
 test('millisecond rounding does not discard a contiguous packet or admit a real overlap', () => {
@@ -282,7 +126,6 @@ test('millisecond rounding does not discard a contiguous packet or admit a real 
   service.stationsCatalog = new Map([['TEST', { lat: 16, lon: -99, network: 'IG' }]]);
   service.liveStates = new Map();
   service.streamLastPacketTime = new Map();
-  service.onsetBuffers = new Map();
   service.activeSwarmStations = new Set();
   service.receptionQc = { observe: () => ({ gate: 'OK', transition: false }) };
   service.dsp = {

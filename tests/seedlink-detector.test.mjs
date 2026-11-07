@@ -5,27 +5,8 @@ import { SeismicDspEngine } from '../src/server/seedlink/seismic-dsp.ts';
 import { SeedLinkService } from '../src/server/seedlink/service.ts';
 
 function detectorWithoutBackgroundServices() {
-  const detector = Object.create(SeismicDetectorEngine.prototype);
-  detector.activeTriggers = new Map();
-  return detector;
+  return SeismicDetectorEngine.createDetached();
 }
-
-test('only the stream that opened a trigger can clear it', () => {
-  const detector = detectorWithoutBackgroundServices();
-  const trigger = { station: 'TEST', network: 'IG', channel: 'HHZ' };
-  detector.activeTriggers.set('TEST', trigger);
-
-  detector.clearStationTrigger('test', 'IG', 'HNE');
-  detector.clearStationTrigger('test', 'AM', 'HHZ');
-  assert.equal(detector.activeTriggers.get('TEST'), trigger);
-
-  detector.clearStationTrigger('test', 'ig', 'hhz');
-  assert.equal(detector.activeTriggers.has('TEST'), false);
-
-  detector.activeTriggers.set('TEST', trigger);
-  detector.clearStationTrigger('test');
-  assert.equal(detector.activeTriggers.has('TEST'), false);
-});
 
 test('an increased PGA is persisted and broadcast even when magnitude does not rise', () => {
   const detector = detectorWithoutBackgroundServices();
@@ -98,8 +79,7 @@ test('a failed history write retries the latest snapshot and pending deletions',
   assert.equal(detector.persistRetryTimer, null);
 });
 
-test('a trigger that starts and ends within a packet is retained for detection', (t) => {
-  t.mock.method(console, 'log', () => {});
+test('a burst that starts and ends within one packet is still reported by the DSP trigger', () => {
   const observations = [];
   const noise = {
     getThresholds: () => ({
@@ -142,34 +122,9 @@ test('a trigger that starts and ends within a packet is retained for detection',
   const onset = Date.parse(packet.staLta.triggerTimeIso);
   assert.ok(onset >= baseTime + 40000 && onset < baseTime + 42000);
   assert.equal(observations.at(-1).duringTrigger, true);
-
-  const detector = detectorWithoutBackgroundServices();
-  detector.earthquakes = [];
-  detector.amplitudeTrackingMap = new Map();
-  detector.channelActivity = new Map();
-  detector.requestEvaluation = () => {};
-  detector.processStationTelemetry({
-    station: 'TEST',
-    network: 'GI',
-    channel: 'HNZ',
-    lat: 16,
-    lon: -99,
-    site: 'Test',
-    stateName: '',
-    pga: packet.pga,
-    amp: packet.amplitudePhysical,
-    staLtaRatio: packet.staLta.peakRatio,
-    sampleRate,
-    packetStartTime: packet.startTime,
-    isPureFrequencySeismic: packet.isPureFrequencySeismic,
-    triggered: packet.staLta.triggered || packet.staLta.triggeredInPacket,
-    triggerTimeIso: packet.staLta.triggerTimeIso,
-    minPgaThreshold: packet.staLta.minPgaGal,
-  });
-  assert.equal(detector.activeTriggers.get('TEST')?.tP, onset);
 });
 
-test('SeedLink forwards a completed packet trigger, but blocks unhealthy streams', () => {
+test('SeedLink forwards each packet with its samples to the detector, and withdraws unhealthy streams', () => {
   const startTime = new Date(Date.now() - 2000).toISOString();
   const packet = {
     startTime,
@@ -190,10 +145,9 @@ test('SeedLink forwards a completed packet trigger, but blocks unhealthy streams
   const cleared = [];
   let gate = 'OK';
   const service = Object.create(SeedLinkService.prototype);
-  service.stationsCatalog = new Map([['TEST', { lat: 16, lon: -99, network: 'GI' }]]);
+  service.stationsCatalog = new Map([['TEST', { lat: 16, lon: -99, alt: 1250, network: 'GI' }]]);
   service.liveStates = new Map();
   service.streamLastPacketTime = new Map();
-  service.onsetBuffers = new Map();
   service.activeSwarmStations = new Set();
   service.receptionQc = { observe: () => ({ gate, transition: false }) };
   service.dsp = { processSamples: () => packet };
@@ -214,8 +168,11 @@ test('SeedLink forwards a completed packet trigger, but blocks unhealthy streams
 
   service.handleIncomingMiniSeedRecord('test', record);
   assert.equal(received.length, 1);
-  assert.equal(received[0].triggered, true);
-  assert.equal(received[0].triggerTimeIso, startTime);
+  assert.equal(received[0].samples, record.samples);
+  assert.equal(received[0].alt, 1250);
+  assert.equal(received[0].pga, 0.3);
+  assert.equal(received[0].packetStartTime, startTime);
+  assert.equal('triggered' in received[0], false);
 
   gate = 'BLOCKED';
   service.streamLastPacketTime.clear();

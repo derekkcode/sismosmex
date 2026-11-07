@@ -100,10 +100,11 @@ export function parseSsnRss(xml: string): DetectedEarthquake[] {
 }
 
 /**
- * Devuelve los sismos recientes del SSN (cacheados 5 min). Si el RSS no responde, devuelve la última copia válida o [].
+ * Devuelve los sismos recientes del SSN (cacheados `maxAgeMs`, 5 min por defecto). Si el RSS no responde,
+ * devuelve la última copia válida o [].
  */
-export async function getSsnHistory(): Promise<DetectedEarthquake[]> {
-  if (cache && Date.now() - cache.at < CACHE_TTL_MS) {
+export async function getSsnHistory(maxAgeMs: number = CACHE_TTL_MS): Promise<DetectedEarthquake[]> {
+  if (cache && Date.now() - cache.at < maxAgeMs) {
     return cache.events;
   }
   try {
